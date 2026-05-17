@@ -1,1 +1,29 @@
-
+{
+  "nombre": "Sofía",
+  "titulo": "Mis XV",
+  "subtitulo": "Quiero que seas parte de este momento",
+  "fecha_display": "29 · Mayo · 2026",
+  "fecha_larga": "29 de Mayo",
+  "dia_semana": "Viernes",
+  "anio": "2026",
+  "hora": "22:00 hs",
+  "contador": "2026-05-29T22:00:00",
+  "confirmacion_limite": "20 de Mayo",
+  "lugar": {
+    "nombre": "Espacio 1805",
+    "maps_url": "https://www.google.com/maps/place/Espacio+1805+Eventos/@-34.6194698,-58.5002843,18z/data=!4m6!3m5!1s0x95bcc9d1adcc138d:0x5443c85a9857abc!8m2!3d-34.6194793!4d-58.5003982!16s%2Fg%2F1tjgqs9j?entry=ttu&g_ep=EgoyMDDI2MDUwNi4wIKXMDSoASAFQAw%3D%3D"
+  },
+  "dress_code": {
+    "descripcion": "Elegante",
+    "aclaracion": "Evitar violeta o azul"
+  },
+  "musica": {
+    "src": "/clientes/sofia/musica.mp3",
+    "nombre": "Taylor Swift — Cruel Summer"
+  },
+  "regalo": {
+    "alias": "sofi.luquemp",
+    "cvu": "0000003100086337366028"
+  },
+  "apps_script_url": "https://script.google.com/macros/s/AKfycbzkD0sKCXS-PjYVzGlSKLuYbZCZdPykvuc1n_P8LgMoxLwVo2PQYCy2aas125KDFbRe/exec"
+}
