@@ -538,36 +538,63 @@ export default function App() {
   const [playing, setPlaying] = useState(false);
   const audioRef = useRef(null);
 
-  if (!config && !error) return null;
-
-  if (error) {
-    return (
-      <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:"#1a1a1a",color:"#e8b4b8",fontFamily:"Georgia,serif",textAlign:"center",padding:"2rem"}}>
-        <p>No se pudo cargar la invitación.</p>
-      </div>
-    );
-  }
-
   const handleEnter = () => {
     setEntered(true);
     setTimeout(() => {
       const audio = audioRef.current;
-      if (audio) { audio.volume=0.55; audio.play().then(()=>setPlaying(true)).catch(()=>{}); }
+      if (audio) {
+        audio.volume = 0.55;
+        audio.play()
+          .then(() => setPlaying(true))
+          .catch(() => {});
+      }
     }, 900);
   };
 
   const handleToggle = () => {
     const audio = audioRef.current;
     if (!audio) return;
-    if (playing) { audio.pause(); setPlaying(false); }
-    else { audio.play().catch(()=>{}); setPlaying(true); }
+
+    if (playing) {
+      audio.pause();
+      setPlaying(false);
+    } else {
+      audio.play().catch(() => {});
+      setPlaying(true);
+    }
   };
 
   useEffect(() => {
     if (!entered) return;
-    document.body.style.opacity="0";
-    setTimeout(()=>{ document.body.style.transition="opacity 0.8s ease"; document.body.style.opacity="1"; },50);
+
+    document.body.style.opacity = "0";
+
+    setTimeout(() => {
+      document.body.style.transition = "opacity 0.8s ease";
+      document.body.style.opacity = "1";
+    }, 50);
   }, [entered]);
+
+  // MOVER LOS RETURNS ACÁ
+  if (!config && !error) return null;
+
+  if (error) {
+    return (
+      <div style={{
+        display:"flex",
+        alignItems:"center",
+        justifyContent:"center",
+        minHeight:"100vh",
+        background:"#1a1a1a",
+        color:"#e8b4b8",
+        fontFamily:"Georgia,serif",
+        textAlign:"center",
+        padding:"2rem"
+      }}>
+        <p>No se pudo cargar la invitación.</p>
+      </div>
+    );
+  }
 
   return (
     <>
