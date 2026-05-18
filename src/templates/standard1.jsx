@@ -177,7 +177,7 @@ function HeroSection({ config }) {
         <Particles/><Shimmer/>
       </div>
       <div className="relative z-10 text-center pb-0 pt-32 px-4" style={{transform:loaded?"translateY(0)":"translateY(60px)",opacity:loaded?1:0,transition:"all 1.4s cubic-bezier(0.16,1,0.3,1) 0.3s"}}>
-        <p className="text-xs tracking-[0.5em] uppercase mb-6" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,240,242,0.8)"}}>29 · Mayo · 2026</p>
+        <p className="text-xs tracking-[0.5em] uppercase mb-6" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,240,242,0.8)"}}>{config.fecha_display}</p>
         <h2 style={{fontFamily:"'Dancing Script',cursive,Georgia,serif",fontSize:"clamp(4rem,15vw,9rem)",fontWeight:700,lineHeight:0.9,color:"#fff",textShadow:"0 0 80px rgba(255,200,215,0.55),0 4px 20px rgba(0,0,0,0.12)"}}>{config.nombre}</h2>
         <p className="mt-6 text-sm tracking-[0.2em]" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,240,242,0.75)"}}>Tu presencia en esta noche nunca la olvidaré</p>
       </div>
@@ -211,7 +211,7 @@ function EventSection({ config }) {
             <div className="text-3xl mb-6" style={{color:ROSE_LIGHT}}>◇</div>
             <p className="text-xs tracking-[0.4em] uppercase mb-3" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,220,225,0.5)"}}>¿Cuándo?</p>
             <p style={{fontFamily:"'Playfair Display',Georgia,serif",fontWeight:400,color:"rgba(255,255,255,0.6)",fontSize:"0.85rem",letterSpacing:"0.06em"}}>Viernes</p>
-            <p style={{fontFamily:"'Playfair Display',Georgia,serif",fontWeight:400,color:"#fff",fontSize:"1.1rem"}}>29 de Mayo</p>
+            <p style={{fontFamily:"'Playfair Display',Georgia,serif",fontWeight:400,color:"#fff",fontSize:"1.1rem"}}>{config.fecha_larga}</p>
             <p style={{fontFamily:"'Playfair Display',Georgia,serif",fontWeight:400,color:"#fff",fontSize:"1.1rem"}}>2026</p>
             <p className="text-sm mt-3 tracking-widest" style={{color:ROSE_LIGHT}}>22:00 hs</p>
           </div>
@@ -454,7 +454,7 @@ function ConfirmSection({ config }) {
               ¡Gracias, {guests[0].name}!
             </p>
             <p className="text-sm mt-3" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,255,255,0.6)"}}>
-              {guests[0].attending==="yes"?"Nos vemos el 29 de Mayo 🎉":"Te vamos a extrañar en esta noche especial."}
+              {guests[0].attending==="yes"?"Nos vemos el ${config.fecha_larga} 🎉":"Te vamos a extrañar en esta noche especial."}
             </p>
             <div className="mt-8 p-4 mx-auto max-w-xs" style={{background:"rgba(0,0,0,0.18)",border:"1px solid rgba(255,255,255,0.15)"}}>
               <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,255,255,0.5)"}}>Tu código de confirmación</p>
@@ -524,7 +524,7 @@ function Footer({ config }) {
   return (
     <footer className="py-16 text-center" style={{background:"#3d1820",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
       <div className="mb-4" style={{fontFamily:"'Dancing Script',cursive,Georgia,serif",fontSize:"2rem",color:ROSE_LIGHT}}>{config.nombre}</div>
-      <p className="text-xs tracking-[0.4em] uppercase" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,200,210,0.3)"}}>Viernes 29 · Mayo · 2026 · 22:00 hs</p>
+      <p className="text-xs tracking-[0.4em] uppercase" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,200,210,0.3)"}}>{config.dia_semana} {config.fecha_display} · {config.hora}</p>
     </footer>
   );
 }
