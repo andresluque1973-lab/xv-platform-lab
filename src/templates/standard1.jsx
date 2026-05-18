@@ -1,16 +1,12 @@
 import { useState, useEffect, useRef } from "react";
+import { useConfig } from "../hooks/useConfig";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ⚙️  CONFIG — reemplazá esta URL con la de tu Apps Script desplegado
+// ⚙️  CONFIG — cargado desde /clientes/sofia/config.json
 // ─────────────────────────────────────────────────────────────────────────────
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkD0sKCXS-PjYVzGlSKLuYbZCZdPykvuc1n_P8LgMoxLwVo2PQYCy2aas125KDFbRe/exec";
-
-const PARTY_DATE = new Date("2026-05-29T22:00:00");
 const ROSE       = "#c4848a";
 const ROSE_LIGHT = "#e8b4b8";
 const ROSE_DARK  = "#8b4f55";
-const MAPS_URL   = "https://www.google.com/maps/place/Espacio+1805+Eventos/@-34.6194698,-58.5002843,18z/data=!4m6!3m5!1s0x95bcc9d1adcc138d:0x5443c85a9857abc!8m2!3d-34.6194793!4d-58.5003982!16s%2Fg%2F1tjgqs9j?entry=ttu&g_ep=EgoyMDDI2MDUwNi4wIKXMDSoASAFQAw%3D%3D";
-const MUSIC_SRC  = "/music/cruel-summer.mp3";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 🛠  HELPERS
@@ -99,7 +95,7 @@ function Shimmer() {
 // ─────────────────────────────────────────────────────────────────────────────
 // 💝  GIFT MODAL
 // ─────────────────────────────────────────────────────────────────────────────
-function GiftModal({ onClose }) {
+function GiftModal({ config, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{background:"rgba(30,8,12,0.85)",backdropFilter:"blur(6px)"}}
@@ -119,14 +115,14 @@ function GiftModal({ onClose }) {
             <p className="text-xs tracking-[0.35em] uppercase mb-2"
               style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(232,180,184,0.65)"}}>Alias</p>
             <p className="text-lg tracking-widest select-all"
-              style={{fontFamily:"'Playfair Display',Georgia,serif",color:"#fff",letterSpacing:"0.12em"}}>sofi.luquemp</p>
+              style={{fontFamily:"'Playfair Display',Georgia,serif",color:"#fff",letterSpacing:"0.12em"}}>{config.regalo.alias}</p>
           </div>
           <div className="p-4" style={{background:"rgba(0,0,0,0.22)",border:"1px solid rgba(255,255,255,0.1)"}}>
             <p className="text-xs tracking-[0.35em] uppercase mb-2"
               style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(232,180,184,0.65)"}}>CVU</p>
             <p className="text-sm select-all"
               style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#fff",letterSpacing:"0.08em",wordBreak:"break-all"}}>
-              0000003100086337366028</p>
+              {config.regalo.cvu}</p>
           </div>
         </div>
         <p className="mt-6 text-xs leading-relaxed"
@@ -141,7 +137,7 @@ function GiftModal({ onClose }) {
 // ─────────────────────────────────────────────────────────────────────────────
 // 🚪  COVER
 // ─────────────────────────────────────────────────────────────────────────────
-function Cover({ onEnter }) {
+function Cover({ config, onEnter }) {
   const [vis,setVis]=useState(false);
   useEffect(()=>{setTimeout(()=>setVis(true),100);},[]);
   return (
@@ -152,7 +148,7 @@ function Cover({ onEnter }) {
       <div className="text-center px-8 relative z-10" style={{transform:vis?"translateY(0)":"translateY(40px)",opacity:vis?1:0,transition:"all 1.2s cubic-bezier(0.16,1,0.3,1)"}}>
         <p className="text-xs tracking-[0.4em] mb-6 uppercase" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,240,242,0.8)"}}>Te invito a celebrar</p>
         <h1 className="mb-3" style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:"clamp(3rem,10vw,6rem)",fontWeight:400,letterSpacing:"-0.02em",lineHeight:1,color:"#fff",textShadow:"0 2px 30px rgba(0,0,0,0.18)"}}>Mis XV</h1>
-        <div className="mb-2" style={{fontFamily:"'Dancing Script',cursive,Georgia,serif",fontSize:"clamp(2.5rem,8vw,5rem)",fontWeight:700,color:"#fff",textShadow:"0 0 50px rgba(255,220,225,0.5)"}}>Sofía</div>
+        <div className="mb-2" style={{fontFamily:"'Dancing Script',cursive,Georgia,serif",fontSize:"clamp(2.5rem,8vw,5rem)",fontWeight:700,color:"#fff",textShadow:"0 0 50px rgba(255,220,225,0.5)"}}>{config.nombre}</div>
         <p className="text-sm tracking-widest uppercase mb-12" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,240,242,0.7)"}}>Quiero que seas parte de este momento</p>
         <button onClick={onEnter} className="px-12 py-4 text-xs tracking-[0.3em] uppercase transition-all duration-500"
           style={{fontFamily:"'Cormorant Garamond',Georgia,serif",border:"1px solid rgba(255,255,255,0.7)",color:"#fff",background:"rgba(255,255,255,0.12)",backdropFilter:"blur(4px)",cursor:"pointer"}}
@@ -169,10 +165,10 @@ function Cover({ onEnter }) {
 // ─────────────────────────────────────────────────────────────────────────────
 // 🌸  HERO
 // ─────────────────────────────────────────────────────────────────────────────
-function HeroSection() {
+function HeroSection({ config }) {
   const [loaded,setLoaded]=useState(false);
   useEffect(()=>{setTimeout(()=>setLoaded(true),200);},[]);
-  const cd=useCountdown(PARTY_DATE);
+  const cd=useCountdown(new Date(config.contador));
   return (
     <section className="relative min-h-screen flex flex-col justify-end overflow-hidden"
       style={{background:"linear-gradient(160deg,#c4848a 0%,#9e6068 60%,#7a4048 100%)"}}>
@@ -182,7 +178,7 @@ function HeroSection() {
       </div>
       <div className="relative z-10 text-center pb-0 pt-32 px-4" style={{transform:loaded?"translateY(0)":"translateY(60px)",opacity:loaded?1:0,transition:"all 1.4s cubic-bezier(0.16,1,0.3,1) 0.3s"}}>
         <p className="text-xs tracking-[0.5em] uppercase mb-6" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,240,242,0.8)"}}>29 · Mayo · 2026</p>
-        <h2 style={{fontFamily:"'Dancing Script',cursive,Georgia,serif",fontSize:"clamp(4rem,15vw,9rem)",fontWeight:700,lineHeight:0.9,color:"#fff",textShadow:"0 0 80px rgba(255,200,215,0.55),0 4px 20px rgba(0,0,0,0.12)"}}>Sofía</h2>
+        <h2 style={{fontFamily:"'Dancing Script',cursive,Georgia,serif",fontSize:"clamp(4rem,15vw,9rem)",fontWeight:700,lineHeight:0.9,color:"#fff",textShadow:"0 0 80px rgba(255,200,215,0.55),0 4px 20px rgba(0,0,0,0.12)"}}>{config.nombre}</h2>
         <p className="mt-6 text-sm tracking-[0.2em]" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,240,242,0.75)"}}>Tu presencia en esta noche nunca la olvidaré</p>
       </div>
       <div className="relative z-10 grid grid-cols-4 gap-3 mx-4 sm:mx-8 mt-16">
@@ -203,7 +199,7 @@ function HeroSection() {
 // ─────────────────────────────────────────────────────────────────────────────
 // 📅  EVENT
 // ─────────────────────────────────────────────────────────────────────────────
-function EventSection() {
+function EventSection({ config }) {
   const cardBase={border:"1px solid rgba(255,255,255,0.15)",padding:"3rem",textAlign:"center",transition:"border-color 0.5s"};
   const hov=e=>e.currentTarget.style.borderColor="rgba(232,180,184,0.5)";
   const unv=e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.15)";
@@ -224,7 +220,7 @@ function EventSection() {
             <p className="text-xs tracking-[0.4em] uppercase mb-3" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,220,225,0.5)"}}>¿Dónde?</p>
             <p style={{fontFamily:"'Playfair Display',Georgia,serif",fontWeight:400,color:"#fff",fontSize:"1.1rem"}}>Espacio</p>
             <p style={{fontFamily:"'Playfair Display',Georgia,serif",fontWeight:400,color:"#fff",fontSize:"1.1rem"}}>1805</p>
-            <a href={MAPS_URL} target="_blank" rel="noopener noreferrer"
+            <a href={config.lugar.maps_url} target="_blank" rel="noopener noreferrer"
               className="mt-4 inline-block text-xs tracking-[0.3em] uppercase pb-0.5 transition-colors duration-300"
               style={{color:ROSE_LIGHT,borderBottom:`1px solid ${ROSE_DARK}`,textDecoration:"none"}}
               onMouseEnter={e=>e.target.style.borderBottomColor=ROSE_LIGHT}
@@ -245,11 +241,11 @@ function EventSection() {
 // ─────────────────────────────────────────────────────────────────────────────
 // 🎵  MUSIC
 // ─────────────────────────────────────────────────────────────────────────────
-function MusicSection({ playing, onToggle }) {
+function MusicSection({ config, playing, onToggle }) {
   return (
     <section className="py-20 px-4 text-center" style={{background:"#5a2830",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
       <p className="text-xs tracking-[0.4em] uppercase mb-1" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,200,210,0.4)"}}>Música</p>
-      <p className="text-xs mb-6" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,200,210,0.28)",letterSpacing:"0.1em"}}>Taylor Swift — Cruel Summer</p>
+      <p className="text-xs mb-6" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,200,210,0.28)",letterSpacing:"0.1em"}}>{config.musica.nombre}</p>
       <button onClick={onToggle} className="w-14 h-14 rounded-full flex items-center justify-center mx-auto transition-all duration-300"
         style={{border:`1px solid ${playing?ROSE_LIGHT:"rgba(255,200,210,0.35)"}`,background:playing?"rgba(196,132,138,0.2)":"transparent",cursor:"pointer"}}
         onMouseEnter={e=>e.currentTarget.style.borderColor=ROSE_LIGHT}
@@ -264,11 +260,11 @@ function MusicSection({ playing, onToggle }) {
 // ─────────────────────────────────────────────────────────────────────────────
 // 🎁  GIFTS
 // ─────────────────────────────────────────────────────────────────────────────
-function GiftsSection() {
+function GiftsSection({ config }) {
   const [show,setShow]=useState(false);
   return (
     <>
-      {show && <GiftModal onClose={()=>setShow(false)}/>}
+      {show && <GiftModal config={config} onClose={()=>setShow(false)}/>}
       <section className="py-32 px-4 text-center" style={{background:"#5a2830",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
         <div className="max-w-sm mx-auto">
           <div className="text-4xl mb-8" style={{color:ROSE_LIGHT}}>◻</div>
@@ -356,7 +352,7 @@ function GuestBlock({ num, data, onChange, errors }) {
 // ─────────────────────────────────────────────────────────────────────────────
 // 📋  CONFIRM SECTION
 // ─────────────────────────────────────────────────────────────────────────────
-function ConfirmSection() {
+function ConfirmSection({ config }) {
   const MAX_GUESTS = 6;
   const [guestCount, setGuestCount] = useState(1);
   const [guests, setGuests]         = useState([emptyGuest()]);
@@ -415,7 +411,7 @@ function ConfirmSection() {
     });
 
     try {
-      await fetch(APPS_SCRIPT_URL + "?" + params.toString(), {
+      await fetch(config.apps_script_url + "?" + params.toString(), {
         method: "GET",
         mode:   "no-cors",
       });
@@ -446,7 +442,7 @@ function ConfirmSection() {
             Confirmá tu asistencia
           </p>
           <h2 style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:"1.8rem",fontWeight:400,color:"#fff"}}>
-            Antes del 20 de Mayo
+            Antes del {config.confirmacion_limite}
           </h2>
           <div className="w-12 h-px mx-auto mt-6" style={{background:"rgba(255,255,255,0.4)"}}/>
         </div>
@@ -524,10 +520,10 @@ function ConfirmSection() {
 // ─────────────────────────────────────────────────────────────────────────────
 // 🏁  FOOTER
 // ─────────────────────────────────────────────────────────────────────────────
-function Footer() {
+function Footer({ config }) {
   return (
     <footer className="py-16 text-center" style={{background:"#3d1820",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
-      <div className="mb-4" style={{fontFamily:"'Dancing Script',cursive,Georgia,serif",fontSize:"2rem",color:ROSE_LIGHT}}>Sofía</div>
+      <div className="mb-4" style={{fontFamily:"'Dancing Script',cursive,Georgia,serif",fontSize:"2rem",color:ROSE_LIGHT}}>{config.nombre}</div>
       <p className="text-xs tracking-[0.4em] uppercase" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,200,210,0.3)"}}>Viernes 29 · Mayo · 2026 · 22:00 hs</p>
     </footer>
   );
@@ -537,9 +533,20 @@ function Footer() {
 // 🚀  APP ROOT
 // ─────────────────────────────────────────────────────────────────────────────
 export default function App() {
+  const { config, error } = useConfig("sofia");
   const [entered, setEntered] = useState(false);
   const [playing, setPlaying] = useState(false);
   const audioRef = useRef(null);
+
+  if (!config && !error) return null;
+
+  if (error) {
+    return (
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:"#1a1a1a",color:"#e8b4b8",fontFamily:"Georgia,serif",textAlign:"center",padding:"2rem"}}>
+        <p>No se pudo cargar la invitación.</p>
+      </div>
+    );
+  }
 
   const handleEnter = () => {
     setEntered(true);
@@ -576,18 +583,18 @@ export default function App() {
       `}</style>
 
       <audio ref={audioRef} loop preload="auto">
-        <source src={MUSIC_SRC} type="audio/mpeg"/>
+        <source src={config.musica.src} type="audio/mpeg"/>
       </audio>
 
-      {!entered && <Cover onEnter={handleEnter}/>}
+      {!entered && <Cover config={config} onEnter={handleEnter}/>}
       {entered && (
         <main>
-          <HeroSection/>
-          <EventSection/>
-          <MusicSection playing={playing} onToggle={handleToggle}/>
-          <GiftsSection/>
-          <ConfirmSection/>
-          <Footer/>
+          <HeroSection config={config}/>
+          <EventSection config={config}/>
+          <MusicSection playing={playing} onToggle={handleToggle} config={config}/>
+          <GiftsSection config={config}/>
+          <ConfirmSection config={config}/>
+          <Footer config={config}/>
         </main>
       )}
     </>
