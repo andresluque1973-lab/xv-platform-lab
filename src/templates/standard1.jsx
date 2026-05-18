@@ -213,7 +213,7 @@ function EventSection({ config }) {
             <p style={{fontFamily:"'Playfair Display',Georgia,serif",fontWeight:400,color:"rgba(255,255,255,0.6)",fontSize:"0.85rem",letterSpacing:"0.06em"}}>Viernes</p>
             <p style={{fontFamily:"'Playfair Display',Georgia,serif",fontWeight:400,color:"#fff",fontSize:"1.1rem"}}>{config.fecha_larga}</p>
             <p style={{fontFamily:"'Playfair Display',Georgia,serif",fontWeight:400,color:"#fff",fontSize:"1.1rem"}}>2026</p>
-            <p className="text-sm mt-3 tracking-widest" style={{color:ROSE_LIGHT}}>22:00 hs</p>
+            <p className="text-sm mt-3 tracking-widest" style={{color:ROSE_LIGHT}}>{config.hora}</p>
           </div>
           <div style={{...cardBase,borderLeft:0}} onMouseEnter={hov} onMouseLeave={unv}>
             <div className="text-3xl mb-6" style={{color:ROSE_LIGHT}}>✦</div>
