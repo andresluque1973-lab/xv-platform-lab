@@ -533,7 +533,10 @@ function Footer({ config }) {
 // 🚀  APP ROOT
 // ─────────────────────────────────────────────────────────────────────────────
 export default function App() {
-  const { config, error } = useConfig("sofia");
+  const slug =
+  window.location.pathname.split("/")[1] || "sofia";
+
+const { config, error } = useConfig(slug);
   const [entered, setEntered] = useState(false);
   const [playing, setPlaying] = useState(false);
   const audioRef = useRef(null);
