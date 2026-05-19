@@ -1,50 +1,126 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-const DEFAULTS = {
-  titulo: 'Mis XV',
-  contador: '',
-  confirmacion_limite: '20 días antes del evento',
-  lugar: { maps_url: '' },
-  dress_code: { descripcion: 'Elegante', aclaracion: '' },
-  musica: { nombre: '' },
-  regalo: { alias: '', cvu: '' },
-  apps_script_url: '',
-};
+// ─────────────────────────────────────────────────────────────────────────────
+// Helper — genera el valor autogenerado esperado para musica_src
+// ─────────────────────────────────────────────────────────────────────────────
+function autoSrc(slug) {
+  return `/clientes/${slug || '{slug}'}/musica.mp3`;
+}
 
+// ─────────────────────────────────────────────────────────────────────────────
+// buildConfig — mapeo explícito de fields → estructura JSON del cliente
+// Contrato: replica exactamente las claves que consume standard1.jsx
+// ─────────────────────────────────────────────────────────────────────────────
 function buildConfig(fields) {
   const { slug, nombre, subtitulo, fecha, hora, salon } = fields;
+
   return {
-    nombre: nombre || 'Nombre',
-    titulo: DEFAULTS.titulo,
+    // Identidad
+    nombre:    nombre    || 'Nombre',
+    titulo:    'Mis XV',
     subtitulo: subtitulo || 'Quiero que seas parte de este momento',
+
+    // Fecha
+    // DEUDA TÉCNICA: automatizar derivación de fecha_larga / dia_semana / anio
+    // desde el campo fecha (fuera de FASE 4)
     fecha_display: fecha || '',
-    fecha_larga: '',
-    dia_semana: '',
-    anio: '',
-    hora: hora || '',
-    contador: DEFAULTS.contador,
-    confirmacion_limite: DEFAULTS.confirmacion_limite,
+    fecha_larga:   '',
+    dia_semana:    '',
+    anio:          '',
+    hora:          hora  || '',
+
+    // Evento
+    contador:            fields.contador            || '',
+    confirmacion_limite: fields.confirmacion_limite || '',
+
+    // Lugar
     lugar: {
-      nombre: salon || '',
-      maps_url: DEFAULTS.lugar.maps_url,
+      nombre:   salon           || '',
+      maps_url: fields.maps_url || '',
     },
-    dress_code: DEFAULTS.dress_code,
+
+    // Dress code
+    dress_code: {
+      descripcion: fields.dress_code_descripcion || '',
+      aclaracion:  fields.dress_code_aclaracion  || '',
+    },
+
+    // Música
     musica: {
-      src: `/clientes/${slug || 'slug'}/musica.mp3`,
-      nombre: DEFAULTS.musica.nombre,
+      src:    fields.musica_src    || autoSrc(slug),
+      nombre: fields.musica_nombre || '',
     },
-    regalo: DEFAULTS.regalo,
-    apps_script_url: DEFAULTS.apps_script_url,
+
+    // Regalo
+    regalo: {
+      alias: fields.alias || '',
+      cvu:   fields.cvu   || '',
+    },
+
+    // Servicio
+    // DEUDA TÉCNICA: confirmación muestra success incluso cuando fetch falla
+    // (catch silencioso en ConfirmSection — fuera de FASE 4)
+    apps_script_url: fields.apps_script_url || '',
   };
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// AdminPage
+// ─────────────────────────────────────────────────────────────────────────────
 export default function AdminPage() {
   const [fields, setFields] = useState({
-    slug: '', nombre: '', subtitulo: '', fecha: '', hora: '', salon: '',
+    // Identificación
+    slug: '',
+    // Datos visibles
+    nombre: '',
+    subtitulo: '',
+    fecha: '',
+    hora: '',
+    salon: '',
+    // Música
+    musica_src:    autoSrc(''),
+    musica_nombre: '',
+    // Evento
+    contador:            '',
+    confirmacion_limite: '',
+    maps_url:            '',
+    // Dress code
+    dress_code_descripcion: '',
+    dress_code_aclaracion:  '',
+    // Regalo
+    alias: '',
+    cvu:   '',
+    // Servicio
+    apps_script_url: '',
   });
-  const [json, setJson]       = useState('');
-  const [stage, setStage]     = useState('form'); // 'form' | 'preview'
+
+  const [json,      setJson]      = useState('');
+  const [stage,     setStage]     = useState('form'); // 'form' | 'preview'
   const [slugError, setSlugError] = useState(false);
+
+  // ── Autocompletado protegido de musica_src ───────────────────────────────
+  // Inicializado con el slug inicial para evitar edge case en primer render.
+  // En el primer render fields.slug es '' → prevSlugRef.current es ''
+  // → autoSrc('') coincide con el valor inicial de musica_src → correcto.
+  const prevSlugRef = useRef(fields.slug);
+
+  useEffect(() => {
+    const prevSlug   = prevSlugRef.current;  // slug ANTERIOR al cambio
+    const newSlug    = fields.slug;          // slug NUEVO
+    const currentSrc = fields.musica_src;   // valor actual del campo
+
+    // Comparar contra la ruta autogenerada con el slug ANTERIOR.
+    // Si coincide: el operador no lo editó → actualizar con slug NUEVO.
+    // Si no coincide: el operador lo modificó manualmente → no tocar.
+    const wasAuto = currentSrc === autoSrc(prevSlug);
+
+    if (wasAuto) {
+      setFields(prev => ({ ...prev, musica_src: autoSrc(newSlug) }));
+    }
+
+    // Registrar slug actual como "anterior" para el próximo cambio.
+    prevSlugRef.current = newSlug;
+  }, [fields.slug]);
 
   const update = (key, val) => {
     setFields(prev => ({ ...prev, [key]: val }));
@@ -53,7 +129,7 @@ export default function AdminPage() {
 
   const generar = () => {
     const slug = fields.slug.trim();
-    if (!slug) { setSlugError(true); return; }
+    if (!slug)            { setSlugError(true); return; }
     if (slug === 'admin') { setSlugError(true); return; }
     const config = buildConfig({ ...fields, slug });
     setJson(JSON.stringify(config, null, 2));
@@ -75,6 +151,7 @@ export default function AdminPage() {
 
   const slugClean = fields.slug.trim().toLowerCase() || '{slug}';
 
+  // ── Estilos compartidos ──────────────────────────────────────────────────
   const labelStyle = {
     display: 'block',
     fontSize: 10,
@@ -98,6 +175,13 @@ export default function AdminPage() {
     outline: 'none',
   };
 
+  const inputMutedStyle = {
+    ...inputStyle,
+    color: '#8B7355',
+    fontSize: 13,
+    fontFamily: 'monospace',
+  };
+
   const sectionTitle = {
     fontFamily: "'Cormorant Garamond', serif",
     fontSize: 11,
@@ -116,6 +200,16 @@ export default function AdminPage() {
     fontWeight: 300,
   };
 
+  const hintWarnStyle = {
+    fontSize: 11,
+    color: '#8B7355',
+    marginTop: 8,
+    fontWeight: 400,
+    background: 'rgba(185,166,142,0.12)',
+    padding: '6px 10px',
+    borderLeft: '2px solid rgba(185,166,142,0.5)',
+  };
+
   const codeStyle = {
     background: 'rgba(185,166,142,0.15)',
     padding: '1px 6px',
@@ -125,6 +219,11 @@ export default function AdminPage() {
     borderRadius: 2,
   };
 
+  const divider = (
+    <div className="h-px my-9" style={{ background: 'rgba(185,166,142,0.25)' }} />
+  );
+
+  // ── Render ───────────────────────────────────────────────────────────────
   return (
     <>
       <style>{`
@@ -141,7 +240,7 @@ export default function AdminPage() {
       >
         <div className="max-w-xl mx-auto">
 
-          {/* Brand */}
+          {/* ── Brand ── */}
           <div className="flex items-center gap-3 mb-12">
             <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 12, letterSpacing: '0.45em', textTransform: 'uppercase', color: '#B9A68E' }}>
               VELA · Admin
@@ -149,7 +248,7 @@ export default function AdminPage() {
             <div className="flex-1 h-px" style={{ background: '#B9A68E', opacity: 0.35 }} />
           </div>
 
-          {/* Título */}
+          {/* ── Título ── */}
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, fontWeight: 400, color: '#1A1A1A', marginBottom: 6 }}>
             Nueva invitación
           </h1>
@@ -159,7 +258,9 @@ export default function AdminPage() {
 
           <div className="h-px mb-9" style={{ background: 'rgba(185,166,142,0.25)' }} />
 
-          {/* Sección identificación */}
+          {/* ══════════════════════════════════════════════════════════════ */}
+          {/* SECCIÓN: Identificación                                        */}
+          {/* ══════════════════════════════════════════════════════════════ */}
           <p style={sectionTitle}>Identificación</p>
 
           <div className="mb-7">
@@ -181,9 +282,11 @@ export default function AdminPage() {
             </span>
           </div>
 
-          <div className="h-px my-9" style={{ background: 'rgba(185,166,142,0.25)' }} />
+          {divider}
 
-          {/* Sección datos */}
+          {/* ══════════════════════════════════════════════════════════════ */}
+          {/* SECCIÓN: Datos de la invitación                                */}
+          {/* ══════════════════════════════════════════════════════════════ */}
           <p style={sectionTitle}>Datos de la invitación</p>
 
           <div className="mb-7">
@@ -209,7 +312,7 @@ export default function AdminPage() {
 
           <div className="grid grid-cols-2 gap-6 mb-7">
             <div>
-              <label style={labelStyle}>Fecha</label>
+              <label style={labelStyle}>Fecha display</label>
               <input
                 style={inputStyle}
                 value={fields.fecha}
@@ -238,7 +341,152 @@ export default function AdminPage() {
             />
           </div>
 
-          {/* Botón generar */}
+          {divider}
+
+          {/* ══════════════════════════════════════════════════════════════ */}
+          {/* SECCIÓN: Evento                                                */}
+          {/* ══════════════════════════════════════════════════════════════ */}
+          <p style={sectionTitle}>Evento</p>
+
+          <div className="mb-7">
+            <label style={labelStyle}>Contador (fecha ISO)</label>
+            <input
+              style={inputStyle}
+              value={fields.contador}
+              onChange={e => update('contador', e.target.value)}
+              placeholder="2026-08-15T21:00:00"
+            />
+            <p style={hintStyle}>Formato exacto: AAAA-MM-DDTHH:MM:SS — determina la cuenta regresiva.</p>
+          </div>
+
+          <div className="mb-7">
+            <label style={labelStyle}>Confirmar antes del</label>
+            <input
+              style={inputStyle}
+              value={fields.confirmacion_limite}
+              onChange={e => update('confirmacion_limite', e.target.value)}
+              placeholder="1 de Agosto"
+            />
+            <p style={hintStyle}>Texto libre. Se muestra en la sección de confirmación.</p>
+          </div>
+
+          <div className="mb-7">
+            <label style={labelStyle}>Link Google Maps</label>
+            <input
+              style={inputStyle}
+              value={fields.maps_url}
+              onChange={e => update('maps_url', e.target.value)}
+              placeholder="https://maps.google.com/..."
+            />
+            <p style={hintStyle}>URL completa del lugar en Google Maps.</p>
+          </div>
+
+          {divider}
+
+          {/* ══════════════════════════════════════════════════════════════ */}
+          {/* SECCIÓN: Dress Code                                            */}
+          {/* ══════════════════════════════════════════════════════════════ */}
+          <p style={sectionTitle}>Dress Code</p>
+
+          <div className="mb-7">
+            <label style={labelStyle}>Descripción</label>
+            <input
+              style={inputStyle}
+              value={fields.dress_code_descripcion}
+              onChange={e => update('dress_code_descripcion', e.target.value)}
+              placeholder="Elegante"
+            />
+          </div>
+
+          <div className="mb-7">
+            <label style={labelStyle}>Aclaración</label>
+            <input
+              style={inputStyle}
+              value={fields.dress_code_aclaracion}
+              onChange={e => update('dress_code_aclaracion', e.target.value)}
+              placeholder="Evitar zapatillas deportivas"
+            />
+            <p style={hintStyle}>Opcional. Se muestra debajo de la descripción.</p>
+          </div>
+
+          {divider}
+
+          {/* ══════════════════════════════════════════════════════════════ */}
+          {/* SECCIÓN: Música                                                */}
+          {/* ══════════════════════════════════════════════════════════════ */}
+          <p style={sectionTitle}>Música</p>
+
+          <div className="mb-7">
+            <label style={labelStyle}>Ruta del archivo</label>
+            <input
+              style={inputMutedStyle}
+              value={fields.musica_src}
+              onChange={e => update('musica_src', e.target.value)}
+            />
+            <p style={hintStyle}>
+              Se actualiza automáticamente con el slug. Editable si el archivo tiene otro nombre.
+            </p>
+          </div>
+
+          <div className="mb-7">
+            <label style={labelStyle}>Nombre de la canción</label>
+            <input
+              style={inputStyle}
+              value={fields.musica_nombre}
+              onChange={e => update('musica_nombre', e.target.value)}
+              placeholder="Taylor Swift — Cruel Summer"
+            />
+            <p style={hintStyle}>Se muestra en la sección de música.</p>
+          </div>
+
+          {divider}
+
+          {/* ══════════════════════════════════════════════════════════════ */}
+          {/* SECCIÓN: Regalo                                                */}
+          {/* ══════════════════════════════════════════════════════════════ */}
+          <p style={sectionTitle}>Regalo</p>
+
+          <div className="mb-7">
+            <label style={labelStyle}>Alias</label>
+            <input
+              style={inputStyle}
+              value={fields.alias}
+              onChange={e => update('alias', e.target.value)}
+              placeholder="melani.mp"
+            />
+          </div>
+
+          <div className="mb-7">
+            <label style={labelStyle}>CVU</label>
+            <input
+              style={inputStyle}
+              value={fields.cvu}
+              onChange={e => update('cvu', e.target.value)}
+              placeholder="0000003100086337366028"
+            />
+          </div>
+
+          {divider}
+
+          {/* ══════════════════════════════════════════════════════════════ */}
+          {/* SECCIÓN: Servicio                                              */}
+          {/* ══════════════════════════════════════════════════════════════ */}
+          <p style={sectionTitle}>Servicio</p>
+
+          <div className="mb-7">
+            <label style={labelStyle}>Apps Script URL</label>
+            <input
+              style={inputStyle}
+              value={fields.apps_script_url}
+              onChange={e => update('apps_script_url', e.target.value)}
+              placeholder="https://script.google.com/macros/s/..."
+            />
+            <p style={hintWarnStyle}>
+              Campo crítico. Sin esta URL las confirmaciones de asistencia no llegan a Google Sheets.
+            </p>
+          </div>
+
+          {/* ── Botón generar ── */}
           <button
             onClick={generar}
             className="w-full py-4 mt-2"
@@ -249,7 +497,7 @@ export default function AdminPage() {
             Generar config.json
           </button>
 
-          {/* Preview */}
+          {/* ── Preview ── */}
           {stage === 'preview' && (
             <div id="vela-preview" className="mt-8" style={{ border: '1px solid rgba(185,166,142,0.35)' }}>
 
@@ -280,7 +528,7 @@ export default function AdminPage() {
               <textarea
                 value={json}
                 onChange={e => setJson(e.target.value)}
-                rows={20}
+                rows={28}
                 className="w-full p-5 outline-none"
                 style={{ background: '#fff', border: 'none', color: '#1A1A1A', fontFamily: "'Courier New', monospace", fontSize: 12.5, lineHeight: 1.7, display: 'block' }}
                 spellCheck={false}
@@ -288,7 +536,7 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* Instrucciones */}
+          {/* ── Instrucciones ── */}
           {stage === 'preview' && (
             <div className="mt-8 p-7" style={{ border: '1px solid rgba(185,166,142,0.35)', background: 'rgba(248,245,239,0.7)' }}>
               <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 11, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#8B7355', marginBottom: 20 }}>
@@ -297,7 +545,7 @@ export default function AdminPage() {
               {[
                 ['01', <span>Crear carpeta <code style={codeStyle}>public/clientes/{fields.slug.trim()}/</code> en el repositorio</span>],
                 ['02', <span>Copiar <code style={codeStyle}>config.json</code> descargado dentro de esa carpeta</span>],
-                ['03', <span>Subir <code style={codeStyle}>musica.mp3</code> a la misma carpeta</span>],
+                ['03', <span>Subir el archivo de música a <code style={codeStyle}>{fields.musica_src}</code></span>],
                 ['04', 'Commit + push → Vercel despliega automáticamente'],
                 ['05', <span>Invitación disponible en <code style={codeStyle}>/{fields.slug.trim()}</code></span>],
               ].map(([num, text]) => (
