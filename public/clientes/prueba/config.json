@@ -1,0 +1,29 @@
+{
+  "nombre": "Clara",
+  "titulo": "Mis XV",
+  "subtitulo": "hola vamos ",
+  "fecha_display": "15 Enero 2027",
+  "fecha_larga": "",
+  "dia_semana": "",
+  "anio": "",
+  "hora": "22:30 hs",
+  "contador": "2026-05-19T21:00:00",
+  "confirmacion_limite": "1 de Enero",
+  "lugar": {
+    "nombre": "Espacio XX",
+    "maps_url": ""
+  },
+  "dress_code": {
+    "descripcion": "Sport",
+    "aclaracion": "SIn medias"
+  },
+  "musica": {
+    "src": "/clientes/clara/musica.mp3",
+    "nombre": "La bamba"
+  },
+  "regalo": {
+    "alias": "clara.mp",
+    "cvu": "0000000000000000012"
+  },
+  "apps_script_url": ""
+}
