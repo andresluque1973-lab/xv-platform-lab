@@ -1,0 +1,29 @@
+{
+  "nombre": "Andres",
+  "titulo": "Mis XV",
+  "subtitulo": "veni a divertirte con camiseta de racing",
+  "fecha_display": "31 · Diciembre · 2026",
+  "fecha_larga": "",
+  "dia_semana": "",
+  "anio": "",
+  "hora": "23:15 hs",
+  "contador": "2026-12-31T23:15:00",
+  "confirmacion_limite": "1 de Diciembre",
+  "lugar": {
+    "nombre": "Cancha de Racing",
+    "maps_url": "https://maps.app.goo.gl/NyDE4vKXXR5BVQMe8"
+  },
+  "dress_code": {
+    "descripcion": "Sport Libre",
+    "aclaracion": "En ojotas y medias"
+  },
+  "musica": {
+    "src": "/clientes/andres/musica.mp3",
+    "nombre": "Taylor - Cruel"
+  },
+  "regalo": {
+    "alias": "andresluque.mp",
+    "cvu": "012345678901234567899"
+  },
+  "apps_script_url": ""
+}
