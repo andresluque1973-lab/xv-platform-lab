@@ -466,7 +466,7 @@ function ConfirmSection({ config }) {
               ¡Gracias, {guests[0].name}!
             </p>
             <p className="text-sm mt-3" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,255,255,0.6)"}}>
-              {guests[0].attending==="yes"?"Nos vemos el ${config.fecha_larga} 🎉":"Te vamos a extrañar en esta noche especial."}
+              {guests[0].attending==="yes"?`Nos vemos el ${config.fecha_larga} 🎉`:"Te vamos a extrañar en esta noche especial."}
             </p>
             <div className="mt-8 p-4 mx-auto max-w-xs" style={{background:"rgba(0,0,0,0.18)",border:"1px solid rgba(255,255,255,0.15)"}}>
               <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,255,255,0.5)"}}>Tu código de confirmación</p>
