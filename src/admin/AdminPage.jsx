@@ -144,8 +144,6 @@ export default function AdminPage() {
   const [contadorError, setContadorError] = useState(false);
   const [scriptWarn, setScriptWarn] = useState(false);
 
-  const prevSlugRef = useRef(fields.slug);
-
   // ── Autocompletado protegido de musica_src ───────────────────────────────
   // Inicializado con el slug inicial para evitar edge case en primer render.
   // En el primer render fields.slug es '' → prevSlugRef.current es ''
