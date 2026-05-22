@@ -7,6 +7,48 @@ function autoSrc(slug) {
   return `/clientes/${slug || '{slug}'}/musica.mp3`;
 }
 
+const ISO_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
+
+const DIAS  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+const MESES = [
+  'enero','febrero','marzo','abril',
+  'mayo','junio','julio','agosto',
+  'septiembre','octubre','noviembre','diciembre'
+];
+
+function derivarFechas(isoString) {
+  if (!isoString || typeof isoString !== 'string')
+    return null;
+
+  if (!ISO_REGEX.test(isoString.trim()))
+    return null;
+
+  const [fecha] = isoString.split('T');
+
+  const [anio, mes, dia] =
+    fecha.split('-').map(Number);
+
+  const d =
+    new Date(anio, mes - 1, dia);
+
+  return {
+    dia_semana: DIAS[d.getDay()],
+    fecha_larga: `${dia} de ${MESES[mes - 1]}`,
+    anio: String(anio),
+  };
+}
+
+function isMusicSrcValid(src) {
+  if (!src) return false;
+
+  const trimmed = src.trim();
+
+  return (
+    trimmed.startsWith('/') ||
+    trimmed.includes('://')
+  );
+}
 // ─────────────────────────────────────────────────────────────────────────────
 // buildConfig — mapeo explícito de fields → estructura JSON del cliente
 // Contrato: replica exactamente las claves que consume standard1.jsx
@@ -14,6 +56,8 @@ function autoSrc(slug) {
 function buildConfig(fields) {
   const { slug, nombre, subtitulo, fecha, hora, salon } = fields;
 
+  const fechas = derivarFechas(fields.contador);
+  
   return {
     // Identidad
     nombre:    nombre    || 'Nombre',
@@ -24,9 +68,9 @@ function buildConfig(fields) {
     // DEUDA TÉCNICA: automatizar derivación de fecha_larga / dia_semana / anio
     // desde el campo fecha (fuera de FASE 4)
     fecha_display: fecha || '',
-    fecha_larga:   '',
-    dia_semana:    '',
-    anio:          '',
+    fecha_larga: fechas?.fecha_larga ?? '',
+    dia_semana:  fechas?.dia_semana ?? '',
+    anio:        fechas?.anio ?? '',
     hora:          hora  || '',
 
     // Evento
@@ -98,6 +142,11 @@ export default function AdminPage() {
   const [stage,     setStage]     = useState('form'); // 'form' | 'preview'
   const [slugError, setSlugError] = useState(false);
 
+  const [contadorError, setContadorError] = useState(false);
+  const [scriptWarn, setScriptWarn] = useState(false);
+
+  const prevSlugRef = useRef(fields.slug);
+
   // ── Autocompletado protegido de musica_src ───────────────────────────────
   // Inicializado con el slug inicial para evitar edge case en primer render.
   // En el primer render fields.slug es '' → prevSlugRef.current es ''
@@ -127,15 +176,38 @@ export default function AdminPage() {
     if (key === 'slug') setSlugError(false);
   };
 
+
+
   const generar = () => {
     const slug = fields.slug.trim();
+  
     if (!slug)            { setSlugError(true); return; }
     if (slug === 'admin') { setSlugError(true); return; }
+  
+    if (fields.contador.trim()) {
+      const pasaRegex = ISO_REGEX.test(fields.contador.trim());
+      const pasaDate  = !isNaN(new Date(fields.contador.trim()).getTime());
+  
+      if (!pasaRegex || !pasaDate) {
+        setContadorError(true);
+        return;
+      }
+    }
+  
+    setContadorError(false);
+  
+    setScriptWarn(!fields.apps_script_url.trim());
+  
     const config = buildConfig({ ...fields, slug });
+  
     setJson(JSON.stringify(config, null, 2));
+  
     setStage('preview');
+  
     setTimeout(() => {
-      document.getElementById('vela-preview')?.scrollIntoView({ behavior: 'smooth' });
+      document
+        .getElementById('vela-preview')
+        ?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
   };
 
@@ -351,14 +423,40 @@ export default function AdminPage() {
           <div className="mb-7">
             <label style={labelStyle}>Contador (fecha ISO)</label>
             <input
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                borderBottomColor:
+                  contadorError
+                    ? '#c4848a'
+                    : 'rgba(185,166,142,0.5)',
+              }}
               value={fields.contador}
-              onChange={e => update('contador', e.target.value)}
+              onChange={e => {
+                update('contador', e.target.value);
+                setContadorError(false);
+              }}
               placeholder="2026-08-15T21:00:00"
             />
-            <p style={hintStyle}>Formato exacto: AAAA-MM-DDTHH:MM:SS — determina la cuenta regresiva.</p>
+          
+            {contadorError ? (
+              <p
+                style={{
+                  fontSize:11,
+                  color:'#c4848a',
+                  marginTop:4
+                }}
+              >
+                Formato inválido — usar exactamente:
+                AAAA-MM-DDTHH:MM:SS
+              </p>
+            ) : (
+              <p style={hintStyle}>
+                Formato exacto:
+                AAAA-MM-DDTHH:MM:SS — determina la cuenta regresiva.
+              </p>
+            )}
           </div>
-
+          
           <div className="mb-7">
             <label style={labelStyle}>Confirmar antes del</label>
             <input
@@ -418,16 +516,31 @@ export default function AdminPage() {
 
           <div className="mb-7">
             <label style={labelStyle}>Ruta del archivo</label>
+          
             <input
               style={inputMutedStyle}
               value={fields.musica_src}
               onChange={e => update('musica_src', e.target.value)}
             />
+          
             <p style={hintStyle}>
               Se actualiza automáticamente con el slug. Editable si el archivo tiene otro nombre.
             </p>
+          
+            {!isMusicSrcValid(fields.musica_src)
+              && fields.musica_src.trim() !== '' && (
+              <p
+                style={{
+                  fontSize:11,
+                  color:'#c4848a',
+                  marginTop:4
+                }}
+              >
+                La ruta no parece válida — debe comenzar con / o contener ://
+              </p>
+            )}
           </div>
-
+          
           <div className="mb-7">
             <label style={labelStyle}>Nombre de la canción</label>
             <input
@@ -475,15 +588,33 @@ export default function AdminPage() {
 
           <div className="mb-7">
             <label style={labelStyle}>Apps Script URL</label>
+          
             <input
               style={inputStyle}
               value={fields.apps_script_url}
-              onChange={e => update('apps_script_url', e.target.value)}
+              onChange={e => {
+                update('apps_script_url', e.target.value);
+                setScriptWarn(false);
+              }}
               placeholder="https://script.google.com/macros/s/..."
             />
+          
             <p style={hintWarnStyle}>
               Campo crítico. Sin esta URL las confirmaciones de asistencia no llegan a Google Sheets.
             </p>
+          
+            {scriptWarn && (
+              <p
+                style={{
+                  fontSize:11,
+                  color:'#c4848a',
+                  marginTop:6,
+                  fontWeight:500
+                }}
+              >
+                ⚠ Generaste sin Apps Script URL — las confirmaciones no funcionarán.
+              </p>
+            )}
           </div>
 
           {/* ── Botón generar ── */}
