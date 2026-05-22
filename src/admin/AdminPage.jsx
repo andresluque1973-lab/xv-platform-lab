@@ -37,7 +37,7 @@ function derivarFechas(isoString) {
     fecha_larga: `${dia} de ${MESES[mes - 1]}`,
     anio: String(anio),
   };
-
+}
 function isMusicSrcValid(src) {
   if (!src) return false;
 
