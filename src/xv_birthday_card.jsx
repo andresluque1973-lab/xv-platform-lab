@@ -1,4 +1,4 @@
-import Standard1 from './templates/standard1.jsx';
+import TemplateLoader from './templates/TemplateLoader.jsx';
 import AdminPage from './admin/AdminPage.jsx';
 
 function AppRouter() {
@@ -12,7 +12,7 @@ function AppRouter() {
     return <AdminPage />;
   }
 
-  return <Standard1 />;
+  return <TemplateLoader slug={slug} />;
 }
 
 export default AppRouter;
