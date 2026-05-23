@@ -58,8 +58,11 @@ function buildConfig(fields) {
   const fechas = derivarFechas(fields.contador);
   
   return {
-    // Identidad
-    nombre:    nombre    || 'Nombre',
+  // Producto
+  plan:     fields.plan     || 'STANDARD',
+  template: fields.template || 'S1',
+  // Identidad
+  nombre: nombre || 'Nombre',
     titulo:    'Mis XV',
     subtitulo: subtitulo || 'Quiero que seas parte de este momento',
 
@@ -112,8 +115,11 @@ function buildConfig(fields) {
 // ─────────────────────────────────────────────────────────────────────────────
 export default function AdminPage() {
   const [fields, setFields] = useState({
-    // Identificación
-    slug: '',
+  // Producto
+  plan:     'STANDARD',
+  template: 'S1',
+  // Identificación
+  slug: '',
     // Datos visibles
     nombre: '',
     subtitulo: '',
