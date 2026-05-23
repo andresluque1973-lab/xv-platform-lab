@@ -17,6 +17,11 @@ const MESES = [
   'septiembre','octubre','noviembre','diciembre'
 ];
 
+const PLANES = {
+  STANDARD: ['S1'],
+  PREMIUM: ['P1'],
+};
+
 function derivarFechas(isoString) {
   if (!isoString || typeof isoString !== 'string')
     return null;
@@ -179,7 +184,13 @@ export default function AdminPage() {
     if (key === 'slug') setSlugError(false);
   };
 
-
+  const updatePlan = (nuevoPlan) => {
+    setFields(prev => ({
+      ...prev,
+      plan:     nuevoPlan,
+      template: PLANES[nuevoPlan]?.[0] || 'S1',
+    }));
+  };
 
   const generar = () => {
     const slug = fields.slug.trim();
@@ -333,6 +344,95 @@ export default function AdminPage() {
 
           <div className="h-px mb-9" style={{ background: 'rgba(185,166,142,0.25)' }} />
 
+          {/* ══════════════════════════════════════════════════════════════ */}
+          {/* SECCIÓN: Producto VELA                                       */}
+          {/* ══════════════════════════════════════════════════════════════ */}
+          <p style={sectionTitle}>Producto VELA</p>
+          
+          <div className="mb-7">
+            <label style={labelStyle}>Plan</label>
+          
+            <div className="flex gap-4 mt-1">
+              {Object.keys(PLANES).map(plan => (
+                <button
+                  key={plan}
+                  type="button"
+                  onClick={() => updatePlan(plan)}
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: 11,
+                    letterSpacing: '0.3em',
+                    textTransform: 'uppercase',
+                    padding: '6px 18px',
+          
+                    border:
+                      fields.plan === plan
+                        ? '1px solid #1A1A1A'
+                        : '1px solid rgba(185,166,142,0.4)',
+          
+                    background:
+                      fields.plan === plan
+                        ? '#1A1A1A'
+                        : 'transparent',
+          
+                    color:
+                      fields.plan === plan
+                        ? '#F8F5EF'
+                        : '#8B7355',
+          
+                    cursor: 'pointer',
+                    transition: 'all .2s'
+                  }}
+                >
+                  {plan}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <div className="mb-7">
+            <label style={labelStyle}>Template</label>
+          
+            <div className="flex gap-4 mt-1">
+              {(PLANES[fields.plan] || []).map(tpl => (
+                <button
+                  key={tpl}
+                  type="button"
+                  onClick={() => update('template', tpl)}
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: 11,
+                    letterSpacing: '0.3em',
+                    textTransform: 'uppercase',
+                    padding: '6px 18px',
+          
+                    border:
+                      fields.template === tpl
+                        ? '1px solid #1A1A1A'
+                        : '1px solid rgba(185,166,142,0.4)',
+          
+                    background:
+                      fields.template === tpl
+                        ? '#1A1A1A'
+                        : 'transparent',
+          
+                    color:
+                      fields.template === tpl
+                        ? '#F8F5EF'
+                        : '#8B7355',
+          
+                    cursor: 'pointer',
+                    transition: 'all .2s'
+                  }}
+                >
+                  {tpl}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          {divider}
+          
           {/* ══════════════════════════════════════════════════════════════ */}
           {/* SECCIÓN: Identificación                                        */}
           {/* ══════════════════════════════════════════════════════════════ */}
