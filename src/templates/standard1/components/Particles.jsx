@@ -1,3 +1,4 @@
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Particles.jsx
 // Componente decorativo extraído de standard1.jsx — FASE 6, Paso 3
