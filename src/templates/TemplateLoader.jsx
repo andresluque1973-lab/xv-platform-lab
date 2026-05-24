@@ -1,5 +1,6 @@
 import { useConfig } from '../hooks/useConfig';
 import Standard1 from './standard1.jsx';
+import S2 from './S2.jsx';
 
 // ─────────────────────────────────────────────────────────────
 // templateMap
@@ -7,6 +8,7 @@ import Standard1 from './standard1.jsx';
 // ─────────────────────────────────────────────────────────────
 const templateMap = {
   S1: Standard1,
+   S2: S2,
 };
 
 // DEUDA-001:
