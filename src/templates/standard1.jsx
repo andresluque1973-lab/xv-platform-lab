@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useConfig } from "../hooks/useConfig";
+import {
+ generateCode,
+ getClientIP,
+ emptyGuest
+} from "./standard1/configHelpers";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ⚙️  CONFIG — cargado desde /clientes/sofia/config.json
@@ -7,23 +12,6 @@ import { useConfig } from "../hooks/useConfig";
 const ROSE       = "#c4848a";
 const ROSE_LIGHT = "#e8b4b8";
 const ROSE_DARK  = "#8b4f55";
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 🛠  HELPERS
-// ─────────────────────────────────────────────────────────────────────────────
-function generateCode() {
-  return "XV-SOFIA-" + Math.random().toString(36).slice(2,6).toUpperCase();
-}
-
-async function getClientIP() {
-  try {
-    const r = await fetch("https://api.ipify.org?format=json");
-    const d = await r.json();
-    return d.ip;
-  } catch { return "N/A"; }
-}
-
-const emptyGuest = () => ({ name:"", surname:"", attending:"yes", diet:"Ninguno", song:"" });
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ⏱  COUNTDOWN
