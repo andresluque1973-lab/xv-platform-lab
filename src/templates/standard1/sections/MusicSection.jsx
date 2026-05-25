@@ -4,7 +4,8 @@
 // NO modificar comportamiento. Solo reubicación.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ROSE_LIGHT = "#e8b4b8";
+import { THEME } from "../theme";
+const ROSE_LIGHT = THEME.ROSE_LIGHT;
 
 export default function MusicSection({ config, playing, onToggle }) {
   return (
