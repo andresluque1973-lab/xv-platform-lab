@@ -10,6 +10,8 @@ import Particles from "./standard1/components/Particles";
 import Shimmer from "./standard1/components/Shimmer";
 import GiftModal from "./standard1/components/GiftModal";
 import GuestBlock from "./standard1/components/GuestBlock";
+import MusicSection from "./standard1/sections/MusicSection";
+import Footer from "./standard1/sections/Footer";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ⚙️  CONFIG — cargado desde /clientes/sofia/config.json
@@ -132,25 +134,6 @@ function EventSection({ config }) {
 
         </div>
       </div>
-    </section>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 🎵  MUSIC
-// ─────────────────────────────────────────────────────────────────────────────
-function MusicSection({ config, playing, onToggle }) {
-  return (
-    <section className="py-20 px-4 text-center" style={{background:"#5a2830",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
-      <p className="text-xs tracking-[0.4em] uppercase mb-1" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,200,210,0.4)"}}>Música</p>
-      <p className="text-xs mb-6" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,200,210,0.28)",letterSpacing:"0.1em"}}>{config.musica.nombre}</p>
-      <button onClick={onToggle} className="w-14 h-14 rounded-full flex items-center justify-center mx-auto transition-all duration-300"
-        style={{border:`1px solid ${playing?ROSE_LIGHT:"rgba(255,200,210,0.35)"}`,background:playing?"rgba(196,132,138,0.2)":"transparent",cursor:"pointer"}}
-        onMouseEnter={e=>e.currentTarget.style.borderColor=ROSE_LIGHT}
-        onMouseLeave={e=>e.currentTarget.style.borderColor=playing?ROSE_LIGHT:"rgba(255,200,210,0.35)"}>
-        <span style={{color:ROSE_LIGHT,fontSize:"1.1rem"}}>{playing?"⏸":"▶"}</span>
-      </button>
-      <p className="text-xs mt-4 tracking-wider" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,200,210,0.3)"}}>{playing?"Reproduciendo...":"Activar música"}</p>
     </section>
   );
 }
@@ -344,18 +327,6 @@ function ConfirmSection({ config }) {
         )}
       </div>
     </section>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 🏁  FOOTER
-// ─────────────────────────────────────────────────────────────────────────────
-function Footer({ config }) {
-  return (
-    <footer className="py-16 text-center" style={{background:"#3d1820",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
-      <div className="mb-4" style={{fontFamily:"'Dancing Script',cursive,Georgia,serif",fontSize:"2rem",color:ROSE_LIGHT}}>{config.nombre}</div>
-      <p className="text-xs tracking-[0.4em] uppercase" style={{fontFamily:"'Cormorant Garamond',Georgia,serif",color:"rgba(255,200,210,0.3)"}}>{config.dia_semana} {config.fecha_display} · {config.hora}</p>
-    </footer>
   );
 }
 
