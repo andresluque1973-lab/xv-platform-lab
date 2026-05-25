@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Helper — genera el valor autogenerado esperado para musica_src
+// Helper — genera el valor autogenerado esperado para musica_src. 
 // ─────────────────────────────────────────────────────────────────────────────
 function autoSrc(slug) {
   return `/clientes/${slug || '{slug}'}/musica.mp3`;
@@ -112,6 +112,7 @@ function buildConfig(fields) {
     // DEUDA TÉCNICA: confirmación muestra success incluso cuando fetch falla
     // (catch silencioso en ConfirmSection — fuera de FASE 4)
     apps_script_url: fields.apps_script_url || '',
+    sheet_id:        fields.sheet_id        || '',
   };
 }
 
@@ -146,6 +147,7 @@ export default function AdminPage() {
     cvu:   '',
     // Servicio
     apps_script_url: '',
+    sheet_id: '',
   });
 
   const [json,      setJson]      = useState('');
@@ -688,7 +690,7 @@ export default function AdminPage() {
           {/* SECCIÓN: Servicio                                              */}
           {/* ══════════════════════════════════════════════════════════════ */}
           <p style={sectionTitle}>Servicio</p>
-
+          
           <div className="mb-7">
             <label style={labelStyle}>Apps Script URL</label>
           
@@ -718,6 +720,22 @@ export default function AdminPage() {
                 ⚠ Generaste sin Apps Script URL — las confirmaciones no funcionarán.
               </p>
             )}
+          </div>
+          
+          {/* NUEVO: Sheet ID */}
+          <div className="mb-7">
+            <label style={labelStyle}>Sheet ID</label>
+          
+            <input
+              style={inputStyle}
+              value={fields.sheet_id}
+              onChange={e => update('sheet_id', e.target.value)}
+              placeholder="ID de la hoja"
+            />
+          
+            <p style={hintStyle}>
+              ID de la hoja de Google Sheets vinculada.
+            </p>
           </div>
 
           {/* ── Botón generar ── */}
