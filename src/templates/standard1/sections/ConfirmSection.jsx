@@ -57,6 +57,8 @@ export default function ConfirmSection({ config }) {
     params.set("timestamp",  timestamp);
     params.set("ip",         ip);
     params.set("guestCount", String(guestCount));
+    
+    params.set("sheetId", config.sheet_id || "");
     guests.forEach((g, i) => {
       const n = i + 1;
       params.set(`g${n}_name`,      g.name.trim());
