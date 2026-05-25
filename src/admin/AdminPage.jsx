@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Helper — genera el valor autogenerado esperado para musica_src
+// Helper — genera el valor autogenerado esperado para musica_src. 
 // ─────────────────────────────────────────────────────────────────────────────
 function autoSrc(slug) {
   return `/clientes/${slug || '{slug}'}/musica.mp3`;
