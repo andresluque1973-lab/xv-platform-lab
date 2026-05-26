@@ -1,0 +1,47 @@
+{
+  "version": "1",
+  "clientes": [
+    {
+      "slug": "sofia",
+      "cliente_nombre": "Sofía",
+      "plan": null,
+      "template": null,
+      "fecha_evento": "2026-05-29",
+      "deploy_estado": "deployed",
+      "creado_en": "2026-01-01",
+      "deployed_en": "2026-01-01",
+      "vence_en": null,
+      "email_contacto": "",
+      "telefono_contacto": "",
+      "notas": "cliente fundacional"
+    },
+    {
+      "slug": "valentina",
+      "cliente_nombre": "Valentina",
+      "plan": null,
+      "template": null,
+      "fecha_evento": "2026-08-10",
+      "deploy_estado": "deployed",
+      "creado_en": "2026-01-01",
+      "deployed_en": "2026-01-01",
+      "vence_en": null,
+      "email_contacto": "",
+      "telefono_contacto": "",
+      "notas": "cliente fundacional"
+    },
+    {
+      "slug": "andres",
+      "cliente_nombre": "Andres",
+      "plan": null,
+      "template": null,
+      "fecha_evento": "2026-12-31",
+      "deploy_estado": "deployed",
+      "creado_en": "2026-01-01",
+      "deployed_en": "2026-01-01",
+      "vence_en": null,
+      "email_contacto": "",
+      "telefono_contacto": "",
+      "notas": "cliente fundacional"
+    }
+  ]
+}
