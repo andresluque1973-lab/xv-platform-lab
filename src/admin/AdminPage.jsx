@@ -1,4 +1,24 @@
 import { useState, useEffect, useRef } from 'react';
+import { catalogo } from '../../data/catalogo/templates.js';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PLANES — derivado desde catálogo
+// LEGACY_VISIBLE: templates que se muestran por compatibilidad temporal
+// aunque su estado sea "proximamente".
+// Se resuelve en fase posterior cuando P1 tenga implementación real.
+// ─────────────────────────────────────────────────────────────────────────────
+const LEGACY_VISIBLE = ['P1'];
+
+const PLANES = catalogo.templates.reduce((acc, t) => {
+  const visible =
+    t.estado === 'disponible' ||
+    LEGACY_VISIBLE.includes(t.codigo);
+  if (visible) {
+    if (!acc[t.plan]) acc[t.plan] = [];
+    acc[t.plan].push(t.codigo);
+  }
+  return acc;
+}, {});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helper — genera el valor autogenerado esperado para musica_src. 
@@ -16,11 +36,6 @@ const MESES = [
   'mayo','junio','julio','agosto',
   'septiembre','octubre','noviembre','diciembre'
 ];
-
-const PLANES = {
-  STANDARD: ['S1'],
-  PREMIUM: ['P1'],
-};
 
 function derivarFechas(isoString) {
   if (!isoString || typeof isoString !== 'string')
