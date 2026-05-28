@@ -1,15 +1,10 @@
 import { useConfig } from '../hooks/useConfig';
-import Standard1 from './standard1.jsx';
-import S2 from './S2.jsx';
+import { templateRegistry } from './templateRegistry';
 
-// ─────────────────────────────────────────────────────────────
-// templateMap
-// Agregar nuevos templates aquí únicamente.
-// ─────────────────────────────────────────────────────────────
-const templateMap = {
-  S1: Standard1,
-   S2: S2,
-};
+// ─────────────────────────────────────────────────────────────────────────────
+// templateRegistry
+// Agregar nuevos templates únicamente en templateRegistry.js.
+// ─────────────────────────────────────────────────────────────────────────────
 
 // DEUDA-001:
 // Doble useConfig aceptado para MVP.
@@ -44,8 +39,10 @@ export default function TemplateLoader({ slug }) {
 
   const template = config?.template;
 
+  const fallbackComponent = templateRegistry['S1']?.component;
+
   const Component =
-    templateMap[template] ?? Standard1;
+    templateRegistry[template]?.component || fallbackComponent;
 
   return <Component />;
 }
