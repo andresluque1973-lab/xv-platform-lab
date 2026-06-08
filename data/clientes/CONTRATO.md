@@ -85,7 +85,44 @@ El campo es informativo y operacional.
 
 ---
 
-## §5 Reglas de negocio
+## §5 — Transiciones de estado y ciclo de vida
+Las transiciones entre estados de deploy_estado no son validadas automáticamente por el sistema. Son operaciones manuales que deben seguir el siguiente protocolo:
+Transición draft → deployed
+Condiciones requeridas:
+
+La carpeta public/clientes/{slug}/ existe en el repositorio.
+El archivo config.json está presente y completo.
+El archivo de música está presente en la ruta declarada en config.json.
+El deploy en Vercel fue exitoso y la URL /{slug} es accesible públicamente.
+
+Al completar la transición:
+
+Actualizar deploy_estado a deployed.
+Registrar la fecha en deployed_en.
+Verificar que vence_en esté definido si el cliente tiene plan activo.
+
+Transición deployed → archived
+Condiciones requeridas:
+
+El cliente fue dado de baja operacionalmente o su período venció.
+La decisión de archivar fue tomada explícitamente por el operador.
+
+Al completar la transición:
+
+Actualizar deploy_estado a archived.
+La invitación puede seguir técnicamente accesible en Vercel pero no se considera activa.
+No eliminar el registro del archivo. Los registros archivados son histórico operativo permanente.
+
+Transición deployed → draft
+No permitida. Una invitación desplegada no puede volver a estado borrador. Si se requiere modificar un cliente desplegado, se opera directamente sobre sus archivos sin cambiar el estado a draft.
+Transición archived → deployed
+Permitida únicamente con justificación operativa explícita en el campo notas. Requiere verificar que la invitación sigue siendo técnicamente accesible antes de reactivar.
+Campo vence_en
+vence_en: null significa vencimiento no definido, no que el cliente no vence. Para clientes con plan activo, vence_en debe definirse al momento del deploy. La política de qué ocurre al vencer queda pendiente de definición en una fase posterior cuando exista un mecanismo operativo para aplicarla.
+
+---
+
+## §6 Reglas de negocio
 
 - `slug` es único dentro del registro. No puede repetirse entre clientes.
 - `slug: "admin"` está reservado por el router frontend y no puede asignarse a ningún cliente.
@@ -96,7 +133,21 @@ El campo es informativo y operacional.
 
 ---
 
-## §6 Relación con el catálogo de templates
+## §7 — El slug como identidad central del cliente
+El slug es la clave de identidad unificada del cliente a través de todas las capas del sistema. No es únicamente un identificador en el registro: es la clave que conecta tres artefactos independientes que deben mantenerse sincronizados manualmente.
+CapaArtefactoRol del slugRegistro internodata/clientes/index.jsonIdentificador del registro operativoConfiguración públicapublic/clientes/{slug}/config.jsonNombre de la carpeta del clienteRuntimeURL /{slug}Ruta pública de la invitación
+Estas tres capas no están conectadas por ningún mecanismo automático. Su consistencia depende de disciplina operativa. Si el slug en el registro no coincide con la carpeta en public/clientes/, la invitación no carga. Si la URL no coincide con la carpeta, el cliente no es accesible.
+Reglas derivadas de esta propiedad:
+
+El slug debe asignarse antes de crear cualquier otro artefacto del cliente.
+Una vez asignado y desplegado, el slug no puede modificarse sin intervención en las tres capas simultáneamente.
+El slug es la clave de referencia para cualquier operación de onboarding, actualización o archivo futuro.
+Ningún sistema automatizado futuro debe operar sobre un cliente sin validar primero que el slug existe y es consistente en las tres capas.
+
+---
+
+
+## §8 Relación con el catálogo de templates
 
 El campo `template` en este registro referencia códigos definidos en:
 
@@ -115,7 +166,7 @@ Consideraciones:
 
 ---
 
-## §7 Compatibilidad histórica — clientes fundacionales
+## §9 Compatibilidad histórica — clientes fundacionales
 
 Los siguientes clientes fueron creados antes de que el contrato SaaS estuviera formalizado:
 
@@ -133,7 +184,7 @@ serán siempre opcionales para clientes fundacionales.
 
 ---
 
-## §8 Campos no almacenados
+## §10 Campos no almacenados
 
 Los siguientes datos nunca deben agregarse a `index.json`:
 
@@ -147,7 +198,7 @@ Los siguientes datos nunca deben agregarse a `index.json`:
 
 ---
 
-## §9 Estrategia de versionado
+## §11 Estrategia de versionado
 
 El campo `version` en `index.json` se incrementa únicamente ante cambios que
 rompan compatibilidad con registros existentes.
@@ -169,7 +220,7 @@ Al incrementar versión:
 
 ---
 
-## §10 Historial de versiones del contrato
+## §12 Historial de versiones del contrato
 
 | Versión | Fecha   | Cambios                                              |
 |---------|---------|------------------------------------------------------|
