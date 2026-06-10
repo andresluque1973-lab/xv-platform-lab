@@ -1,5 +1,5 @@
 import TemplateLoader from './templates/TemplateLoader.jsx';
-import AdminPage from './admin/AdminPage.jsx';
+import AdminShell from './admin/AdminShell.jsx';
 
 function AppRouter() {
   const slug = window.location.pathname.split('/')[1] || '';
@@ -9,7 +9,7 @@ function AppRouter() {
   console.log('[AppRouter] slug===admin:', slug === 'admin');
 
   if (slug === 'admin') {
-    return <AdminPage />;
+    return <AdminShell />;
   }
 
   return <TemplateLoader slug={slug} />;
