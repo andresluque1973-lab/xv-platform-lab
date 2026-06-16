@@ -1,11 +1,3 @@
-VELA_DECISIONES_INMUTABLES.md
-
-No técnico.
-
-Una página.
-
-Algo así:
-
 VELA no compite por cantidad de templates.
 Las familias prevalecen sobre las implementaciones.
 S1 no define Emotiva.
