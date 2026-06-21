@@ -1,8 +1,9 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29179008/ESTADO_OFICIAL_PROYECTO.md)
 
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 2 · Fecha de corte: 2026-06
+Versión: 3 · Fecha de corte: 2026-06
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -27,7 +28,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Catálogo visual oficial**: `data/catalogo/VARIANTES.md` es fuente de verdad visual. Si una propuesta la contradice, VARIANTES.md prevalece.
 
-**Documentación complementaria registrada**: `/docs/FASE_12_2.md` (cierre formal de FASE 12.2, ver sección 4).
+**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`.
 
 **Protocolo**: Análisis→Riesgos→Alternativas→Recomendación→Cambio mínimo→Impacto→Esperando confirmación. No implementar sin aprobación. Diffs quirúrgicos. Preservar comentarios y deuda documentada. "Si algo funciona, no se toca."
 
@@ -51,7 +52,7 @@ Entregable: `data/catalogo/VARIANTES.md` v1, aprobado. Tres familias visuales:
 
 ## 3. FASE 12.1 — CERRADA Y VALIDADA (incluye FASE 12.0)
 
-**FASE 12.0**: criterios de validación aprobados para las tres familias (versión revisada final con todos los ajustes de auditabilidad). Señales obligatorias de identidad + señales de riesgo hacia cada otra familia + condiciones mínimas de pertenencia. **Regla de autoridad**: criterios de 12.0 prevalecen sobre reglas operativas posteriores.
+**FASE 12.0**: criterios de validación aprobados para las tres familias. Señales obligatorias de identidad + señales de riesgo hacia cada otra familia + condiciones mínimas de pertenencia. **Regla de autoridad**: criterios de 12.0 prevalecen sobre reglas operativas posteriores.
 
 **Regla de referencias 12.1**: toda referencia incluye criterios que demuestra / que NO demuestra / por qué pertenece y no a las otras dos / **Señales visuales extraídas** (activo permanente; la referencia es temporal).
 
@@ -74,32 +75,23 @@ Entregable: `data/catalogo/VARIANTES.md` v1, aprobado. Tres familias visuales:
 
 ## 4. FASE 12.2 — CERRADA Y VALIDADA
 
-**Entregable oficial**: `/docs/FASE_12_2.md`, documento de cierre formal generado y aprobado. Este documento de estado registra su contenido consolidado; en caso de divergencia editorial menor, `/docs/FASE_12_2.md` es la fuente de verdad textual de la fase.
+**Entregable oficial**: `/docs/FASE_12_2.md`. En caso de divergencia editorial menor, `/docs/FASE_12_2.md` es la fuente de verdad textual de la fase.
 
-### 4.1 Reglas transversales (aplicadas y validadas en las tres capas)
+### 4.1 Reglas transversales aplicadas
 
 1. **Regla de diferenciación obligatoria** (3 preguntas): por qué fortalece su familia + por qué no sería válida para cada una de las otras dos.
-2. **Hipótesis cromática compartida (verificada)**: las tres familias usan los 5 colores oficiales VELA (`#F8F5EF`, `#B9A68E`, `#8B7355`, `#1A1A1A`, `#E6D3A8`). Se diferencian por función/rol, no por contenido cromático. Extensión = excepción justificada; no fue necesaria durante FASE 12.2.
-3. **Filtro de modo**: Emotiva=Atmósfera / Con Carácter=Estructura / Elegante=Servicio. Aplica a color, tipografía y composición; pendiente de verificar en movimiento (FASE 12.3). **Se sostuvo sin excepciones en las tres capas cerradas.** Condición de permanencia vigente: reabrirse solo si aparece decisión correcta no describible mediante estos tres modos.
-4. **Separación Familia (roles invariantes) / Instanciación (manifestación concreta S1–S3/P1–P3)**: instanciación puede alterar dominancias o polaridad pero no eliminar roles de familia. Instanciaciones gobernadas por la regla de evolución de `VARIANTES.md` §6.2 — ninguna es definitiva.
-5. **Prueba de reemplazo**: si sustituir un elemento por una alternativa genérica equivalente NO cambia la identidad perceptiblemente → el elemento es instanciación, no rol obligatorio. Aplicada sistemáticamente en las tres capas; produjo las cinco reclasificaciones registradas en sección 6.
+2. **Hipótesis cromática compartida (verificada)**: las tres familias usan los 5 colores oficiales VELA (`#F8F5EF`, `#B9A68E`, `#8B7355`, `#1A1A1A`, `#E6D3A8`). Se diferencian por función/rol, no por contenido cromático.
+3. **Filtro de modo**: Emotiva=Atmósfera / Con Carácter=Estructura / Elegante=Servicio. Se sostuvo sin excepciones en las tres capas cerradas.
+4. **Separación Familia / Instanciación**: instanciación puede alterar dominancias o polaridad pero no eliminar roles de familia.
+5. **Prueba de reemplazo**: método de auditoría sistemático aplicado en las tres capas.
 
 ### 4.2 CAPA PALETA — CERRADA
 
 | Familia | Rol obligatorio (signature) | Roles complementarios |
 |---|---|---|
 | Emotiva | **Luz emocional** — tono cálido luminoso como foco emocional | Profundidad, Transición, Soporte |
-| Con Carácter | **Afirmación cromática** — decisión cromática en modo Estructura (borde duro / proporción inusual / posición asimétrica). Manifestaciones: bloque, tipografía, línea, proporción inusual | Campo, Tipografía con carácter, Soporte |
+| Con Carácter | **Afirmación cromática** — decisión cromática en modo Estructura (borde duro / proporción inusual / posición asimétrica) | Campo, Tipografía con carácter, Soporte |
 | Elegante | **Cohesión tonal** — todos los tonos en banda estrecha de temperatura/valor; ninguna transición percibida como oposición | Jerarquía, Acento (opcional) |
-
-**Instanciaciones de referencia (paleta oficial, sin extensión):**
-- Emotiva S1/P1 (polaridad oscura): Negro cálido=Profundidad (fondo+gradiente) / Mocha=Transición / Champagne=Luz emocional / Taupe=Soporte / Crema suave=texto alto contraste mínimo.
-- Con Carácter S2/P2: Crema suave=Campo / Negro cálido=Afirmación cromática (bloque sólido) / Negro cálido o Mocha=Tipografía con carácter / Taupe=Soporte.
-- Elegante S3/P3: Crema suave+Champagne=Cohesión tonal / Mocha=Jerarquía texto principal / Taupe=Jerarquía texto secundario / Negro cálido=Acento opcional mínimo.
-
-**Prueba operativa Con Carácter vs Elegante**: ¿hay elemento que se recorta contra el campo con borde duro? Sí → Con Carácter. No (todo cohesiona) → Elegante.
-
-**Hallazgo de capa**: los tres invariantes son relaciones: oposición tonal con foco (Emotiva) / oposición perceptible (Con Carácter) / ausencia de oposición (Elegante). Mutuamente excluyentes. Negro cálido cumple tres funciones distintas según familia (Profundidad en gradiente / bloque de borde duro / acento puntual mínimo) — misma sustancia, tres funciones excluyentes.
 
 ### 4.3 CAPA TIPOGRAFÍA — CERRADA
 
@@ -109,97 +101,106 @@ Entregable: `data/catalogo/VARIANTES.md` v1, aprobado. Tres familias visuales:
 | Con Carácter | **Tipografía con intención identitaria** — reemplazarla por genérica cambiaría perceptiblemente la identidad. | Voz/tipo de letra NO intercambiable; proporción sí |
 | Elegante | **Tipografía proporcional** — identidad en relaciones de escala/espaciado/ritmo. | Sistema de proporción NO intercambiable; voz sí |
 
-**Instanciaciones**: Emotiva S1/P1 — script/caligráfica para nombre (instanciación recomendada, no obligatoria) + serif clásica títulos + sans-serif cuerpo. Con Carácter S2/P2 — tracking amplio/rasgos distintivos en títulos. Elegante S3/P3 — Cormorant Garamond + jerarquía por tamaño/espaciado + interletrado generoso + sin contraste dramático de peso.
-
-**Hallazgo estructural (CRÍTICO)**: tres ejes de identidad tipográfica mutuamente excluyentes — ausencia (Emotiva) / voz (Con Carácter) / proporción (Elegante). Cada familia concentra su carga identitaria en un eje distinto. La evidencia que sostiene la ausencia de rol en Emotiva es interna al sistema: la referencia Maison Margiela (FASE 12.1) cumple Emoción Sofisticada con tipografía deliberadamente uniforme.
-
 ### 4.4 CAPA COMPOSICIÓN — CERRADA
 
 | Familia | Modo | Rol obligatorio compositivo |
 |---|---|---|
-| Emotiva | Atmósfera | **Continuidad atmosférica** — ausencia de divisiones duras, bordes marcados o puntos de tensión localizables en cualquier punto de la experiencia, incluyendo la entrada. Los elementos fluyen mediante transiciones graduales. |
-| Con Carácter | Estructura | **Quiebre compositivo localizable** — existe al menos un punto en la composición donde la disposición esperada (simetría, grilla, proporción convencional) se interrumpe de forma deliberada y señalable. |
-| Elegante | Servicio | **Espacio sin sobrante** — cada elemento, incluido el espacio vacío, cumple una función precisa y verificable. Ninguna área existe sin propósito. |
+| Emotiva | Atmósfera | **Continuidad atmosférica** — ausencia de divisiones duras, bordes marcados o puntos de tensión localizables en cualquier punto de la experiencia, incluyendo la entrada. |
+| Con Carácter | Estructura | **Quiebre compositivo localizable** — existe al menos un punto donde la disposición esperada se interrumpe de forma deliberada y señalable. |
+| Elegante | Servicio | **Espacio sin sobrante** — cada elemento, incluido el espacio vacío, cumple una función precisa y verificable. |
 
-**Aclaración aprobada sobre "Espacio sin sobrante" (Elegante)**: no implica minimizar el espacio vacío ni perseguir minimalismo. Puede existir espacio vacío abundante, siempre que esté al servicio de la jerarquía, la respiración o la lectura del contenido. La condición es funcional, no cuantitativa.
-
-**Instanciaciones de referencia**:
-- Emotiva (S1/P1): pantalla de cover con transición de entrada de peso propio + secciones con transiciones graduales (Cover.jsx actual) — instanciación fuerte, no única; scroll-reveal continuo sin cover también cumpliría.
-- Con Carácter (S2/P2): bloque de Afirmación cromática (negro cálido) en posición asimétrica, sirviendo simultáneamente como Afirmación cromática y como Quiebre compositivo localizable.
-- Elegante (S3/P3): jerarquía resuelta por tamaño y posición —no por color ni peso tipográfico—, espaciado vertical calculado según importancia relativa, sin elementos decorativos sin función.
-
-**Validación cruzada registrada**: Continuidad Atmosférica prohíbe lo que Quiebre Compositivo Localizable exige (y viceversa); Espacio sin Sobrante exige función verificable del vacío, incompatible con la vaguedad atmosférica deliberada de Emotiva y con el quiebre que se nota a sí mismo de Con Carácter.
-
-**Hallazgo de capa**: el rol de Emotiva generaliza el "umbral de entrada" de FASE 12.0 — el umbral discreto es un caso particular de un principio más amplio (ausencia de quiebres en cualquier punto), no el principio en sí. Los tres roles compositivos sostienen la misma exclusión mutua ya observada en paleta y tipografía.
-
-### 4.5 Hallazgos globales de FASE 12.2 (cierre de fase)
-
-1. Los invariantes de familia son relaciones funcionales, no contenidos concretos — confirmado en las tres capas.
-2. El mismo conjunto de recursos de marca (5 colores oficiales, tipografías ya declaradas) sirve a las tres familias; la diferenciación no requiere universos de recursos independientes.
-3. Las tres familias no distribuyen su carga identitaria de forma uniforme entre sistemas: Emotiva concentra identidad en paleta y composición, no en tipografía; Con Carácter y Elegante sí tienen rol tipográfico obligatorio. Esta distribución desigual es coherente con los tres modos y no es una inconsistencia.
-4. El sistema se autocorrige usando su propio historial como evidencia (caso Maison Margiela).
-5. El filtro de modo se sostuvo sin excepciones en las tres capas; no fue necesario revisarlo durante FASE 12.2.
+**Aclaración aprobada sobre "Espacio sin sobrante"**: no implica minimizar el espacio vacío. Puede existir espacio vacío abundante, siempre que esté al servicio de la jerarquía, la respiración o la lectura. La condición es funcional, no cuantitativa.
 
 ---
 
-## 5. PRINCIPIOS, MECANISMOS Y ROLES — TABLA MAESTRA CONSOLIDADA
+## 5. FASE 12.3 — CERRADA Y VALIDADA
 
-| Familia | Modo | Principio sintetizador | Mecanismo | Rol Paleta | Rol Tipografía | Rol Composición |
+**Entregable oficial**: `/docs/FASE_12_3.md`. Ver ese documento para pruebas completas y hallazgos estructurales.
+
+### 5.1 CAPA MOVIMIENTO — CERRADA
+
+| Familia | Modo | Rol obligatorio de Movimiento |
+|---|---|---|
+| Emotiva | Atmósfera | **Asentamiento emocional** — cada transición conserva un margen de permanencia perceptible que permite que el contenido precedente se registre emocionalmente antes de que comience el siguiente movimiento. |
+| Con Carácter | Estructura | **Postura en acto** — cuando existe movimiento en el punto del quiebre, la decisión se percibe como un acontecimiento localizable en el tiempo, no como un atributo ya dispuesto desde el principio. Intensidad, velocidad o fuerza son instanciación. |
+| Elegante | Servicio | **Movimiento al servicio** — cuando existe movimiento, su única función es hacer más legible o más precisa la jerarquía del contenido. No existe para ser percibido como movimiento. |
+
+### 5.2 Hallazgos estructurales de FASE 12.3
+
+- Gradualidad espacial y cadencia temporal son variables independientes. Los roles de composición no implican ni garantizan los roles de movimiento.
+- Los recursos temporales son compartibles entre familias; la identidad la determina la función, no la presencia del recurso. Extiende a la dimensión temporal el patrón ya registrado con Negro cálido en Paleta.
+- Tres funciones temporales mutuamente excluyentes: facilitar registro emocional (Emotiva) / convertir la decisión en acontecimiento (Con Carácter) / subordinarse al contenido (Elegante).
+- Quiebre Compositivo Localizable y Postura en Acto comparten estructura de localizabilidad, aplicada al espacio y al tiempo respectivamente.
+- Asimetría de presencia: Emotiva presupone movimiento (sin condicional); Con Carácter y Elegante no lo exigen (con condicional).
+
+### 5.3 Regla transversal emergente de FASE 12.3
+
+Ninguna validación de movimiento puede formularse en términos de duración, velocidad o tipo de curva. Estas son siempre instanciaciones. La validación verifica función, no atributos del recurso temporal.
+
+### 5.4 Capas diferidas — decisión de cierre
+
+Recursos visuales permitidos/prohibidos y reglas operativas de validación fueron diferidas por rendimiento decreciente, mediante criterio formal aprobado. FASE 12 queda cerrada como fase de descubrimiento y abierta únicamente a validación empírica a través de implementaciones futuras. Los casos límite que aparezcan durante la construcción de S2 se registran en `/docs/AUDITORIA_S2.md`.
+
+---
+
+## 6. PRINCIPIOS, MECANISMOS Y ROLES — TABLA MAESTRA CONSOLIDADA
+
+| Familia | Modo | Principio sintetizador | Rol Paleta | Rol Tipografía | Rol Composición | Rol Movimiento |
 |---|---|---|---|---|---|---|
-| Emotiva | Atmósfera | Emoción sofisticada | — (ver mecanismo en 3) | Luz emocional | Ninguno (restricción negativa) | Continuidad atmosférica |
-| Con Carácter | Estructura | Postura visible | — (ver mecanismo en 3) | Afirmación cromática | Tipografía con intención identitaria | Quiebre compositivo localizable |
-| Elegante | Servicio | Refinamiento inevitable | Servicio Absoluto | Cohesión tonal | Tipografía proporcional | Espacio sin sobrante |
+| Emotiva | Atmósfera | Emoción sofisticada | Luz emocional | Ninguno (restricción negativa) | Continuidad atmosférica | Asentamiento emocional |
+| Con Carácter | Estructura | Postura visible | Afirmación cromática | Tipografía con intención identitaria | Quiebre compositivo localizable | Postura en acto |
+| Elegante | Servicio | Refinamiento inevitable | Cohesión tonal | Tipografía proporcional | Espacio sin sobrante | Movimiento al servicio |
 
 ---
 
-## 6. DECISIONES DESCARTADAS (consolidado, incluye FASE 12.2 completa)
+## 7. DECISIONES DESCARTADAS (consolidado hasta FASE 12.3)
 
-- **Estructuras familiares**: Romántica/Moderna/Elegante (superposición + "Moderna" por negación); Emotiva/Contemporánea/Elegante ("Contemporánea" sin territorio propio).
-- **Nombres de principio**: "Identidad legible" (consecuencia compartida); "Inevitabilidad" sola; "Intención calculada"/"Precisión percibida" (cualidades generales); "Resolución perfecta" (no auditable); "Editorial" como descriptor de Emotiva.
-- **Reclasificaciones rol → instanciación vía prueba de reemplazo** (las cinco de FASE 12.2, todas con estatus de decisión oficial):
-  - "Bloque de postura" → "Afirmación cromática" (Con Carácter / Paleta).
-  - "Campo dominante" → "Cohesión tonal" (Elegante / Paleta).
-  - "Tipografía expresiva/caligráfica" → sin rol obligatorio, instanciación recomendada (Emotiva / Tipografía).
-  - "Serif clásica con espaciado generoso" → instanciación de "Tipografía proporcional" (Elegante / Tipografía).
-  - "Umbral de entrada con pantalla de cover" → instanciación de "Continuidad atmosférica" (Emotiva / Composición).
-- **Camino B** (extender paleta Emotiva con rosas/burdeos/terracota) → descartado en favor de Camino A (5 colores oficiales reconfigurados); habilitó la hipótesis de sistema cromático compartido.
+Ver secciones de decisiones descartadas en `/docs/FASE_12_2.md` (sección 7) y `/docs/FASE_12_3.md` (sección 7).
 
 ---
 
-## 7. QUÉ NO DEBE REABRIRSE
+## 8. QUÉ NO DEBE REABRIRSE
 
 - Sección 1 completa (FASE 1–10).
 - FASE 11 completa.
 - FASE 12.0 completa.
 - FASE 12.1 completa.
-- **FASE 12.2 completa** — Capa Paleta, Capa Tipografía y Capa Composición de las tres familias, incluida la aclaración funcional sobre "Espacio sin sobrante" y la hipótesis cromática compartida (ya verificada, no es hipótesis abierta).
+- FASE 12.2 completa — Capa Paleta, Capa Tipografía y Capa Composición.
+- **FASE 12.3 completa** — Capa Movimiento de las tres familias, hallazgos estructurales, regla transversal, decisión de diferir capas restantes.
 
-**Excepción explícita**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si, durante FASE 12.3, aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos. Fuera de esa condición, no debe reabrirse.
-
----
-
-## 8. QUÉ QUEDA PENDIENTE
-
-1. **Apertura de FASE 12.3 — Sistemas de Comportamiento**: sistema de movimiento, recursos visuales permitidos y prohibidos, reglas de validación operativas, para las tres familias.
-2. Decisión no abordada aún: si el resultado consolidado de FASE 12 actualiza `VARIANTES.md` directamente o si permanece distribuido en documentos de fase (`/docs/FASE_12_2.md`, futuro `/docs/FASE_12_3.md`) referenciados desde `VARIANTES.md`. A resolver al cierre completo de FASE 12.
-3. Fuera de alcance hasta nuevo aviso: construcción de S2, S3, P1, P2, P3; cualquier código, componente o refactor.
+**Excepción explícita única vigente**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si durante la construcción de implementaciones futuras aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos. No se activó durante FASE 12.3.
 
 ---
 
-## 9. PUNTO EXACTO DE CONTINUACIÓN
+## 9. QUÉ QUEDA PENDIENTE
 
-**Fase a abrir**: FASE 12.3 — Sistemas de Comportamiento.
+1. **FASE 13 — Construcción de S2 (Con Carácter)**: primera implementación real de la familia Con Carácter como variante STANDARD. Ver sección 10.
+2. Resolución de DEUDA-002 (duplicación S1/S2): condición ya registrada — se activa al tener dos templates activos, como consecuencia natural de FASE 13.
+3. Decisión diferida: si el resultado consolidado de FASE 12 actualiza `VARIANTES.md` directamente o permanece distribuido en documentos de fase referenciados. Se resuelve al cierre de FASE 13, cuando haya evidencia empírica de cómo los documentos sirven a la construcción real.
+4. Fuera de alcance hasta nuevo aviso: construcción de S3, P1, P2, P3; cualquier nueva capa teórica salvo contradicción empírica con roles cerrados.
 
-**Metodología a aplicar**: la misma consolidada en FASE 12.2 — candidato inicial, pregunta de validación, distinción rol obligatorio/instanciación vía prueba de reemplazo, validación cruzada, definición final. Orden: Emotiva → Con Carácter → Elegante.
+---
 
-**Punto de partida concreto para movimiento**: los roles de composición ya cierran el comportamiento esperado:
-- Continuidad Atmosférica (Emotiva) exige que el movimiento, si existe, no introduzca quiebres.
-- Quiebre Compositivo Localizable (Con Carácter) es compatible con movimiento que revele o enfatice ese quiebre.
-- Espacio sin Sobrante (Elegante) exige que el movimiento, si existe, tenga función verificable y no decorativa.
+## 10. PUNTO EXACTO DE CONTINUACIÓN
 
-**Pregunta activa a mantener durante FASE 12.3**: si el sistema de movimiento de cada familia es consecuencia directa de su rol obligatorio de composición, o si requiere rol obligatorio independiente — replicando el tipo de verificación que en tipografía reveló los tres ejes de identidad mutuamente excluyentes (sección 4.3).
+**Fase activa**: FASE 13 — Construcción de S2 (Con Carácter).
 
-**Pendiente adicional de FASE 12.3**: recursos visuales permitidos/prohibidos y reglas de validación operativas por familia, derivables de los roles ya cerrados en las tres capas de FASE 12.2.
+**Objetivo**: construir S2.jsx como primera implementación validada de la familia Con Carácter, usando los cuatro roles cerrados de FASE 12 como criterios de decisión.
+
+**Instrumento de auditoría**: `/docs/AUDITORIA_S2.md` — cuatro preguntas operativas (una por capa) que toda decisión de construcción de S2 debe responder antes de considerarse cerrada.
+
+**Metodología de construcción**:
+- Cada decisión de diseño o implementación se evalúa contra las cuatro preguntas de AUDITORIA_S2 antes de considerarse cerrada.
+- Un caso límite no resoluble por los roles existentes se registra en AUDITORIA_S2 y se resuelve en el momento en que aparece, sin bloquear la construcción.
+- Flujo técnico vigente: `feature/*` → Preview Deployment → PR → merge.
+- No se generan nuevos invariantes ni nuevas capas teóricas salvo que aparezcan contradicciones directas con roles ya cerrados.
+
+**Por qué S2 primero**:
+- Con Carácter tiene el vocabulario visual más distante de S1 (Emotiva), haciendo que cada decisión sea informativa para el sistema.
+- S2.jsx ya existe en el repositorio (no validada), reduciendo el riesgo de infraestructura.
+- Una implementación real de Con Carácter producirá los casos límite que las capas teóricas diferidas habrían intentado anticipar sin evidencia.
+
+**Restricción vigente**: VARIANTES.md no se actualiza hasta disponer de evidencia proveniente de una implementación real de Con Carácter.
 
 ---
 
