@@ -257,7 +257,7 @@ function Cover({ config, onEnter }) {
                 fontFamily:    "'Bebas Neue', sans-serif",
                 fontSize:      "clamp(0.65rem, 1.2vw, 0.75rem)",
                 letterSpacing: "0.4em",
-                background:    "transparent",
+                background:    C.crema,
                 border:        `1px solid ${C.negro}`,
                 color:         C.negro,
                 padding:       "0.85em 2.5em",
@@ -269,7 +269,7 @@ function Cover({ config, onEnter }) {
                 e.currentTarget.style.color      = C.crema;
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.background = C.crema;
                 e.currentTarget.style.color      = C.negro;
               }}
             >INGRESAR</button>
