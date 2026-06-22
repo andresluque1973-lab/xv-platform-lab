@@ -1,12 +1,22 @@
 import { useState, useEffect, useRef } from "react";
-import { useConfig } from "../hooks/useConfig";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// S2.jsx — Propuesta experimental S2.1
+// S2.jsx — S2.2
 // Familia: Con Carácter · Variante: STANDARD
-// FASE 13 — Instanciación de validación. No comprometida como definitiva.
+// FASE 13 — S2.2: bloque 55% (V-B aprobada sobre S2.1).
 //
-// Roles a demostrar (AUDITORIA_S2.md):
+// COMPATIBILIDAD DE PREVIEW
+// En producción: consume useConfig(slug) vía window.__VELA_CONFIG__ inyectado
+// por el TemplateLoader, o hace fetch directo si el hook está disponible.
+// En preview de Claude: usa MOCK_CONFIG definido abajo.
+//
+// Para usar en producción, reemplazar la línea:
+//   const { config } = useConfigCompat(slug);
+// por:
+//   const { config, error } = useConfig(slug);
+// y agregar el import correspondiente.
+//
+// Roles demostrados (AUDITORIA_S2.md):
 //   Paleta      → Afirmación cromática
 //   Tipografía  → Tipografía con intención identitaria (Bebas Neue)
 //   Composición → Quiebre compositivo localizable
@@ -30,6 +40,67 @@ const C = {
   taupe:     "#B9A68E",
   champagne: "#E6D3A8",
 };
+
+// ── Mock de datos para preview ────────────────────────────────────────────────
+// En producción este bloque no se ejecuta — el config viene de useConfig(slug).
+const MOCK_CONFIG = {
+  nombre:              "Valentina",
+  titulo:              "Mis XV",
+  subtitulo:           "Quiero que seas parte de este momento",
+  fecha_display:       "Sábado 15 · Agosto · 2026",
+  fecha_larga:         "15 de agosto",
+  dia_semana:          "Sábado",
+  anio:                "2026",
+  hora:                "21:00 hs",
+  contador:            "2026-08-15T21:00:00",
+  confirmacion_limite: "1 de agosto",
+  lugar: {
+    nombre:   "Espacio 1805",
+    maps_url: "#",
+  },
+  dress_code: {
+    descripcion: "Elegante",
+    aclaracion:  "Evitar zapatillas deportivas",
+  },
+  musica: {
+    src:    "/clientes/prueba/musica.mp3",
+    nombre: "Taylor Swift — Cruel Summer",
+  },
+  regalo: {
+    alias: "valentina.mp",
+    cvu:   "0000003100086337366028",
+  },
+  whatsapp_url: "https://wa.me/5491100000000?text=Confirmo%20mi%20asistencia",
+};
+
+// ── Compatibilidad producción / preview ───────────────────────────────────────
+// En producción: importar useConfig y reemplazar este hook por el real.
+// En preview: usa MOCK_CONFIG directamente.
+function useConfigCompat(slug) {
+  const [config, setConfig] = useState(null);
+  const [error,  setError]  = useState(null);
+
+  useEffect(() => {
+    // Si hay config inyectado por el entorno (producción vía TemplateLoader)
+    if (window.__VELA_CONFIG__) {
+      setConfig(window.__VELA_CONFIG__);
+      return;
+    }
+    // Intento de fetch real (producción normal)
+    fetch(`/clientes/${slug}/config.json`)
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(setConfig)
+      .catch(() => {
+        // Fallback a mock (preview de Claude u otros entornos sin servidor)
+        setConfig(MOCK_CONFIG);
+      });
+  }, [slug]);
+
+  return { config, error };
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // useCountdown
@@ -56,156 +127,135 @@ function useCountdown(targetDate) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Cover
-//
-// Composición: campo Crema dominante + bloque Negro cálido que llega como
-// acontecimiento (Postura en acto). El bloque entra después del texto,
-// no es fondo preexistente.
-//
-// Quiebre: el bloque Negro ocupa el lado izquierdo en proporción inusual
-// (~38% del ancho) rompiendo la simetría esperada de una pantalla de cover.
 // ─────────────────────────────────────────────────────────────────────────────
 function Cover({ config, onEnter }) {
   const [textVis,  setTextVis]  = useState(false);
   const [blockVis, setBlockVis] = useState(false);
 
   useEffect(() => {
-    // Texto aparece primero
     const t1 = setTimeout(() => setTextVis(true),  150);
-    // Bloque llega después — acontecimiento localizable en el tiempo
     const t2 = setTimeout(() => setBlockVis(true), 700);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
   return (
     <div
-      className="fixed inset-0 z-50 flex overflow-hidden"
-      style={{ background: C.crema }}
+      style={{
+        position:   "fixed",
+        inset:      0,
+        zIndex:     50,
+        display:    "flex",
+        overflow:   "hidden",
+        background: C.crema,
+      }}
     >
-      {/* ── Bloque Negro — Afirmación cromática + Quiebre compositivo ── */}
-      {/*    Llega como acontecimiento: Postura en acto                   */}
-      <div
-        style={{
-          position:   "absolute",
-          left:       0,
-          top:        0,
-          bottom:     0,
-          width:      "38%",
-          background: C.negro,
-          // Entra desde la izquierda como suceso, no como fondo
-          transform:  blockVis ? "translateX(0)"    : "translateX(-100%)",
-          transition: "transform 0.65s cubic-bezier(0.76, 0, 0.24, 1)",
-          zIndex:     1,
-        }}
-      />
+      {/* Bloque Negro — Afirmación cromática + Quiebre compositivo */}
+      {/* Llega como acontecimiento: Postura en acto               */}
+      <div style={{
+        position:   "absolute",
+        left:       0, top: 0, bottom: 0,
+        width:      "55%",
+        background: C.negro,
+        transform:  blockVis ? "translateX(0)" : "translateX(-100%)",
+        transition: "transform 0.65s cubic-bezier(0.76, 0, 0.24, 1)",
+        zIndex:     1,
+      }} />
 
-      {/* ── Contenido — sobre el campo Crema ── */}
-      <div
-        className="relative flex flex-col justify-between w-full h-full"
-        style={{ zIndex: 2, padding: "clamp(2rem, 5vw, 4rem)" }}
-      >
-        {/* Etiqueta superior izquierda — dentro del bloque Negro */}
-        <div
-          style={{
-            position:   "absolute",
-            left:       "clamp(1.5rem, 3vw, 3rem)",
-            top:        "clamp(2rem, 4vw, 3.5rem)",
-            opacity:    blockVis ? 1 : 0,
-            transition: "opacity 0.5s ease 1s",
-            zIndex:     3,
-          }}
-        >
+      {/* Contenido */}
+      <div style={{
+        position:      "relative",
+        zIndex:        2,
+        width:         "100%",
+        display:       "flex",
+        flexDirection: "column",
+        justifyContent:"space-between",
+        padding:       "clamp(2rem, 5vw, 4rem)",
+      }}>
+        {/* Etiqueta VELA — dentro del bloque Negro */}
+        <div style={{
+          position:   "absolute",
+          left:       "clamp(1.25rem, 2.5vw, 2rem)",
+          top:        "clamp(1.5rem, 3vw, 2.5rem)",
+          opacity:    blockVis ? 1 : 0,
+          transition: "opacity 0.5s ease 1s",
+          zIndex:     3,
+        }}>
           <p style={{
             fontFamily:    "'Bebas Neue', sans-serif",
-            fontSize:      "clamp(0.6rem, 1.2vw, 0.75rem)",
-            letterSpacing: "0.4em",
+            fontSize:      "clamp(0.55rem, 1vw, 0.65rem)",
+            letterSpacing: "0.45em",
             color:         C.taupe,
-          }}>
-            VELA
-          </p>
+          }}>VELA</p>
         </div>
 
-        {/* Contenido central */}
-        <div
-          className="flex flex-col justify-center"
-          style={{
-            flex:       1,
-            paddingLeft: "clamp(2rem, 5vw, 4rem)",
-            paddingTop:  "clamp(3rem, 8vw, 6rem)",
-          }}
-        >
-          {/* Línea de contexto — sobre campo Crema, lado derecho */}
-          <div
-            style={{
-              marginLeft:  "40%",
-              marginBottom: "clamp(1.5rem, 3vw, 2.5rem)",
-              opacity:     textVis ? 1 : 0,
-              transform:   textVis ? "translateY(0)" : "translateY(12px)",
-              transition:  "all 0.7s ease",
-            }}
-          >
+        {/* Cuerpo central */}
+        <div style={{
+          flex:          1,
+          display:       "flex",
+          flexDirection: "column",
+          justifyContent:"center",
+          paddingTop:    "clamp(3rem, 8vw, 6rem)",
+        }}>
+          {/* Etiqueta MIS XV — lado derecho */}
+          <div style={{
+            marginLeft:  "40%",
+            marginBottom:"clamp(1rem, 2vw, 1.5rem)",
+            opacity:     textVis ? 1 : 0,
+            transform:   textVis ? "translateY(0)" : "translateY(12px)",
+            transition:  "all 0.7s ease",
+          }}>
             <p style={{
               fontFamily:    "'Bebas Neue', sans-serif",
-              fontSize:      "clamp(0.65rem, 1.3vw, 0.8rem)",
+              fontSize:      "clamp(0.6rem, 1.1vw, 0.72rem)",
               letterSpacing: "0.45em",
               color:         C.taupe,
-            }}>
-              MIS XV
-            </p>
+            }}>MIS XV</p>
           </div>
 
-          {/* Nombre — cruza el quiebre: visible sobre ambas superficies */}
-          <div
-            style={{
-              opacity:    textVis ? 1 : 0,
-              transform:  textVis ? "translateY(0)" : "translateY(20px)",
-              transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s",
-            }}
-          >
-            <h1
-              style={{
-                fontFamily:    "'Bebas Neue', sans-serif",
-                fontSize:      "clamp(5rem, 18vw, 14rem)",
-                lineHeight:    0.88,
-                letterSpacing: "0.02em",
-                color:         C.crema,
-                // El nombre cruza desde el negro hacia el crema —
-                // el color se invierte visualmente en el límite del bloque.
-                // Logrado con mix-blend-mode: difference sobre el bloque.
-                mixBlendMode:  "difference",
-                userSelect:    "none",
-              }}
-            >
+          {/* Nombre — cruza el límite entre negro y crema */}
+          <div style={{
+            opacity:    textVis ? 1 : 0,
+            transform:  textVis ? "translateY(0)" : "translateY(20px)",
+            transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s",
+          }}>
+            <h1 style={{
+              fontFamily:    "'Bebas Neue', sans-serif",
+              fontSize:      "clamp(5rem, 18vw, 14rem)",
+              lineHeight:    0.88,
+              letterSpacing: "0.02em",
+              color:         C.crema,
+              mixBlendMode:  "difference",
+              userSelect:    "none",
+              margin:        0,
+            }}>
               {config.nombre}
             </h1>
           </div>
 
           {/* Frase + botón — lado derecho del campo Crema */}
-          <div
-            style={{
-              marginLeft:  "40%",
-              marginTop:   "clamp(2rem, 4vw, 3rem)",
-              opacity:     textVis ? 1 : 0,
-              transform:   textVis ? "translateY(0)" : "translateY(12px)",
-              transition:  "all 0.7s ease 0.25s",
-            }}
-          >
+          <div style={{
+            marginLeft: "40%",
+            marginTop:  "clamp(1.5rem, 3.5vw, 2.5rem)",
+            opacity:    textVis ? 1 : 0,
+            transform:  textVis ? "translateY(0)" : "translateY(12px)",
+            transition: "all 0.7s ease 0.25s",
+          }}>
             <p style={{
               fontFamily:    "'Cormorant Garamond', serif",
               fontSize:      "clamp(0.85rem, 1.6vw, 1rem)",
               fontWeight:    300,
               letterSpacing: "0.08em",
               color:         C.mocha,
-              marginBottom:  "clamp(2rem, 4vw, 3rem)",
+              marginBottom:  "clamp(1.5rem, 3vw, 2.25rem)",
               lineHeight:    1.6,
             }}>
               {config.subtitulo}
             </p>
-
             <button
               onClick={onEnter}
               style={{
                 fontFamily:    "'Bebas Neue', sans-serif",
-                fontSize:      "clamp(0.7rem, 1.3vw, 0.8rem)",
+                fontSize:      "clamp(0.65rem, 1.2vw, 0.75rem)",
                 letterSpacing: "0.4em",
                 background:    "transparent",
                 border:        `1px solid ${C.negro}`,
@@ -222,28 +272,22 @@ function Cover({ config, onEnter }) {
                 e.currentTarget.style.background = "transparent";
                 e.currentTarget.style.color      = C.negro;
               }}
-            >
-              INGRESAR
-            </button>
+            >INGRESAR</button>
           </div>
         </div>
 
         {/* Fecha — pie, lado derecho */}
-        <div
-          style={{
-            marginLeft:  "40%",
-            opacity:     textVis ? 1 : 0,
-            transition:  "opacity 0.6s ease 0.4s",
-          }}
-        >
+        <div style={{
+          marginLeft: "40%",
+          opacity:    textVis ? 1 : 0,
+          transition: "opacity 0.6s ease 0.4s",
+        }}>
           <p style={{
             fontFamily:    "'Bebas Neue', sans-serif",
-            fontSize:      "clamp(0.65rem, 1.2vw, 0.75rem)",
+            fontSize:      "clamp(0.6rem, 1.1vw, 0.7rem)",
             letterSpacing: "0.4em",
             color:         C.taupe,
-          }}>
-            {config.fecha_display}
-          </p>
+          }}>{config.fecha_display}</p>
         </div>
       </div>
     </div>
@@ -252,9 +296,6 @@ function Cover({ config, onEnter }) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HeroSection
-//
-// Campo Crema con bloque Negro asimétrico persistente.
-// Countdown sobre el campo claro.
 // ─────────────────────────────────────────────────────────────────────────────
 function HeroSection({ config }) {
   const [vis, setVis] = useState(false);
@@ -262,76 +303,70 @@ function HeroSection({ config }) {
   const cd = useCountdown(config.contador);
 
   return (
-    <section
-      className="relative overflow-hidden"
-      style={{
-        minHeight:  "100svh",
-        background: C.crema,
-        display:    "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* Bloque Negro — Afirmación cromática persistente */}
+    <section style={{
+      position:      "relative",
+      minHeight:     "100svh",
+      background:    C.crema,
+      display:       "flex",
+      flexDirection: "column",
+      overflow:      "hidden",
+    }}>
+      {/* Bloque Negro persistente */}
       <div style={{
         position:   "absolute",
-        left:       0,
-        top:        0,
-        bottom:     0,
-        width:      "38%",
+        left: 0, top: 0, bottom: 0,
+        width:      "55%",
         background: C.negro,
         zIndex:     1,
       }} />
 
-      {/* Línea separadora Champagne — jerarquía sin ornamento */}
+      {/* Línea Champagne — separador de jerarquía */}
       <div style={{
         position:   "absolute",
-        left:       "38%",
-        top:        0,
-        bottom:     0,
+        left:       "55%",
+        top: 0, bottom: 0,
         width:      "2px",
         background: C.champagne,
-        zIndex:     2,
         opacity:    0.6,
+        zIndex:     2,
       }} />
 
       {/* Contenido */}
-      <div
-        className="relative"
-        style={{
-          zIndex:  3,
-          flex:    1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          padding: "clamp(2rem, 5vw, 4rem)",
-          paddingTop: "clamp(3rem, 8vw, 5rem)",
-        }}
-      >
+      <div style={{
+        position:      "relative",
+        zIndex:        3,
+        flex:          1,
+        display:       "flex",
+        flexDirection: "column",
+        justifyContent:"space-between",
+        padding:       "clamp(2rem, 5vw, 4rem)",
+        paddingTop:    "clamp(3rem, 7vw, 5rem)",
+      }}>
         {/* Nombre sobre bloque Negro */}
         <div style={{
-          width:      "38%",
-          paddingRight: "clamp(1rem, 2vw, 1.5rem)",
+          width:      "55%",
+          paddingRight:"clamp(0.75rem, 1.5vw, 1.25rem)",
           opacity:    vis ? 1 : 0,
           transform:  vis ? "translateY(0)" : "translateY(20px)",
           transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
         }}>
           <h2 style={{
             fontFamily:    "'Bebas Neue', sans-serif",
-            fontSize:      "clamp(2.5rem, 7vw, 5.5rem)",
+            fontSize:      "clamp(2.2rem, 6vw, 5rem)",
             lineHeight:    0.9,
             letterSpacing: "0.02em",
             color:         C.crema,
             wordBreak:     "break-word",
-          }}>
-            {config.nombre}
-          </h2>
+            margin:        0,
+          }}>{config.nombre}</h2>
           <p style={{
             fontFamily:    "'Cormorant Garamond', serif",
-            fontSize:      "clamp(0.7rem, 1.3vw, 0.85rem)",
+            fontSize:      "clamp(0.65rem, 1.2vw, 0.8rem)",
             fontWeight:    300,
             color:         C.taupe,
             letterSpacing: "0.12em",
-            marginTop:     "1rem",
+            marginTop:     "0.85rem",
+            lineHeight:    1.7,
           }}>
             {config.dia_semana}<br />
             {config.fecha_larga}<br />
@@ -339,35 +374,31 @@ function HeroSection({ config }) {
           </p>
         </div>
 
-        {/* Countdown — lado derecho del campo Crema */}
-        <div
-          style={{
-            marginLeft:  "calc(38% + 2rem)",
-            opacity:     vis ? 1 : 0,
-            transform:   vis ? "translateY(0)" : "translateY(16px)",
-            transition:  "all 0.9s ease 0.2s",
-          }}
-        >
+        {/* Countdown — campo Crema */}
+        <div style={{
+          marginLeft: "calc(55% + clamp(1rem, 2vw, 2rem))",
+          opacity:    vis ? 1 : 0,
+          transform:  vis ? "translateY(0)" : "translateY(16px)",
+          transition: "all 0.9s ease 0.2s",
+        }}>
           <p style={{
             fontFamily:    "'Bebas Neue', sans-serif",
-            fontSize:      "clamp(0.6rem, 1.1vw, 0.7rem)",
+            fontSize:      "clamp(0.55rem, 1vw, 0.65rem)",
             letterSpacing: "0.45em",
             color:         C.taupe,
-            marginBottom:  "clamp(1rem, 2.5vw, 1.5rem)",
-          }}>
-            FALTAN
-          </p>
-          <div style={{ display: "flex", gap: "clamp(1rem, 3vw, 2rem)", alignItems: "baseline" }}>
+            marginBottom:  "clamp(0.75rem, 1.5vw, 1.25rem)",
+          }}>FALTAN</p>
+          <div style={{ display: "flex", gap: "clamp(0.75rem, 2vw, 2rem)", alignItems: "baseline" }}>
             {[
-              { val: cd.days,    label: "DÍAS"    },
-              { val: cd.hours,   label: "HORAS"   },
-              { val: cd.minutes, label: "MIN"      },
-              { val: cd.seconds, label: "SEG"      },
+              { val: cd.days,    label: "DÍAS"  },
+              { val: cd.hours,   label: "HORAS" },
+              { val: cd.minutes, label: "MIN"   },
+              { val: cd.seconds, label: "SEG"   },
             ].map(item => (
               <div key={item.label} style={{ textAlign: "center" }}>
                 <div style={{
                   fontFamily:    "'Bebas Neue', sans-serif",
-                  fontSize:      "clamp(2.5rem, 6vw, 4.5rem)",
+                  fontSize:      "clamp(2rem, 5.5vw, 4.5rem)",
                   lineHeight:    1,
                   color:         C.negro,
                   letterSpacing: "0.02em",
@@ -376,44 +407,38 @@ function HeroSection({ config }) {
                 </div>
                 <div style={{
                   fontFamily:    "'Bebas Neue', sans-serif",
-                  fontSize:      "clamp(0.5rem, 0.9vw, 0.6rem)",
+                  fontSize:      "clamp(0.45rem, 0.85vw, 0.6rem)",
                   letterSpacing: "0.4em",
                   color:         C.taupe,
-                  marginTop:     "0.25rem",
-                }}>
-                  {item.label}
-                </div>
+                  marginTop:     "0.2rem",
+                }}>{item.label}</div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Frase — pie derecho */}
-        <div
-          style={{
-            marginLeft:  "calc(38% + 2rem)",
-            opacity:     vis ? 1 : 0,
-            transition:  "opacity 0.8s ease 0.4s",
-          }}
-        >
+        {/* Frase — pie campo Crema */}
+        <div style={{
+          marginLeft: "calc(55% + clamp(1rem, 2vw, 2rem))",
+          opacity:    vis ? 1 : 0,
+          transition: "opacity 0.8s ease 0.4s",
+        }}>
           <div style={{
             width:        "2.5rem",
             height:       "1px",
             background:   C.mocha,
-            marginBottom: "1rem",
+            marginBottom: "0.85rem",
             opacity:      0.5,
           }} />
           <p style={{
             fontFamily:    "'Cormorant Garamond', serif",
-            fontSize:      "clamp(0.9rem, 1.7vw, 1.1rem)",
+            fontSize:      "clamp(0.85rem, 1.6vw, 1.05rem)",
             fontWeight:    300,
             color:         C.mocha,
             letterSpacing: "0.06em",
             lineHeight:    1.65,
             maxWidth:      "28rem",
-          }}>
-            {config.subtitulo}
-          </p>
+          }}>{config.subtitulo}</p>
         </div>
       </div>
     </section>
@@ -426,138 +451,121 @@ function HeroSection({ config }) {
 function EventSection({ config }) {
   return (
     <section style={{ background: C.crema, borderTop: `1px solid ${C.champagne}` }}>
-      {/* Banda Champagne superior — jerarquía de sección */}
+      {/* Header Negro — quiebre de sección */}
       <div style={{
         background: C.negro,
-        padding:    "clamp(1.5rem, 3vw, 2.5rem) clamp(2rem, 5vw, 4rem)",
+        padding:    "clamp(1.25rem, 2.5vw, 2rem) clamp(2rem, 5vw, 4rem)",
         display:    "flex",
         alignItems: "baseline",
-        gap:        "2rem",
+        gap:        "1.5rem",
       }}>
         <p style={{
           fontFamily:    "'Bebas Neue', sans-serif",
-          fontSize:      "clamp(1.8rem, 4vw, 2.8rem)",
+          fontSize:      "clamp(1.6rem, 3.5vw, 2.5rem)",
           letterSpacing: "0.05em",
           color:         C.crema,
           lineHeight:    1,
-        }}>
-          EL EVENTO
-        </p>
+          margin:        0,
+        }}>EL EVENTO</p>
         <div style={{ flex: 1, height: "1px", background: C.mocha, opacity: 0.4 }} />
       </div>
 
-      {/* Grid de información */}
-      <div style={{
-        display:             "grid",
-        gridTemplateColumns: "38% 1fr",
-      }}>
-        {/* Celda izquierda — sobre campo implícito Negro */}
+      {/* Grid 38/62 */}
+      <div style={{ display: "grid", gridTemplateColumns: "55% 1fr" }}>
+        {/* Celda izquierda — Negro */}
         <div style={{
-          background: C.negro,
-          padding:    "clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 2.5rem)",
+          background:  C.negro,
+          padding:     "clamp(1.75rem, 3.5vw, 3rem) clamp(1.25rem, 2.5vw, 2rem)",
           borderRight: `2px solid ${C.champagne}`,
         }}>
           <p style={{
             fontFamily:    "'Bebas Neue', sans-serif",
-            fontSize:      "clamp(0.55rem, 1vw, 0.65rem)",
+            fontSize:      "clamp(0.5rem, 0.9vw, 0.62rem)",
             letterSpacing: "0.45em",
             color:         C.taupe,
-            marginBottom:  "1.25rem",
-          }}>
-            CUÁNDO
-          </p>
+            marginBottom:  "0.85rem",
+          }}>CUÁNDO</p>
           <p style={{
             fontFamily:    "'Bebas Neue', sans-serif",
-            fontSize:      "clamp(1.6rem, 3.5vw, 2.5rem)",
+            fontSize:      "clamp(1.2rem, 2.8vw, 2rem)",
             lineHeight:    1,
             color:         C.crema,
             letterSpacing: "0.03em",
-            marginBottom:  "0.5rem",
-          }}>
-            {config.fecha_larga}
-          </p>
+            marginBottom:  "0.4rem",
+          }}>{config.fecha_larga?.toUpperCase()}</p>
           <p style={{
             fontFamily:    "'Cormorant Garamond', serif",
-            fontSize:      "clamp(0.8rem, 1.5vw, 0.95rem)",
+            fontSize:      "clamp(0.7rem, 1.3vw, 0.85rem)",
             fontWeight:    300,
             color:         C.taupe,
             letterSpacing: "0.1em",
-          }}>
-            {config.dia_semana} · {config.hora}
-          </p>
+          }}>{config.dia_semana} · {config.hora}</p>
         </div>
 
-        {/* Celda derecha — campo Crema */}
+        {/* Celda derecha — Crema */}
         <div style={{
-          padding: "clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 2.5rem)",
+          padding:    "clamp(1.75rem, 3.5vw, 3rem) clamp(1.25rem, 2.5vw, 2rem)",
+          background: C.crema,
         }}>
           <p style={{
             fontFamily:    "'Bebas Neue', sans-serif",
-            fontSize:      "clamp(0.55rem, 1vw, 0.65rem)",
+            fontSize:      "clamp(0.5rem, 0.9vw, 0.62rem)",
             letterSpacing: "0.45em",
             color:         C.taupe,
-            marginBottom:  "1.25rem",
-          }}>
-            DÓNDE
-          </p>
+            marginBottom:  "0.85rem",
+          }}>DÓNDE</p>
           <p style={{
             fontFamily:    "'Bebas Neue', sans-serif",
-            fontSize:      "clamp(1.4rem, 3vw, 2.2rem)",
+            fontSize:      "clamp(1.1rem, 2.2vw, 1.8rem)",
             lineHeight:    1.1,
             color:         C.negro,
             letterSpacing: "0.03em",
-            marginBottom:  "1rem",
-          }}>
-            {config.lugar?.nombre}
-          </p>
+            marginBottom:  "0.85rem",
+          }}>{config.lugar?.nombre}</p>
           <a
             href={config.lugar?.maps_url}
             target="_blank"
             rel="noopener noreferrer"
             style={{
               fontFamily:     "'Bebas Neue', sans-serif",
-              fontSize:       "clamp(0.6rem, 1.1vw, 0.7rem)",
+              fontSize:       "clamp(0.5rem, 0.9vw, 0.62rem)",
               letterSpacing:  "0.4em",
               color:          C.mocha,
               textDecoration: "none",
               borderBottom:   `1px solid ${C.mocha}`,
               paddingBottom:  "0.15em",
             }}
-          >
-            CÓMO LLEGAR
-          </a>
+          >CÓMO LLEGAR</a>
 
           {/* Dress code */}
-          <div style={{ marginTop: "clamp(1.5rem, 3vw, 2.5rem)", paddingTop: "clamp(1.5rem, 3vw, 2.5rem)", borderTop: `1px solid ${C.champagne}` }}>
+          <div style={{
+            marginTop:  "clamp(1.25rem, 2.5vw, 2rem)",
+            paddingTop: "clamp(1.25rem, 2.5vw, 2rem)",
+            borderTop:  `1px solid ${C.champagne}`,
+          }}>
             <p style={{
               fontFamily:    "'Bebas Neue', sans-serif",
-              fontSize:      "clamp(0.55rem, 1vw, 0.65rem)",
+              fontSize:      "clamp(0.5rem, 0.9vw, 0.62rem)",
               letterSpacing: "0.45em",
               color:         C.taupe,
-              marginBottom:  "0.75rem",
-            }}>
-              DRESS CODE
-            </p>
+              marginBottom:  "0.6rem",
+            }}>DRESS CODE</p>
             <p style={{
               fontFamily:    "'Bebas Neue', sans-serif",
-              fontSize:      "clamp(1.2rem, 2.5vw, 1.8rem)",
+              fontSize:      "clamp(1rem, 2vw, 1.6rem)",
               color:         C.negro,
               letterSpacing: "0.04em",
               lineHeight:    1,
-            }}>
-              {config.dress_code?.descripcion}
-            </p>
+            }}>{config.dress_code?.descripcion}</p>
             {config.dress_code?.aclaracion && (
               <p style={{
                 fontFamily:    "'Cormorant Garamond', serif",
-                fontSize:      "clamp(0.75rem, 1.3vw, 0.85rem)",
+                fontSize:      "clamp(0.7rem, 1.2vw, 0.82rem)",
                 fontWeight:    300,
                 color:         C.taupe,
                 letterSpacing: "0.08em",
-                marginTop:     "0.4rem",
-              }}>
-                {config.dress_code.aclaracion}
-              </p>
+                marginTop:     "0.35rem",
+              }}>{config.dress_code.aclaracion}</p>
             )}
           </div>
         </div>
@@ -573,50 +581,44 @@ function MusicSection({ config, playing, onToggle }) {
   return (
     <section style={{
       background:  C.negro,
-      padding:     "clamp(2.5rem, 5vw, 4rem) clamp(2rem, 5vw, 4rem)",
+      padding:     "clamp(2rem, 4vw, 3.5rem) clamp(2rem, 5vw, 4rem)",
       display:     "flex",
       alignItems:  "center",
-      gap:         "clamp(1.5rem, 3vw, 2.5rem)",
+      gap:         "clamp(1.25rem, 2.5vw, 2rem)",
       borderTop:   `1px solid rgba(230,211,168,0.2)`,
     }}>
       <button
         onClick={onToggle}
         style={{
-          width:        "3rem",
-          height:       "3rem",
-          border:       `1px solid ${playing ? C.champagne : C.mocha}`,
-          background:   "transparent",
-          color:        playing ? C.champagne : C.mocha,
-          cursor:       "pointer",
-          display:      "flex",
-          alignItems:   "center",
+          width:          "3rem",
+          height:         "3rem",
+          flexShrink:     0,
+          border:         `1px solid ${playing ? C.champagne : C.mocha}`,
+          background:     "transparent",
+          color:          playing ? C.champagne : C.mocha,
+          cursor:         "pointer",
+          display:        "flex",
+          alignItems:     "center",
           justifyContent: "center",
-          fontSize:     "0.9rem",
-          flexShrink:   0,
-          transition:   "border-color 0.2s, color 0.2s",
+          fontSize:       "0.95rem",
+          transition:     "border-color 0.2s, color 0.2s",
         }}
-      >
-        {playing ? "⏸" : "▶"}
-      </button>
+      >{playing ? "⏸" : "▶"}</button>
       <div>
         <p style={{
           fontFamily:    "'Bebas Neue', sans-serif",
-          fontSize:      "clamp(0.55rem, 1vw, 0.65rem)",
+          fontSize:      "clamp(0.5rem, 0.9vw, 0.62rem)",
           letterSpacing: "0.45em",
           color:         C.taupe,
-          marginBottom:  "0.35rem",
-        }}>
-          MÚSICA
-        </p>
+          marginBottom:  "0.3rem",
+        }}>MÚSICA</p>
         <p style={{
           fontFamily:    "'Cormorant Garamond', serif",
           fontSize:      "clamp(0.85rem, 1.5vw, 1rem)",
           fontWeight:    300,
           color:         C.crema,
           letterSpacing: "0.06em",
-        }}>
-          {config.musica?.nombre}
-        </p>
+        }}>{config.musica?.nombre}</p>
       </div>
     </section>
   );
@@ -627,15 +629,22 @@ function MusicSection({ config, playing, onToggle }) {
 // ─────────────────────────────────────────────────────────────────────────────
 function GiftsSection({ config }) {
   const [open, setOpen] = useState(false);
-
   if (!config.regalo?.alias && !config.regalo?.cvu) return null;
 
   return (
     <>
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ background: "rgba(26,26,26,0.88)", backdropFilter: "blur(4px)" }}
+          style={{
+            position:       "fixed",
+            inset:          0,
+            zIndex:         50,
+            display:        "flex",
+            alignItems:     "center",
+            justifyContent: "center",
+            background:     "rgba(26,26,26,0.88)",
+            backdropFilter: "blur(4px)",
+          }}
           onClick={() => setOpen(false)}
         >
           <div
@@ -658,7 +667,7 @@ function GiftsSection({ config }) {
                 border:     "none",
                 cursor:     "pointer",
                 color:      C.taupe,
-                fontSize:   "1.2rem",
+                fontSize:   "1.3rem",
                 lineHeight: 1,
               }}
             >×</button>
@@ -668,51 +677,41 @@ function GiftsSection({ config }) {
               letterSpacing: "0.08em",
               color:         C.negro,
               marginBottom:  "clamp(1.5rem, 3vw, 2rem)",
-            }}>
-              REGALOS
-            </p>
+            }}>REGALOS</p>
             {config.regalo.alias && (
               <div style={{ marginBottom: "1rem" }}>
                 <p style={{
                   fontFamily:    "'Bebas Neue', sans-serif",
-                  fontSize:      "0.6rem",
+                  fontSize:      "0.58rem",
                   letterSpacing: "0.45em",
                   color:         C.taupe,
                   marginBottom:  "0.4rem",
-                }}>
-                  ALIAS
-                </p>
+                }}>ALIAS</p>
                 <p style={{
                   fontFamily:    "'Cormorant Garamond', serif",
                   fontSize:      "1.1rem",
                   color:         C.negro,
                   letterSpacing: "0.08em",
                   userSelect:    "all",
-                }}>
-                  {config.regalo.alias}
-                </p>
+                }}>{config.regalo.alias}</p>
               </div>
             )}
             {config.regalo.cvu && (
               <div style={{ borderTop: `1px solid ${C.champagne}`, paddingTop: "1rem" }}>
                 <p style={{
                   fontFamily:    "'Bebas Neue', sans-serif",
-                  fontSize:      "0.6rem",
+                  fontSize:      "0.58rem",
                   letterSpacing: "0.45em",
                   color:         C.taupe,
                   marginBottom:  "0.4rem",
-                }}>
-                  CVU
-                </p>
+                }}>CVU</p>
                 <p style={{
                   fontFamily:    "'Cormorant Garamond', serif",
                   fontSize:      "0.85rem",
                   color:         C.mocha,
                   wordBreak:     "break-all",
                   userSelect:    "all",
-                }}>
-                  {config.regalo.cvu}
-                </p>
+                }}>{config.regalo.cvu}</p>
               </div>
             )}
           </div>
@@ -720,25 +719,23 @@ function GiftsSection({ config }) {
       )}
 
       <section style={{
-        background:  C.crema,
-        padding:     "clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem)",
-        borderTop:   `1px solid ${C.champagne}`,
-        display:     "flex",
-        alignItems:  "center",
+        background:     C.crema,
+        padding:        "clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem)",
+        borderTop:      `1px solid ${C.champagne}`,
+        display:        "flex",
+        alignItems:     "center",
         justifyContent: "space-between",
-        gap:         "2rem",
-        flexWrap:    "wrap",
+        gap:            "2rem",
+        flexWrap:       "wrap",
       }}>
         <div>
           <p style={{
             fontFamily:    "'Bebas Neue', sans-serif",
-            fontSize:      "clamp(0.55rem, 1vw, 0.65rem)",
+            fontSize:      "clamp(0.5rem, 0.9vw, 0.62rem)",
             letterSpacing: "0.45em",
             color:         C.taupe,
             marginBottom:  "0.75rem",
-          }}>
-            REGALOS
-          </p>
+          }}>REGALOS</p>
           <p style={{
             fontFamily:    "'Cormorant Garamond', serif",
             fontSize:      "clamp(0.9rem, 1.6vw, 1.05rem)",
@@ -747,15 +744,13 @@ function GiftsSection({ config }) {
             letterSpacing: "0.06em",
             lineHeight:    1.6,
             maxWidth:      "28rem",
-          }}>
-            Tu presencia es lo que más importa. Si querés hacerme un regalo, podés hacerlo por transferencia.
-          </p>
+          }}>Tu presencia es lo que más importa. Si querés hacerme un regalo, podés hacerlo por transferencia.</p>
         </div>
         <button
           onClick={() => setOpen(true)}
           style={{
             fontFamily:    "'Bebas Neue', sans-serif",
-            fontSize:      "clamp(0.65rem, 1.2vw, 0.75rem)",
+            fontSize:      "clamp(0.6rem, 1.1vw, 0.72rem)",
             letterSpacing: "0.4em",
             background:    C.negro,
             color:         C.crema,
@@ -767,17 +762,14 @@ function GiftsSection({ config }) {
           }}
           onMouseEnter={e => e.currentTarget.style.background = C.mocha}
           onMouseLeave={e => e.currentTarget.style.background = C.negro}
-        >
-          VER DATOS
-        </button>
+        >VER DATOS</button>
       </section>
     </>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ConfirmSection
-// Confirmación vía WhatsApp — contrato STANDARD
+// ConfirmSection — WhatsApp (contrato STANDARD)
 // ─────────────────────────────────────────────────────────────────────────────
 function ConfirmSection({ config }) {
   return (
@@ -785,27 +777,23 @@ function ConfirmSection({ config }) {
       background: C.negro,
       padding:    "clamp(4rem, 8vw, 7rem) clamp(2rem, 5vw, 4rem)",
     }}>
-      {/* Quiebre en la sección de confirmación: */}
-      {/* el bloque de acción rompe el eje central con alineación izquierda */}
       <div style={{ maxWidth: "36rem" }}>
         <p style={{
           fontFamily:    "'Bebas Neue', sans-serif",
-          fontSize:      "clamp(0.55rem, 1vw, 0.65rem)",
+          fontSize:      "clamp(0.5rem, 0.9vw, 0.62rem)",
           letterSpacing: "0.45em",
           color:         C.taupe,
-          marginBottom:  "clamp(1rem, 2vw, 1.5rem)",
-        }}>
-          CONFIRMÁ TU ASISTENCIA
-        </p>
+          marginBottom:  "clamp(0.75rem, 1.5vw, 1.25rem)",
+        }}>CONFIRMÁ TU ASISTENCIA</p>
         <h2 style={{
           fontFamily:    "'Bebas Neue', sans-serif",
-          fontSize:      "clamp(2.5rem, 6vw, 4.5rem)",
+          fontSize:      "clamp(2.2rem, 5.5vw, 4.5rem)",
           lineHeight:    0.95,
           letterSpacing: "0.02em",
           color:         C.crema,
-          marginBottom:  "clamp(1rem, 2.5vw, 1.75rem)",
+          marginBottom:  "clamp(0.75rem, 1.5vw, 1.25rem)",
         }}>
-          ANTES DEL<br />{config.confirmacion_limite}
+          ANTES DEL<br />{config.confirmacion_limite?.toUpperCase()}
         </h2>
         <p style={{
           fontFamily:    "'Cormorant Garamond', serif",
@@ -815,9 +803,7 @@ function ConfirmSection({ config }) {
           letterSpacing: "0.06em",
           lineHeight:    1.7,
           marginBottom:  "clamp(2rem, 4vw, 3rem)",
-        }}>
-          Necesito saber si vas a poder acompañarme en esta noche.
-        </p>
+        }}>Necesito saber si vas a poder acompañarme en esta noche.</p>
         <a
           href={config.whatsapp_url}
           target="_blank"
@@ -825,23 +811,17 @@ function ConfirmSection({ config }) {
           style={{
             display:        "inline-block",
             fontFamily:     "'Bebas Neue', sans-serif",
-            fontSize:       "clamp(0.65rem, 1.2vw, 0.75rem)",
+            fontSize:       "clamp(0.6rem, 1.1vw, 0.72rem)",
             letterSpacing:  "0.4em",
             background:     C.crema,
             color:          C.negro,
             padding:        "0.9em 2.5em",
             textDecoration: "none",
-            transition:     "background 0.2s, color 0.2s",
+            transition:     "background 0.2s",
           }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = C.champagne;
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = C.crema;
-          }}
-        >
-          CONFIRMAR POR WHATSAPP
-        </a>
+          onMouseEnter={e => e.currentTarget.style.background = C.champagne}
+          onMouseLeave={e => e.currentTarget.style.background = C.crema}
+        >CONFIRMAR POR WHATSAPP</a>
       </div>
     </section>
   );
@@ -853,32 +833,29 @@ function ConfirmSection({ config }) {
 function Footer({ config }) {
   return (
     <footer style={{
-      background:  C.crema,
-      borderTop:   `2px solid ${C.negro}`,
-      padding:     "clamp(2rem, 4vw, 3rem) clamp(2rem, 5vw, 4rem)",
-      display:     "flex",
-      alignItems:  "baseline",
+      background:     C.crema,
+      borderTop:      `2px solid ${C.negro}`,
+      padding:        "clamp(1.5rem, 3vw, 2.5rem) clamp(2rem, 5vw, 4rem)",
+      display:        "flex",
+      alignItems:     "baseline",
       justifyContent: "space-between",
-      gap:         "1rem",
-      flexWrap:    "wrap",
+      gap:            "1rem",
+      flexWrap:       "wrap",
     }}>
       <p style={{
         fontFamily:    "'Bebas Neue', sans-serif",
-        fontSize:      "clamp(1.5rem, 4vw, 2.5rem)",
+        fontSize:      "clamp(1.4rem, 3.5vw, 2.2rem)",
         letterSpacing: "0.05em",
         color:         C.negro,
         lineHeight:    1,
-      }}>
-        {config.nombre}
-      </p>
+        margin:        0,
+      }}>{config.nombre}</p>
       <p style={{
         fontFamily:    "'Bebas Neue', sans-serif",
-        fontSize:      "clamp(0.55rem, 1vw, 0.65rem)",
+        fontSize:      "clamp(0.5rem, 0.9vw, 0.62rem)",
         letterSpacing: "0.4em",
         color:         C.taupe,
-      }}>
-        {config.fecha_display} · {config.hora}
-      </p>
+      }}>{config.fecha_display} · {config.hora}</p>
     </footer>
   );
 }
@@ -887,8 +864,11 @@ function Footer({ config }) {
 // S2 — Root
 // ─────────────────────────────────────────────────────────────────────────────
 export default function S2() {
-  const slug   = window.location.pathname.split("/")[1] || "prueba";
-  const { config, error } = useConfig(slug);
+  const slug = typeof window !== "undefined"
+    ? window.location.pathname.split("/")[1] || "prueba"
+    : "prueba";
+
+  const { config } = useConfigCompat(slug);
 
   const [entered, setEntered] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -912,25 +892,7 @@ export default function S2() {
     else         { audio.play().catch(() => {}); setPlaying(true); }
   };
 
-  if (!config && !error) return null;
-
-  if (error) {
-    return (
-      <div style={{
-        display:        "flex",
-        alignItems:     "center",
-        justifyContent: "center",
-        minHeight:      "100vh",
-        background:     C.crema,
-        color:          C.mocha,
-        fontFamily:     "'Cormorant Garamond', serif",
-        textAlign:      "center",
-        padding:        "2rem",
-      }}>
-        <p>No se pudo cargar la invitación.</p>
-      </div>
-    );
-  }
+  if (!config) return null;
 
   return (
     <>
