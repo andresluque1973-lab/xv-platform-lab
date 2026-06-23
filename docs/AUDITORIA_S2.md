@@ -91,3 +91,22 @@ Un caso límite resuelto puede convertirse en instanciación de referencia adici
 - No genera nuevos invariantes.
 - No reemplaza ni resume los documentos de fase; los referencia.
 - No aplica a S3, P1, P2 ni P3 — cada implementación futura tendrá su propio instrumento equivalente si es necesario, o usará los roles directamente si no aparecen casos límite que lo justifiquen.
+
+- ## Cierre — S2.2 aprobada como referencia de Con Carácter
+
+Fecha: 2026-06
+Documento de cierre completo: `docs/AUDITORIA_S2_CIERRE.md`
+
+Resultado de auditoría sobre deploy real (branch `feature/s2-con-caracter`):
+
+| Capa | Veredicto |
+|---|---|
+| Paleta — Afirmación cromática | ✅ Aprobada |
+| Tipografía — Tipografía con intención identitaria | ✅ Aprobada |
+| Composición — Quiebre compositivo localizable | ✅ Aprobada |
+| Movimiento — Postura en acto | ✅ Aprobada |
+
+S2.2 queda como primera referencia operativa de la familia Con Carácter.
+Observaciones pendientes registradas en `docs/AUDITORIA_S2_CIERRE.md`.
+
+
