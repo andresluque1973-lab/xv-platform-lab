@@ -1,31 +1,31 @@
 {
   "plan": "STANDARD",
   "template": "S2",
-  "nombre": "Clara",
+  "nombre": "Valentina",
   "titulo": "Mis XV",
-  "subtitulo": "hola vamos ",
-  "fecha_display": "15 Enero 2027",
-  "fecha_larga": "",
-  "dia_semana": "",
-  "anio": "",
-  "hora": "22:30 hs",
-  "contador": "2027-01-15T21:00:00",
-  "confirmacion_limite": "1 de Enero",
+  "subtitulo": "Quiero que seas parte de este momento",
+  "fecha_display": "Sábado 15 · Agosto · 2026",
+  "fecha_larga": "15 de agosto",
+  "dia_semana": "Sábado",
+  "anio": "2026",
+  "hora": "21:00 hs",
+  "contador": "2026-08-15T21:00:00",
+  "confirmacion_limite": "1 de agosto",
   "lugar": {
-    "nombre": "Espacio XX",
-    "maps_url": ""
+    "nombre": "Espacio 1805",
+    "maps_url": "https://maps.google.com"
   },
   "dress_code": {
-    "descripcion": "Sport",
-    "aclaracion": "SIn medias"
+    "descripcion": "Elegante",
+    "aclaracion": "Evitar zapatillas deportivas"
   },
   "musica": {
-    "src": "/clientes/clara/musica.mp3",
-    "nombre": "La bamba"
+    "src": "/clientes/prueba/musica.mp3",
+    "nombre": "Taylor Swift — Cruel Summer"
   },
   "regalo": {
-    "alias": "clara.mp",
-    "cvu": "0000000000000000012"
+    "alias": "valentina.mp",
+    "cvu": "0000003100086337366028"
   },
-  "apps_script_url": ""
+  "whatsapp_url": "https://wa.me/5491100000000?text=Confirmo%20mi%20asistencia"
 }
