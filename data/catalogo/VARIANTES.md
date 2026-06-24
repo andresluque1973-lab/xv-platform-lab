@@ -298,7 +298,36 @@ contiene con tensión y Elegante contiene con equilibrio. Con Carácter tiene
 siempre un punto de tensión deliberado visible; Elegante no tiene tensión:
 tiene orden.
 
----
+### §4.13 Evidencia de implementación — S2.2
+
+Esta sección registra las instanciaciones verificadas en la primera
+implementación real de Con Carácter (S2.2, FASE 13). Constituye
+evidencia de referencia para implementaciones futuras de la familia.
+
+No reemplaza ni modifica la definición de la familia contenida en
+§4.1 a §4.12. La definición de familia prevalece sobre cualquier
+instanciación concreta.
+
+#### Instanciaciones verificadas en deploy real
+
+| Rol obligatorio      | Instanciación en S2.2 |
+| Afirmación cromática: Bloque sólido Negro cálido `#1A1A1A` al 55% izquierdo sobre campo Crema `#F8F5EF`. Borde recto sin gradiente. Posición asimétrica 
+persistente en todas las secciones.
+| Tipografía con intención identitaria: Bebas Neue en todos los niveles de etiqueta, título y acción. Cormorant Garamond en texto de cuerpo.
+| Quiebre compositivo localizable: División 55/45 como eje estructural persistente. Localizable en Cover, Hero y sección de Evento sin ambigüedad.
+| Postura en acto: Bloque entra desde izquierda con delay de 700ms respecto al texto. `translateX(-100%) → translateX(0)`, `0.65s cubic-bezier(0.76, 0, 0.24, 1)`. El texto aparece primero; el bloque llega como acontecimiento.
+
+#### Estado de la evidencia
+
+- Todas las instanciaciones fueron verificadas en auditoría sobre deploy real.
+- Las cuatro capas superaron la auditoría. Ver `docs/AUDITORIA_S2_CIERRE.md`.
+- Bebas Neue fue aprobada como instanciación de validación, no como
+  decisión permanente de familia. Su permanencia como tipografía de
+  referencia de Con Carácter queda sujeta a evidencia de uso real.
+- El bloque al 55% es una instanciación entre otras posibles de
+  Afirmación cromática. No congela la proporción como invariante.
+
+  ---
 
 ## §5 Familia Elegante
 
@@ -470,7 +499,7 @@ S1 es una implementación de esa familia en un momento dado.
 | Variante | Familia      | Estado de implementación         |
 |----------|--------------|----------------------------------|
 | S1       | Emotiva      | Implementada y validada          |
-| S2       | Con Carácter | Declarada, sin implementación    |
+| S2       | Con Carácter | Implementada y validada    |
 | S3       | Elegante     | Declarada, sin implementación    |
 | P1       | Emotiva      | Declarada, sin implementación    |
 | P2       | Con Carácter | Declarada, sin implementación    |
