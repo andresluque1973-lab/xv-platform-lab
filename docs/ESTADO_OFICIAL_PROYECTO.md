@@ -1,9 +1,8 @@
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29179008/ESTADO_OFICIAL_PROYECTO.md)
-
+[ESTADO_OFICIAL_PROYECTO (1).md](https://github.com/user-attachments/files/29315652/ESTADO_OFICIAL_PROYECTO.1.md)
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 3 · Fecha de corte: 2026-06
+Versión: 4 · Fecha de corte: 2026-06
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -14,7 +13,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Fases completadas 1–10**: setup, invitación funcional, RSVP, Admin MVP, hardening, templates, modularización standard1, soporte sheet_id, arquitectura SaaS inicial, templateRegistry + TemplateLoader, contratos Clientes y Catálogo, AdminShell + ClientesPage (FASE 9, validada en producción), PRODUCTOS.md (FASE 10).
 
-**Deudas técnicas activas diferidas**: DEUDA-001 (doble useConfig), DEUDA-002 (duplicación S1/S2).
+**Deudas técnicas activas diferidas**: DEUDA-001 (doble useConfig), DEUDA-002 (duplicación S1/S2 — condición de activación cumplida desde FASE 13, resolución pendiente como trabajo arquitectónico independiente).
 
 **Decisiones arquitectónicas oficiales vigentes**:
 - 8.3.A: slug como identidad central, inmutable una vez desplegado.
@@ -28,7 +27,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Catálogo visual oficial**: `data/catalogo/VARIANTES.md` es fuente de verdad visual. Si una propuesta la contradice, VARIANTES.md prevalece.
 
-**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`.
+**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/FASE_13.md`.
 
 **Protocolo**: Análisis→Riesgos→Alternativas→Recomendación→Cambio mínimo→Impacto→Esperando confirmación. No implementar sin aprobación. Diffs quirúrgicos. Preservar comentarios y deuda documentada. "Si algo funciona, no se toca."
 
@@ -46,7 +45,7 @@ Entregable: `data/catalogo/VARIANTES.md` v1, aprobado. Tres familias visuales:
 
 **Regla de evolución §6.2 (CRÍTICO)**: las familias prevalecen sobre las implementaciones históricas — incluyendo S1. S1 es una implementación de Emotiva en un momento dado, no su definición. VARIANTES.md §3 es la fuente de verdad visual de Emotiva. Ninguna variante es visualmente definitiva.
 
-**Estado de implementación registrado**: S1 = implementada y validada. S2, S3, P1, P2, P3 = declaradas, sin implementación.
+**Estado de implementación registrado**: S1 = implementada y validada. S2 = implementada y validada (FASE 13). S3, P1, P2, P3 = declaradas, sin implementación.
 
 ---
 
@@ -139,7 +138,7 @@ Ninguna validación de movimiento puede formularse en términos de duración, ve
 
 ### 5.4 Capas diferidas — decisión de cierre
 
-Recursos visuales permitidos/prohibidos y reglas operativas de validación fueron diferidas por rendimiento decreciente, mediante criterio formal aprobado. FASE 12 queda cerrada como fase de descubrimiento y abierta únicamente a validación empírica a través de implementaciones futuras. Los casos límite que aparezcan durante la construcción de S2 se registran en `/docs/AUDITORIA_S2.md`.
+Recursos visuales permitidos/prohibidos y reglas operativas de validación fueron diferidas por rendimiento decreciente, mediante criterio formal aprobado. FASE 12 queda cerrada como fase de descubrimiento y abierta únicamente a validación empírica a través de implementaciones futuras. Los casos límite que aparezcan durante la construcción de S2 se registrarán como deuda de sistema en `/docs/AUDITORIA_S2.md`.
 
 ---
 
@@ -153,9 +152,9 @@ Recursos visuales permitidos/prohibidos y reglas operativas de validación fuero
 
 ---
 
-## 7. DECISIONES DESCARTADAS (consolidado hasta FASE 12.3)
+## 7. DECISIONES DESCARTADAS (consolidado hasta FASE 13)
 
-Ver secciones de decisiones descartadas en `/docs/FASE_12_2.md` (sección 7) y `/docs/FASE_12_3.md` (sección 7).
+Ver secciones de decisiones descartadas en `/docs/FASE_12_2.md` (sección 7), `/docs/FASE_12_3.md` (sección 7) y `/docs/FASE_13.md` (sección 3).
 
 ---
 
@@ -166,41 +165,38 @@ Ver secciones de decisiones descartadas en `/docs/FASE_12_2.md` (sección 7) y `
 - FASE 12.0 completa.
 - FASE 12.1 completa.
 - FASE 12.2 completa — Capa Paleta, Capa Tipografía y Capa Composición.
-- **FASE 12.3 completa** — Capa Movimiento de las tres familias, hallazgos estructurales, regla transversal, decisión de diferir capas restantes.
+- FASE 12.3 completa — Capa Movimiento de las tres familias, hallazgos estructurales, regla transversal, decisión de diferir capas restantes.
+- FASE 13 completa — S2.2 como referencia operativa de Con Carácter, cuatro capas auditadas, evidencia registrada en VARIANTES.md §4.13.
 
-**Excepción explícita única vigente**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si durante la construcción de implementaciones futuras aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos. No se activó durante FASE 12.3.
+**Excepción explícita única vigente**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si durante la construcción de implementaciones futuras aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos. No se activó durante FASE 12.3 ni durante FASE 13.
 
 ---
 
 ## 9. QUÉ QUEDA PENDIENTE
 
-1. **FASE 13 — Construcción de S2 (Con Carácter)**: primera implementación real de la familia Con Carácter como variante STANDARD. Ver sección 10.
-2. Resolución de DEUDA-002 (duplicación S1/S2): condición ya registrada — se activa al tener dos templates activos, como consecuencia natural de FASE 13.
-3. Decisión diferida: si el resultado consolidado de FASE 12 actualiza `VARIANTES.md` directamente o permanece distribuido en documentos de fase referenciados. Se resuelve al cierre de FASE 13, cuando haya evidencia empírica de cómo los documentos sirven a la construcción real.
-4. Fuera de alcance hasta nuevo aviso: construcción de S3, P1, P2, P3; cualquier nueva capa teórica salvo contradicción empírica con roles cerrados.
+1. **FASE 13 — CERRADA**. S2.2 integrada a main como primera referencia operativa de Con Carácter. Ver `docs/FASE_13.md`.
+
+2. **Resolución de DEUDA-002** (duplicación S1/S2): condición de activación cumplida. Pendiente como trabajo arquitectónico independiente. No mezclar con inicio de S3 ni con trabajo de producto.
+
+3. **OBS-001, OBS-002, OBS-003** — Observaciones abiertas de S2.2. Se resuelven con evidencia de uso real, no con trabajo técnico anticipado. Ver `docs/AUDITORIA_S2_CIERRE.md`.
+
+4. Fuera de alcance hasta nuevo aviso: construcción de S3, P1, P2, P3; cualquier nueva capa teórica salvo contradicción empírica con roles cerrados de FASE 12.
 
 ---
 
 ## 10. PUNTO EXACTO DE CONTINUACIÓN
 
-**Fase activa**: FASE 13 — Construcción de S2 (Con Carácter).
+**FASE 13 cerrada.** Ver `docs/FASE_13.md` para historial completo.
 
-**Objetivo**: construir S2.jsx como primera implementación validada de la familia Con Carácter, usando los cuatro roles cerrados de FASE 12 como criterios de decisión.
+**Próximas decisiones abiertas** (en orden de prioridad a definir):
 
-**Instrumento de auditoría**: `/docs/AUDITORIA_S2.md` — cuatro preguntas operativas (una por capa) que toda decisión de construcción de S2 debe responder antes de considerarse cerrada.
+1. **DEUDA-002** — Resolución de duplicación lógica entre S1 y S2 mediante extracción a `src/templates/shared/`. Trabajo arquitectónico puro, sin impacto en producto visible.
 
-**Metodología de construcción**:
-- Cada decisión de diseño o implementación se evalúa contra las cuatro preguntas de AUDITORIA_S2 antes de considerarse cerrada.
-- Un caso límite no resoluble por los roles existentes se registra en AUDITORIA_S2 y se resuelve en el momento en que aparece, sin bloquear la construcción.
-- Flujo técnico vigente: `feature/*` → Preview Deployment → PR → merge.
-- No se generan nuevos invariantes ni nuevas capas teóricas salvo que aparezcan contradicciones directas con roles ya cerrados.
+2. **S3 (Elegante)** — Siguiente familia del catálogo. Requiere decisión de inicio de fase.
 
-**Por qué S2 primero**:
-- Con Carácter tiene el vocabulario visual más distante de S1 (Emotiva), haciendo que cada decisión sea informativa para el sistema.
-- S2.jsx ya existe en el repositorio (no validada), reduciendo el riesgo de infraestructura.
-- Una implementación real de Con Carácter producirá los casos límite que las capas teóricas diferidas habrían intentado anticipar sin evidencia.
+3. **OBS-001, OBS-002, OBS-003** — Observaciones abiertas de S2.2. Se resuelven con evidencia de uso real, no con trabajo técnico anticipado.
 
-**Restricción vigente**: VARIANTES.md no se actualiza hasta disponer de evidencia proveniente de una implementación real de Con Carácter.
+**Restricción vigente**: ninguna nueva capa teórica sin contradicción empírica con roles cerrados de FASE 12.
 
 ---
 
