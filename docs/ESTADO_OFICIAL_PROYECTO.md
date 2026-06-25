@@ -13,7 +13,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Fases completadas 1–10**: setup, invitación funcional, RSVP, Admin MVP, hardening, templates, modularización standard1, soporte sheet_id, arquitectura SaaS inicial, templateRegistry + TemplateLoader, contratos Clientes y Catálogo, AdminShell + ClientesPage (FASE 9, validada en producción), PRODUCTOS.md (FASE 10).
 
-**Deudas técnicas activas diferidas**: DEUDA-001 (doble useConfig), DEUDA-002 (duplicación S1/S2 — condición de activación cumplida desde FASE 13, resolución pendiente como trabajo arquitectónico independiente).
+**Deudas técnicas activas diferidas**: DEUDA-001 (doble useConfig),  (duplicación S1/S2 — condición de activación cumplida desde FASE 13, resolución pendiente como trabajo arquitectónico independiente).
 
 **Decisiones arquitectónicas oficiales vigentes**:
 - 8.3.A: slug como identidad central, inmutable una vez desplegado.
@@ -167,6 +167,8 @@ Ver secciones de decisiones descartadas en `/docs/FASE_12_2.md` (sección 7), `/
 - FASE 12.2 completa — Capa Paleta, Capa Tipografía y Capa Composición.
 - FASE 12.3 completa — Capa Movimiento de las tres familias, hallazgos estructurales, regla transversal, decisión de diferir capas restantes.
 - FASE 13 completa — S2.2 como referencia operativa de Con Carácter, cuatro capas auditadas, evidencia registrada en VARIANTES.md §4.13.
+- FASE 14 completa.
+
 
 **Excepción explícita única vigente**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si durante la construcción de implementaciones futuras aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos. No se activó durante FASE 12.3 ni durante FASE 13.
 
@@ -176,7 +178,7 @@ Ver secciones de decisiones descartadas en `/docs/FASE_12_2.md` (sección 7), `/
 
 1. **FASE 13 — CERRADA**. S2.2 integrada a main como primera referencia operativa de Con Carácter. Ver `docs/FASE_13.md`.
 
-2. **Resolución de DEUDA-002** (duplicación S1/S2): condición de activación cumplida. Pendiente como trabajo arquitectónico independiente. No mezclar con inicio de S3 ni con trabajo de producto.
+2. **Resolución de DEUDA-002** RESUELTA — FASE 14
 
 3. **OBS-001, OBS-002, OBS-003** — Observaciones abiertas de S2.2. Se resuelven con evidencia de uso real, no con trabajo técnico anticipado. Ver `docs/AUDITORIA_S2_CIERRE.md`.
 
@@ -190,11 +192,9 @@ Ver secciones de decisiones descartadas en `/docs/FASE_12_2.md` (sección 7), `/
 
 **Próximas decisiones abiertas** (en orden de prioridad a definir):
 
-1. **DEUDA-002** — Resolución de duplicación lógica entre S1 y S2 mediante extracción a `src/templates/shared/`. Trabajo arquitectónico puro, sin impacto en producto visible.
+1. **S3 (Elegante)** — Siguiente familia del catálogo. Requiere decisión de inicio de fase.
 
-2. **S3 (Elegante)** — Siguiente familia del catálogo. Requiere decisión de inicio de fase.
-
-3. **OBS-001, OBS-002, OBS-003** — Observaciones abiertas de S2.2. Se resuelven con evidencia de uso real, no con trabajo técnico anticipado.
+2. **OBS-001, OBS-002, OBS-003** — Observaciones abiertas de S2.2. Se resuelven con evidencia de uso real, no con trabajo técnico anticipado.
 
 **Restricción vigente**: ninguna nueva capa teórica sin contradicción empírica con roles cerrados de FASE 12.
 
