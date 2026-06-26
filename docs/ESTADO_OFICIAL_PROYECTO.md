@@ -167,37 +167,78 @@ Ver secciones de decisiones descartadas en `/docs/FASE_12_2.md` (sección 7), `/
 - FASE 12.2 completa — Capa Paleta, Capa Tipografía y Capa Composición.
 - FASE 12.3 completa — Capa Movimiento de las tres familias, hallazgos estructurales, regla transversal, decisión de diferir capas restantes.
 - FASE 13 completa — S2.2 como referencia operativa de Con Carácter, cuatro capas auditadas, evidencia registrada en VARIANTES.md §4.13.
-- FASE 14 completa.
+- FASE 14 completa — resolución de DEUDA-002, extracción de useCountdown a shared/hooks.js.
+- FASE 15 completa — S3.1 como referencia operativa de Elegante, cuatro capas auditadas, catálogo STANDARD validado.
 
-
-**Excepción explícita única vigente**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si durante la construcción de implementaciones futuras aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos. No se activó durante FASE 12.3 ni durante FASE 13.
-
----
-
-## 9. QUÉ QUEDA PENDIENTE
-
-1. **FASE 13 — CERRADA**. S2.2 integrada a main como primera referencia operativa de Con Carácter. Ver `docs/FASE_13.md`.
-
-2. **Resolución de DEUDA-002** RESUELTA — FASE 14
-
-3. **OBS-001, OBS-002, OBS-003** — Observaciones abiertas de S2.2. Se resuelven con evidencia de uso real, no con trabajo técnico anticipado. Ver `docs/AUDITORIA_S2_CIERRE.md`.
-
-4. Fuera de alcance hasta nuevo aviso: construcción de S3, P1, P2, P3; cualquier nueva capa teórica salvo contradicción empírica con roles cerrados de FASE 12.
+**Excepción explícita única vigente**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si durante la construcción de implementaciones futuras aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos.
 
 ---
 
-## 10. PUNTO EXACTO DE CONTINUACIÓN
+## 9. HALLAZGO ESTRUCTURAL — CATÁLOGO STANDARD COMPLETO
 
-**FASE 13 cerrada.** Ver `docs/FASE_13.md` para historial completo.
+Registrado al cierre de FASE 15. Los tres organizadores visuales del catálogo STANDARD:
 
-**Próximas decisiones abiertas** (en orden de prioridad a definir):
+| Template | Familia | Organizador visual |
+|---|---|---|
+| S1 | Emotiva | Atmósfera |
+| S2 | Con Carácter | Contraste |
+| S3 | Elegante | Espacio |
 
-1. **S3 (Elegante)** — Siguiente familia del catálogo. Requiere decisión de inicio de fase.
-
-2. **OBS-001, OBS-002, OBS-003** — Observaciones abiertas de S2.2. Se resuelven con evidencia de uso real, no con trabajo técnico anticipado.
-
-**Restricción vigente**: ninguna nueva capa teórica sin contradicción empírica con roles cerrados de FASE 12.
+Las tres familias conviven dentro del mismo contrato técnico y sistema operativo
+sin requerir evolución arquitectónica. Esto constituye la validación completa
+del catálogo STANDARD.
 
 ---
+
+## 10. OBSERVACIONES ABIERTAS (consolidado)
+
+**OBS-001** (S2.2) — Si S2.2 se lee como identidad propia vs. variante oscura de S1.
+Resoluble solo con exposición real de usuarios. Sin prioridad.
+
+**OBS-002** (S2.2) — Tratamientos alternativos para el bloque negro.
+Diferida hasta evidencia de uso real. Sin prioridad.
+
+**OBS-003** (S2.2) — Bebas Neue como validación de instanciación, no decisión permanente de familia.
+Sin prioridad.
+
+**OBS-S3-001** (S3.1) — EventSection usa Champagne como fondo de sección.
+Introduce color como separador secundario además del espacio.
+Dentro de Cohesión tonal. Evaluar con exposición real. Sin prioridad.
+
+---
+
+## 11. ESTADO DE IMPLEMENTACIÓN DEL CATÁLOGO
+
+| Variante | Familia | Estado |
+|---|---|---|
+| S1 | Emotiva | ✅ Implementada y validada en producción |
+| S2 | Con Carácter | ✅ Implementada y validada en producción |
+| S3 | Elegante | ✅ Implementada y validada en Preview Deployment |
+| P1 | Emotiva | ⬜ Declarada, sin implementación |
+| P2 | Con Carácter | ⬜ Declarada, sin implementación |
+| P3 | Elegante | ⬜ Declarada, sin implementación |
+
+---
+
+## 12. DEUDAS TÉCNICAS VIGENTES
+
+**DEUDA-001** — Double `useConfig` fetch entre TemplateLoader y templates.
+Harmless por browser cache. Diferida sin fecha.
+
+~~DEUDA-002~~ — Resuelta en FASE 14.
+
+---
+
+## 13. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 15 cerrada.** Ver `docs/Fase 15.md` para historial completo.
+
+**Próxima fase**: exploración del catálogo PREMIUM (P1, P2, P3).
+Requiere decisión de inicio de fase y definición de alcance.
+
+**Preguntas abiertas para apertura de FASE 16**:
+- ¿PREMIUM se diferencia de STANDARD por capacidades funcionales, por tratamiento visual, o por ambos?
+- ¿P1/P2/P3 comparten el organizador visual de su familia o pueden divergir?
+- ¿El primer candidato a implementar es P1 (Emotiva, familia con más base empírica) o se abre discusión?
 
 *Pegar íntegro al iniciar el nuevo chat, sin resúmenes adicionales.*
