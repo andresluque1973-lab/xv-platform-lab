@@ -1,6 +1,6 @@
 {
-  "plan": "STANDARD",
-  "template": "S3",
+  "plan": "PREMIUM",
+  "template": "P1",
   "nombre": "Valentina",
   "titulo": "Mis XV",
   "subtitulo": "Quiero que seas parte de este momento",
@@ -16,7 +16,7 @@
     "maps_url": "https://maps.google.com"
   },
   "dress_code": {
-    "descripcion": "Elegante",
+    "descripcion": "Formal",
     "aclaracion": "Evitar zapatillas deportivas"
   },
   "musica": {
@@ -27,5 +27,31 @@
     "alias": "valentina.mp",
     "cvu": "0000003100086337366028"
   },
-  "whatsapp_url": "https://wa.me/5491100000000?text=Confirmo%20mi%20asistencia"
+  "historia": {
+    "titulo": "Nuestra Valentina",
+    "cuerpo": "Hace quince años llegaste a iluminar cada rincón de nuestra familia.\n\nDesde el primer día supiste cómo llenar los espacios con tu risa, tu curiosidad y esa forma tan tuya de ver el mundo.\n\nHoy, al verte convertida en la joven increíble que sos, solo podemos estar agradecidos por cada momento compartido."
+  },
+  "timeline": [
+    { "fecha": "2009",     "texto": "Llegaste al mundo y todo cambió para siempre." },
+    { "fecha": "2013",     "texto": "Tus primeros pasos de danza — ya sabíamos que el escenario te pertenecía." },
+    { "fecha": "2017",     "texto": "Viaje a Bariloche con la familia. Nevó por primera vez." },
+    { "fecha": "2021",     "texto": "Comenzaste el secundario. Nuevos amigos, nuevas historias." },
+    { "fecha": "Este año", "texto": "Tus XV. El comienzo de la mejor etapa." }
+  ],
+  "fotos": [
+    "/clientes/prueba/foto1.jpg",
+    "/clientes/prueba/foto2.jpg",
+    "/clientes/prueba/foto3.jpg",
+    "/clientes/prueba/foto4.jpg"
+  ],
+  "itinerario": [
+    { "hora": "21:00", "descripcion": "Recepción de invitados" },
+    { "hora": "21:30", "descripcion": "Ingreso de la festejada" },
+    { "hora": "22:00", "descripcion": "Vals y baile de honor" },
+    { "hora": "22:30", "descripcion": "Cena" },
+    { "hora": "00:00", "descripcion": "Torta y brindis" },
+    { "hora": "00:30", "descripcion": "Pista de baile" }
+  ],
+  "apps_script_url": "https://script.google.com/macros/s/PLACEHOLDER/exec",
+  "sheet_id": "PLACEHOLDER_SHEET_ID"
 }
