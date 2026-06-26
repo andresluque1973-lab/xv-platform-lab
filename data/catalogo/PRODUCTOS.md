@@ -1,3 +1,4 @@
+[PRODUCTOS.md](https://github.com/user-attachments/files/29396844/PRODUCTOS.md)
 # PRODUCTOS — Catálogo Comercial VELA
 
 Versión del documento: **1**
@@ -194,9 +195,58 @@ un incumplimiento del contrato del producto.
 PREMIUM hereda el contrato de datos completo de STANDARD y lo extiende
 con los siguientes campos adicionales.
 
-La especificación detallada del contrato de datos de PREMIUM queda diferida
-a la fase en que se inicie su implementación. Los campos adicionales deben
-definirse entonces contra las secciones obligatorias de §4.3.
+### Campos obligatorios adicionales
+
+| Campo                      | Tipo          | Descripción                                                     |
+|----------------------------|---------------|-----------------------------------------------------------------|
+| `historia.titulo`          | string        | Encabezado de la sección Historia ampliada.                     |
+| `historia.cuerpo`          | string        | Texto narrativo. Párrafos separados por `\n`.                   |
+| `timeline`                 | array         | Colección ordenada de hitos cronológicos. El orden es significativo y debe preservarse. |
+| `timeline[].fecha`         | string        | Etiqueta temporal del hito (año, período o descripción temporal libre). |
+| `timeline[].texto`         | string        | Descripción del hito.                                           |
+| `fotos`                    | array[string] | URLs de imágenes del agasajado. El orden es significativo y debe preservarse. |
+| `itinerario`               | array         | Secuencia de momentos planificados para la fiesta. El orden es significativo y debe preservarse. |
+| `itinerario[].hora`        | string        | Hora del momento (ej: `"20:30"`).                               |
+| `itinerario[].descripcion` | string        | Descripción del momento.                                        |
+| `apps_script_url`          | string        | Endpoint de Google Apps Script para confirmaciones.             |
+| `sheet_id`                 | string        | ID de la hoja de Google Sheets destino.                         |
+
+### Campos opcionales adicionales
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| (ninguno en v1) | | |
+
+### Nota sobre el Listado de confirmados en tiempo real
+
+Esta capacidad no requiere campos adicionales en el config.
+Utiliza la misma infraestructura de `apps_script_url` y `sheet_id`
+del formulario de confirmación. El Apps Script debe exponer un
+endpoint de lectura además del de escritura. El intervalo de
+polling es responsabilidad del template (valor fijo en v1, no
+configurable). Su configurabilidad queda diferida a una fase posterior.
+
+### Schema del formulario de confirmación
+
+Campos que el invitado completa. Son responsabilidad del template
+(UI de captura) y del Apps Script (procesamiento y escritura en Sheets).
+No forman parte del `config.json` del cliente.
+
+| Campo                        | Requerido | Descripción                                          |
+|------------------------------|-----------|------------------------------------------------------|
+| `nombre`                     | sí        | Nombre del invitado.                                 |
+| `apellido`                   | sí        | Apellido del invitado.                               |
+| `asistencia`                 | sí        | Confirmación de asistencia (sí / no).                |
+| `restricciones_alimentarias` | no        | Restricciones o requerimientos alimentarios.         |
+| `observaciones`              | no        | Mensaje libre u observaciones adicionales.           |
+
+### Nota de evolución — campo fotos
+
+En v1, `fotos` es `array[string]` (URLs planas). Si en una fase posterior
+se aprueba la capacidad de captions por fotografía como capacidad de producto
+(§4.3), el campo puede evolucionar a `array[{url: string, caption?: string}]`.
+Esa evolución requiere actualización de este contrato, migración de configs
+existentes y decisión explícita de producto en §4.3.
 
 ---
 
@@ -281,3 +331,4 @@ para abordarla.
 | Versión | Fecha   | Cambios |
 |---------|---------|---------|
 | 1       | 2026-06 | Definición inicial. Productos STANDARD y PREMIUM. Modelo de variantes visuales. |
+| 2       | 2026-06 | FASE 16A: incorporación de §4.5 — Contrato de datos PREMIUM completo. |
