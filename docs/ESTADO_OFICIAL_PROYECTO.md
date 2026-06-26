@@ -1,8 +1,8 @@
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29315805/ESTADO_OFICIAL_PROYECTO.md)
+[ESTADO_OFICIAL_PROYECTO_v5.md](https://github.com/user-attachments/files/29386567/ESTADO_OFICIAL_PROYECTO_v5.md)
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 4 · Fecha de corte: 2026-06
+Versión: 5 · Fecha de corte: 2026-06
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -13,7 +13,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Fases completadas 1–10**: setup, invitación funcional, RSVP, Admin MVP, hardening, templates, modularización standard1, soporte sheet_id, arquitectura SaaS inicial, templateRegistry + TemplateLoader, contratos Clientes y Catálogo, AdminShell + ClientesPage (FASE 9, validada en producción), PRODUCTOS.md (FASE 10).
 
-**Deudas técnicas activas diferidas**: DEUDA-001 (doble useConfig),  (duplicación S1/S2 — condición de activación cumplida desde FASE 13, resolución pendiente como trabajo arquitectónico independiente).
+**Deudas técnicas activas diferidas**: DEUDA-001 (doble useConfig fetch entre TemplateLoader y templates — harmless por browser cache, diferida sin fecha).
 
 **Decisiones arquitectónicas oficiales vigentes**:
 - 8.3.A: slug como identidad central, inmutable una vez desplegado.
@@ -27,7 +27,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Catálogo visual oficial**: `data/catalogo/VARIANTES.md` es fuente de verdad visual. Si una propuesta la contradice, VARIANTES.md prevalece.
 
-**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/FASE_13.md`.
+**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`.
 
 **Protocolo**: Análisis→Riesgos→Alternativas→Recomendación→Cambio mínimo→Impacto→Esperando confirmación. No implementar sin aprobación. Diffs quirúrgicos. Preservar comentarios y deuda documentada. "Si algo funciona, no se toca."
 
@@ -45,7 +45,7 @@ Entregable: `data/catalogo/VARIANTES.md` v1, aprobado. Tres familias visuales:
 
 **Regla de evolución §6.2 (CRÍTICO)**: las familias prevalecen sobre las implementaciones históricas — incluyendo S1. S1 es una implementación de Emotiva en un momento dado, no su definición. VARIANTES.md §3 es la fuente de verdad visual de Emotiva. Ninguna variante es visualmente definitiva.
 
-**Estado de implementación registrado**: S1 = implementada y validada. S2 = implementada y validada (FASE 13). S3, P1, P2, P3 = declaradas, sin implementación.
+**Estado de implementación**: S1 = validada en producción. S2 = validada en producción. S3 = validada en Preview Deployment (FASE 15). P1, P2, P3 = declaradas, sin implementación.
 
 ---
 
@@ -127,7 +127,7 @@ Entregable: `data/catalogo/VARIANTES.md` v1, aprobado. Tres familias visuales:
 ### 5.2 Hallazgos estructurales de FASE 12.3
 
 - Gradualidad espacial y cadencia temporal son variables independientes. Los roles de composición no implican ni garantizan los roles de movimiento.
-- Los recursos temporales son compartibles entre familias; la identidad la determina la función, no la presencia del recurso. Extiende a la dimensión temporal el patrón ya registrado con Negro cálido en Paleta.
+- Los recursos temporales son compartibles entre familias; la identidad la determina la función, no la presencia del recurso.
 - Tres funciones temporales mutuamente excluyentes: facilitar registro emocional (Emotiva) / convertir la decisión en acontecimiento (Con Carácter) / subordinarse al contenido (Elegante).
 - Quiebre Compositivo Localizable y Postura en Acto comparten estructura de localizabilidad, aplicada al espacio y al tiempo respectivamente.
 - Asimetría de presencia: Emotiva presupone movimiento (sin condicional); Con Carácter y Elegante no lo exigen (con condicional).
@@ -135,10 +135,6 @@ Entregable: `data/catalogo/VARIANTES.md` v1, aprobado. Tres familias visuales:
 ### 5.3 Regla transversal emergente de FASE 12.3
 
 Ninguna validación de movimiento puede formularse en términos de duración, velocidad o tipo de curva. Estas son siempre instanciaciones. La validación verifica función, no atributos del recurso temporal.
-
-### 5.4 Capas diferidas — decisión de cierre
-
-Recursos visuales permitidos/prohibidos y reglas operativas de validación fueron diferidas por rendimiento decreciente, mediante criterio formal aprobado. FASE 12 queda cerrada como fase de descubrimiento y abierta únicamente a validación empírica a través de implementaciones futuras. Los casos límite que aparezcan durante la construcción de S2 se registrarán como deuda de sistema en `/docs/AUDITORIA_S2.md`.
 
 ---
 
@@ -152,31 +148,48 @@ Recursos visuales permitidos/prohibidos y reglas operativas de validación fuero
 
 ---
 
-## 7. DECISIONES DESCARTADAS (consolidado hasta FASE 13)
+## 7. DECISIONES DESCARTADAS
 
-Ver secciones de decisiones descartadas en `/docs/FASE_12_2.md` (sección 7), `/docs/FASE_12_3.md` (sección 7) y `/docs/FASE_13.md` (sección 3).
-
----
-
-## 8. QUÉ NO DEBE REABRIRSE
-
-- Sección 1 completa (FASE 1–10).
-- FASE 11 completa.
-- FASE 12.0 completa.
-- FASE 12.1 completa.
-- FASE 12.2 completa — Capa Paleta, Capa Tipografía y Capa Composición.
-- FASE 12.3 completa — Capa Movimiento de las tres familias, hallazgos estructurales, regla transversal, decisión de diferir capas restantes.
-- FASE 13 completa — S2.2 como referencia operativa de Con Carácter, cuatro capas auditadas, evidencia registrada en VARIANTES.md §4.13.
-- FASE 14 completa — resolución de DEUDA-002, extracción de useCountdown a shared/hooks.js.
-- FASE 15 completa — S3.1 como referencia operativa de Elegante, cuatro capas auditadas, catálogo STANDARD validado.
-
-**Excepción explícita única vigente**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si durante la construcción de implementaciones futuras aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos.
+Ver secciones de decisiones descartadas en `/docs/FASE_12_2.md` (sección 7), `/docs/FASE_12_3.md` (sección 7) y `/docs/Fase 13.md` (sección 3).
 
 ---
 
-## 9. HALLAZGO ESTRUCTURAL — CATÁLOGO STANDARD COMPLETO
+## 8. FASE 14 — CERRADA Y VALIDADA
 
-Registrado al cierre de FASE 15. Los tres organizadores visuales del catálogo STANDARD:
+**Objetivo**: resolución de DEUDA-002 (duplicación de `useCountdown` entre S1 y S2).
+
+**Cambios aplicados**:
+- `src/templates/shared/hooks.js` — creado, contiene `useCountdown` canónico.
+- `src/templates/standard1/hooks.js` — re-exporta desde shared, contrato externo intacto.
+- `src/templates/S2.jsx` — import desde shared, inline eliminado.
+
+**Decisiones**: solo `useCountdown` extraído. `useAudio`, `useEntered`, `useSlug` permanecen locales sin evidencia suficiente. `src/templates/shared/` establecido como espacio canónico para lógica compartida con consumidor real verificado.
+
+---
+
+## 9. FASE 15 — CERRADA Y VALIDADA
+
+**Objetivo**: construir S3.jsx como primera implementación de la familia Elegante.
+
+**Hipótesis validadas**:
+1. La arquitectura soporta una tercera familia visual sin evolución arquitectónica.
+2. La familia Elegante puede expresarse sin nuevas abstracciones.
+3. La diferenciación respecto a S1 y S2 es inmediata y estructural.
+
+**Auditoría visual — cuatro preguntas**:
+
+| Pregunta | Resultado |
+|---|---|
+| ¿S3 se percibe inmediatamente diferente de S1? | ✅ Sí — S1 tiene profundidad atmosférica; S3 es plana en crema sin atmósfera |
+| ¿S3 se percibe inmediatamente diferente de S2? | ✅ Sí — S2 tiene bloque negro estructural y tipografía de impacto; S3 no tiene negro estructural |
+| ¿La organización visual depende principalmente del espacio y no del color? | ✅ Sí (con OBS-S3-001 registrada) |
+| ¿La sensación dominante es refinamiento y no emoción ni afirmación? | ✅ Sí |
+
+**Changeset**:
+- `src/templates/S3.jsx` — creado, 444 líneas, autocontenido, patrón S2.
+- `src/templates/templateRegistry.js` — +1 entrada S3, diff mínimo.
+
+**Hallazgo estructural de cierre** — los tres organizadores del catálogo STANDARD:
 
 | Template | Familia | Organizador visual |
 |---|---|---|
@@ -184,48 +197,45 @@ Registrado al cierre de FASE 15. Los tres organizadores visuales del catálogo S
 | S2 | Con Carácter | Contraste |
 | S3 | Elegante | Espacio |
 
-Las tres familias conviven dentro del mismo contrato técnico y sistema operativo
-sin requerir evolución arquitectónica. Esto constituye la validación completa
-del catálogo STANDARD.
+Las tres familias STANDARD conviven dentro del mismo contrato técnico y sistema operativo sin requerir evolución arquitectónica. Esto constituye la **validación completa del catálogo STANDARD**.
 
 ---
 
-## 10. OBSERVACIONES ABIERTAS (consolidado)
+## 10. QUÉ NO DEBE REABRIRSE
+
+- Sección 1 completa (FASE 1–10).
+- FASE 11 completa.
+- FASE 12.0 completa.
+- FASE 12.1 completa.
+- FASE 12.2 completa — Capa Paleta, Capa Tipografía y Capa Composición.
+- FASE 12.3 completa — Capa Movimiento de las tres familias, hallazgos estructurales, regla transversal, decisión de diferir capas restantes.
+- FASE 13 completa — S2.2 como referencia operativa de Con Carácter.
+- FASE 14 completa — resolución DEUDA-002, extracción useCountdown a shared/hooks.js.
+- FASE 15 completa — S3.1 como referencia operativa de Elegante, catálogo STANDARD validado.
+
+**Excepción explícita única vigente**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si durante la construcción de implementaciones futuras aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos.
+
+---
+
+## 11. OBSERVACIONES ABIERTAS (sin prioridad — requieren exposición real)
 
 **OBS-001** (S2.2) — Si S2.2 se lee como identidad propia vs. variante oscura de S1.
-Resoluble solo con exposición real de usuarios. Sin prioridad.
-
 **OBS-002** (S2.2) — Tratamientos alternativos para el bloque negro.
-Diferida hasta evidencia de uso real. Sin prioridad.
-
 **OBS-003** (S2.2) — Bebas Neue como validación de instanciación, no decisión permanente de familia.
-Sin prioridad.
-
-**OBS-S3-001** (S3.1) — EventSection usa Champagne como fondo de sección.
-Introduce color como separador secundario además del espacio.
-Dentro de Cohesión tonal. Evaluar con exposición real. Sin prioridad.
+**OBS-S3-001** (S3.1) — EventSection usa Champagne como fondo de sección. Introduce color como separador secundario además del espacio. Dentro de Cohesión tonal. Evaluar con exposición real.
 
 ---
 
-## 11. ESTADO DE IMPLEMENTACIÓN DEL CATÁLOGO
+## 12. ESTADO DE IMPLEMENTACIÓN DEL CATÁLOGO
 
 | Variante | Familia | Estado |
 |---|---|---|
-| S1 | Emotiva | ✅ Implementada y validada en producción |
-| S2 | Con Carácter | ✅ Implementada y validada en producción |
-| S3 | Elegante | ✅ Implementada y validada en Preview Deployment |
+| S1 | Emotiva | ✅ Validada en producción |
+| S2 | Con Carácter | ✅ Validada en producción |
+| S3 | Elegante | ✅ Validada en Preview Deployment (FASE 15) |
 | P1 | Emotiva | ⬜ Declarada, sin implementación |
 | P2 | Con Carácter | ⬜ Declarada, sin implementación |
 | P3 | Elegante | ⬜ Declarada, sin implementación |
-
----
-
-## 12. DEUDAS TÉCNICAS VIGENTES
-
-**DEUDA-001** — Double `useConfig` fetch entre TemplateLoader y templates.
-Harmless por browser cache. Diferida sin fecha.
-
-~~DEUDA-002~~ — Resuelta en FASE 14.
 
 ---
 
@@ -233,12 +243,13 @@ Harmless por browser cache. Diferida sin fecha.
 
 **FASE 15 cerrada.** Ver `docs/Fase 15.md` para historial completo.
 
-**Próxima fase**: exploración del catálogo PREMIUM (P1, P2, P3).
-Requiere decisión de inicio de fase y definición de alcance.
+**Próxima fase**: FASE 16 — exploración del catálogo PREMIUM.
 
-**Preguntas abiertas para apertura de FASE 16**:
-- ¿PREMIUM se diferencia de STANDARD por capacidades funcionales, por tratamiento visual, o por ambos?
-- ¿P1/P2/P3 comparten el organizador visual de su familia o pueden divergir?
-- ¿El primer candidato a implementar es P1 (Emotiva, familia con más base empírica) o se abre discusión?
+**Preguntas abiertas para apertura de FASE 16** (ninguna tiene respuesta aprobada):
+1. ¿PREMIUM se diferencia de STANDARD por capacidades funcionales, por tratamiento visual, o por ambos?
+2. ¿P1/P2/P3 comparten el organizador visual de su familia (atmósfera/contraste/espacio) o pueden divergir en la instanciación?
+3. ¿El primer candidato a implementar es P1 (familia con más base empírica) o se abre discusión?
+
+---
 
 *Pegar íntegro al iniciar el nuevo chat, sin resúmenes adicionales.*
