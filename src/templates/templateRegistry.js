@@ -22,8 +22,10 @@ import Standard1 from './standard1.jsx';
 // NO reemplazar por ruta interna modularizada.
 
 import S2 from './S2.jsx';
-// DEUDA TÉCNICA: S2 existe como archivo pero no está validado en producción.
-// No marcar como disponible en catálogo hasta validación real.
+
+import S3 from './S3.jsx';
+// FASE 15 — primera implementación de la familia Elegante.
+// No marcar como disponible en catálogo hasta validación en Preview Deployment.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // templateRegistry
@@ -42,5 +44,10 @@ export const templateRegistry = {
     component:      S2,
     category:       'standard',
     implementation: 'S2',
+  },
+  S3: {
+    component:      S3,
+    category:       'standard',
+    implementation: 'S3',
   },
 };
