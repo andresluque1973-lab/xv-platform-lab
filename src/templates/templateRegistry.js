@@ -27,6 +27,10 @@ import S3 from './S3.jsx';
 // FASE 15 — primera implementación de la familia Elegante.
 // No marcar como disponible en catálogo hasta validación en Preview Deployment.
 
+import P1 from './P1.jsx';
+// FASE 16B — primera implementación del catálogo PREMIUM. Familia: Emotiva.
+// No marcar como disponible en catálogo hasta validación en Preview Deployment.
+
 // ─────────────────────────────────────────────────────────────────────────────
 // templateRegistry
 // Cada entrada:
@@ -49,5 +53,10 @@ export const templateRegistry = {
     component:      S3,
     category:       'standard',
     implementation: 'S3',
+  },
+  P1: {
+    component:      P1,
+    category:       'premium',
+    implementation: 'P1',
   },
 };
