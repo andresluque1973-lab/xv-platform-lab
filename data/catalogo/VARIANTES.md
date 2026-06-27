@@ -1,8 +1,9 @@
+[VARIANTES.md](https://github.com/user-attachments/files/29403234/VARIANTES.md)
 [VARIANTES.md](https://github.com/user-attachments/files/28905171/VARIANTES.md)
 # VARIANTES — Catálogo Visual VELA
 
-Versión del documento: **1**
-Estado: **Borrador — FASE 11**
+Versión del documento: **2**
+Estado: **Vigente — actualizado FASE 16**
 Ubicación: `data/catalogo/VARIANTES.md`
 
 ---
@@ -157,6 +158,47 @@ Emotiva busca que el receptor sienta algo en el momento de apertura; Elegante
 busca que el receptor recuerde la invitación después de cerrarla. Una
 invitación Emotiva sin efectos visuales pierde parte de su identidad. Una
 invitación Elegante sin efectos visuales la afirma.
+
+### §3.14 Evidencia de implementación — P1.1
+
+Esta sección registra las instanciaciones verificadas en la primera
+implementación PREMIUM de Emotiva (P1.1, FASE 16). Constituye
+evidencia de referencia para implementaciones futuras de la familia
+en el tier PREMIUM, y para la validación de la instanciación de
+Emotiva dentro de la paleta oficial VELA sin dependencia de la paleta
+histórica de S1.
+
+No reemplaza ni modifica la definición de la familia contenida en §3.
+La definición de familia prevalece sobre cualquier instanciación concreta.
+
+#### Decisión de instanciación aprobada
+
+P1 demuestra que Luz emocional y Continuidad atmosférica son alcanzables
+dentro de la paleta oficial VELA sin los rosas históricos de S1.
+El mecanismo es relacional, no cromático: un campo oscuro cálido del que
+emerge luz. La temperatura emocional la produce el contraste de valor,
+no la saturación del tono.
+
+Distinción estructural verificable respecto de S3 (misma paleta):
+- P1: campo oscuro cálido (Mocha profundo) con luz emergente (Champagne/Crema sobre oscuro).
+- S3: superficie clara dominante (Crema plana) con refinamiento tonal.
+
+#### Instanciaciones verificadas en Preview Deployment
+
+| Rol obligatorio | Instanciación en P1.1 |
+|---|---|
+| Luz emocional | Champagne `#E6D3A8` como foco lumínico sobre campo Mocha profundo `#3d2518`→`#1e100a`. Nombre del agasajado en Champagne con `textShadow` de calor radial. |
+| Continuidad atmosférica | Gradiente térmico descendente como superficie única de las 11 secciones. Sin divisores duros. Variación dentro del rango oscuro-cálido. Overlays de `radial-gradient` (warmOverlay) en Champagne y Mocha como fuente de calor. |
+| Asentamiento emocional | `translateY + opacity` con `cubic-bezier(0.16,1,0.3,1)`. Delays escalonados por ítem en Timeline (120ms por ítem). Permanencia perceptible antes del siguiente elemento. |
+| Restricción tipográfica | Cormorant Garamond + Inter. Ningún nivel opera en modo Estructura. Cormorant a `clamp(4rem, 18vw, 10rem)` produce impacto emocional sin caligrafía decorativa. |
+
+#### Estado de la evidencia
+
+- VALIDACION-P1-001: P1 se percibe claramente como categoría superior respecto de STANDARD sin romper la identidad VELA ni confundirse con S3. Criterio de diferenciación P1/S3 superado.
+- INCIDENCIA-P1-001 (resuelta): contraste insuficiente en jerarquía baja sobre fondos oscuros en mobile. Resuelto con 5 diffs quirúrgicos sobre elementos secundarios. Títulos y textos principales no afectados.
+- OBS-P1-001: ConfirmadosSection candidata a migrar a herramienta admin en fases futuras.
+- OBS-P1-002: schema RSVP simplificado de §4.5 pendiente de revisión con evidencia operativa.
+- OBS-P1-003: scroll largo en Historia ampliada en mobile, consecuencia natural del volumen narrativo PREMIUM.
 
 ---
 
@@ -458,6 +500,31 @@ Elegante enmarca. Ambas pueden ser visualmente contenidas, pero Con Carácter
 contiene con tensión y Elegante contiene con equilibrio. Son dos formas
 distintas de respeto hacia el receptor, no una más fría que la otra.
 
+### §5.13 Evidencia de implementación — S3.1
+
+Esta sección registra las instanciaciones verificadas en la primera
+implementación real de Elegante (S3.1, FASE 15). Constituye
+evidencia de referencia para implementaciones futuras de la familia.
+
+No reemplaza ni modifica la definición de la familia contenida en
+§5.1 a §5.12. La definición de familia prevalece sobre cualquier
+instanciación concreta.
+
+#### Instanciaciones verificadas en Preview Deployment
+
+| Rol obligatorio | Instanciación en S3.1 |
+|---|---|
+| Cohesión tonal | Crema `#F8F5EF` como superficie dominante. Taupe y Mocha en texto. Champagne como acento en EventSection. Sin contrastes cromáticos marcados entre secciones. |
+| Tipografía proporcional | Cormorant Garamond en titulares con escala decreciente precisa. Inter en cuerpo. La identidad emerge del sistema de proporciones, no de la voz de la fuente. |
+| Espacio sin sobrante | Secciones separadas por espacio vertical funcional. Sin elementos decorativos. Padding calibrado para servir a la jerarquía de contenido. |
+| Movimiento al servicio | `translateY + opacity` con duraciones cortas. El movimiento facilita la lectura del contenido; no es percibido como movimiento. |
+
+#### Estado de la evidencia
+
+- Auditoría visual de cuatro preguntas superada. Ver `docs/Fase 15.md`.
+- OBS-S3-001: EventSection usa Champagne como fondo de sección, introduciendo color como separador secundario además del espacio. Dentro de Cohesión tonal. Pendiente de evaluación con exposición real.
+- S3.1 establece el patrón arquitectónico de archivo único autocontenido adoptado también por P1.
+
 ---
 
 ## §6 Relación entre familias y variantes técnicas
@@ -496,14 +563,14 @@ S1 es una implementación de esa familia en un momento dado.
 
 ### §6.3 Estado actual de implementación
 
-| Variante | Familia      | Estado de implementación         |
-|----------|--------------|----------------------------------|
-| S1       | Emotiva      | Implementada y validada          |
-| S2       | Con Carácter | Implementada y validada    |
-| S3       | Elegante     | Declarada, sin implementación    |
-| P1       | Emotiva      | Declarada, sin implementación    |
-| P2       | Con Carácter | Declarada, sin implementación    |
-| P3       | Elegante     | Declarada, sin implementación    |
+| Variante | Familia      | Estado de implementación                        |
+|----------|--------------|-------------------------------------------------|
+| S1       | Emotiva      | Implementada y validada en producción           |
+| S2       | Con Carácter | Implementada y validada en producción           |
+| S3       | Elegante     | Implementada y validada en Preview (FASE 15)    |
+| P1       | Emotiva      | Implementada y validada en Preview (FASE 16)    |
+| P2       | Con Carácter | Declarada, sin implementación                   |
+| P3       | Elegante     | Declarada, sin implementación                   |
 
 El estado de implementación de cada variante se gobierna por las reglas
 definidas en `data/catalogo/CONTRATO.md` y `src/templates/templateRegistry.js`.
