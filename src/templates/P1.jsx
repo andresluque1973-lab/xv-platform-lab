@@ -527,7 +527,7 @@ function TimelineItem({ item, index }) {
       <div style={{ paddingBottom: "clamp(1.5rem, 3vw, 2.5rem)" }}>
         <p style={{
           fontFamily:    "'Cormorant Garamond', Georgia, serif",
-          fontSize:      "clamp(0.7rem, 1.1vw, 0.8rem)",
+          fontSize:      "clamp(0.75rem, 1.1vw, 0.8rem)",
           letterSpacing: "0.3em",
           color:         C.champagne,
           textTransform: "uppercase",
@@ -539,7 +539,7 @@ function TimelineItem({ item, index }) {
           fontWeight: 300,
           color:      C.crema,
           lineHeight: 1.6,
-          opacity:    0.85,
+          opacity:    1,
         }}>{item.texto}</p>
       </div>
     </div>
@@ -1033,9 +1033,9 @@ function ConfirmSection({ config }) {
 
   const labelStyle = {
     fontFamily:    "'Cormorant Garamond', Georgia, serif",
-    fontSize:      "clamp(0.55rem, 0.9vw, 0.65rem)",
+    fontSize:      "clamp(0.65rem, 0.9vw, 0.7rem)",
     letterSpacing: "0.3em",
-    color:         C.taupe,
+    color:         `${C.crema}BB`,
     textTransform: "uppercase",
     display:       "block",
     marginBottom:  "0.4rem",
@@ -1071,7 +1071,7 @@ function ConfirmSection({ config }) {
             <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(1.2rem, 2.2vw, 1.6rem)", fontWeight: 300, color: C.crema, marginBottom: "0.75rem" }}>
               ¡Gracias, {form.nombre}!
             </p>
-            <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(0.85rem, 1.3vw, 0.95rem)", color: C.taupe, lineHeight: 1.7 }}>
+            <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(0.85rem, 1.3vw, 0.95rem)", color: `${C.crema}99`, lineHeight: 1.7 }}>
               {form.asistencia === "si"
                 ? `Te esperamos el ${config.fecha_larga}. 🎉`
                 : "Te vamos a extrañar en esta noche especial."}
