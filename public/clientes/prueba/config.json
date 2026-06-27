@@ -39,10 +39,14 @@
     { "fecha": "Este año", "texto": "Tus XV. El comienzo de la mejor etapa." }
   ],
   "fotos": [
-    "/clientes/prueba/foto1.jpg",
-    "/clientes/prueba/foto2.jpg",
-    "/clientes/prueba/foto3.jpg",
-    "/clientes/prueba/foto4.jpg"
+    "https://picsum.photos/seed/val1/800/600",
+    "https://picsum.photos/seed/val2/600/800",
+    "https://picsum.photos/seed/val3/800/600",
+    "https://picsum.photos/seed/val4/600/600",
+    "https://picsum.photos/seed/val5/800/500",
+    "https://picsum.photos/seed/val6/600/800",
+    "https://picsum.photos/seed/val7/800/600",
+    "https://picsum.photos/seed/val8/600/600"
   ],
   "itinerario": [
     { "hora": "21:00", "descripcion": "Recepción de invitados" },
