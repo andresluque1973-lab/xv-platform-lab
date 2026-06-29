@@ -2,7 +2,7 @@
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 6 · Fecha de corte: 2026-06
+Versión: 7 · Fecha de corte: 2026-06
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -27,7 +27,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Catálogo visual oficial**: `data/catalogo/VARIANTES.md` es fuente de verdad visual. Si una propuesta la contradice, VARIANTES.md prevalece.
 
-**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`.
+**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`, `/docs/Fase 17.md`.
 
 **Protocolo**: Análisis→Riesgos→Alternativas→Recomendación→Cambio mínimo→Impacto→Esperando confirmación. No implementar sin aprobación. Diffs quirúrgicos. Preservar comentarios y deuda documentada. "Si algo funciona, no se toca."
 
@@ -230,6 +230,42 @@ Ver `docs/Fase 16.md` para historial completo de subfases, decisiones e incidenc
 | `public/clientes/prueba/config.json` | Extendido con campos §4.5. Plan: PREMIUM, template: P1. |
 | `data/catalogo/PRODUCTOS.md` | v2 — §4.5 incorporado. |
 
+## 11. FASE 17 — CERRADA Y VALIDADA
+
+**Objetivo**: construir P2.jsx como segunda variante del catálogo PREMIUM. Familia: Con Carácter.
+
+Ver `docs/Fase 17.md` para historial completo de subfases, decisiones e incidencias.
+
+### 11.1 Decisiones cerradas de FASE 17 — NO REABRIR
+
+**Principio de densidad de identidad (Con Carácter PREMIUM):** las secciones de entrada (Cover, HeroSection, EventSection) son responsables de establecer inequívocamente la identidad Con Carácter. Las secciones narrativas extensas (Historia, Timeline, Fotos, Itinerario) pueden relajar la estructura compositiva preservando continuidad cromática, tipográfica y de tono. La identidad de familia no necesita expresarse con la misma intensidad en todas las secciones del recorrido PREMIUM.
+
+**Instanciación de Con Carácter en tier PREMIUM verificada:** misma instanciación visual que S2.2 en secciones de entrada (bloque Negro 55%, Bebas Neue, división estructural, Postura en acto). Secciones narrativas extensas con estructura relajada, voz tipográfica y continuidad cromática mantenidas.
+
+**P2 como segunda evidencia del patrón arquitectónico PREMIUM.** Archivo único autocontenido, 1.596 líneas, patrón P1. P3 seguirá este patrón.
+
+**Hipótesis estratégica registrada (diferida):** cuando aparezca el primer cliente real comprometido, la combinación onboarding real + extensión AdminPage PREMIUM constituye el mayor generador de aprendizaje operativo. Requiere presión comercial concreta para activarse — no altera el roadmap vigente.
+
+### 11.2 Validaciones obtenidas
+
+| Criterio | Resultado |
+|---|---|
+| Coherencia familiar respecto de S2 | ✅ Aprobado — percepción inmediata de pertenencia a Con Carácter |
+| Diferenciación respecto de P1 | ✅ Aprobado — productos claramente distintos |
+| Sostenibilidad visual del recorrido PREMIUM | ✅ Aprobado con OBS-P2-001 |
+| Integración de capacidades PREMIUM en lenguaje Con Carácter | ✅ Aprobado — percibido como "S2 llevada a PREMIUM" |
+| Principio de densidad de identidad | ✅ Validado empíricamente — Cover como sección de mayor fuerza identitaria |
+
+**Puntuación global auditoría 17C**: 10/10 — "P2 se siente exactamente como S2 extendida al contrato PREMIUM."
+
+### 11.3 Changeset de FASE 17
+
+| Archivo | Acción |
+|---|---|
+| `src/templates/P2.jsx` | Creado. 1.596 líneas, archivo único, patrón P1. |
+| `src/templates/templateRegistry.js` | +1 import P2, +1 entrada `category: 'premium'`. |
+| `public/clientes/prueba/config.json` | `"template": "P2"` durante validación. Revertir a `"P1"` tras cierre. |
+
 ---
 
 ## 11. QUÉ NO DEBE REABRIRSE
@@ -244,6 +280,7 @@ Ver `docs/Fase 16.md` para historial completo de subfases, decisiones e incidenc
 - FASE 14 completa — resolución DEUDA-002, extracción useCountdown a shared/hooks.js.
 - FASE 15 completa — S3.1 como referencia operativa de Elegante, catálogo STANDARD validado.
 - FASE 16 completa — P1.1 como referencia operativa de Emotiva PREMIUM, contrato §4.5, instanciación Emotiva en paleta oficial VELA.
+- FASE 17 completa — P2.1 como referencia operativa de Con Carácter PREMIUM, principio de densidad de identidad validado empíricamente.
 
 **Excepción explícita única vigente**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si durante la construcción de implementaciones futuras aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos.
 
@@ -258,6 +295,7 @@ Ver `docs/Fase 16.md` para historial completo de subfases, decisiones e incidenc
 **OBS-P1-001** (P1.1) — `ConfirmadosSection` en P1 tiene como consumidor actual a los invitados de la invitación. La intención comercial es que confirmados, estadísticas y métricas de asistencia migren en fases futuras a una herramienta administrativa para el organizador, reutilizando la misma infraestructura Sheets + Apps Script. Sin impacto en P1 ni en §4.5.
 **OBS-P1-002** (P1.1) — Schema simplificado de §4.5 puede no reflejar completamente las necesidades operativas reales. Candidatos para revisión futura: múltiples asistentes por confirmación, restricciones con opciones controladas, reducción de campos libres. Requiere evidencia operativa antes de reabrir §4.5.
 **OBS-P1-003** (P1.1) — Historia ampliada genera scroll largo en mobile. No es defecto de implementación sino consecuencia natural del volumen narrativo PREMIUM. Evaluar con contenido real de cliente.
+**OBS-P2-001** (P2.1) — Mobile: entre Historia y Momentos/Timeline algunos bloques de texto se perciben largos. Ajuste iterativo de densidad y ritmo de lectura mobile. No bloqueante. Requiere exposición real con clientes.
 
 ---
 
@@ -269,7 +307,7 @@ Ver `docs/Fase 16.md` para historial completo de subfases, decisiones e incidenc
 | S2 | Con Carácter | STANDARD | ✅ Validada en producción |
 | S3 | Elegante | STANDARD | ✅ Validada en Preview Deployment |
 | P1 | Emotiva | PREMIUM | ✅ Validada en Preview Deployment |
-| P2 | Con Carácter | PREMIUM | ⬜ Declarada |
+| P2 | Con Carácter | PREMIUM | ✅ Validada en Preview Deployment |
 | P3 | Elegante | PREMIUM | ⬜ Declarada |
 
 ---
@@ -282,31 +320,27 @@ Ver `docs/Fase 16.md` para historial completo de subfases, decisiones e incidenc
 
 ---
 
-## 15. ROADMAP — LÍNEAS HABILITADAS PARA FASE 17
-
-Las siguientes líneas están disponibles. Ninguna tiene prioridad aprobada aún:
+## 15. ROADMAP — LÍNEAS HABILITADAS PARA FASE 18
 
 **Catálogo PREMIUM**
-- P2 (Con Carácter / PREMIUM) — siguiente variante natural. P1 es su referencia arquitectónica.
-- P3 (Elegante / PREMIUM) — tercera variante del catálogo PREMIUM.
+- P3 (Elegante / PREMIUM) — tercera y última variante del catálogo PREMIUM. P1 es su referencia arquitectónica.
 
-**Operativa**
-- Onboarding de primer cliente real — identificado como prioridad candidata desde FASE 10.
-- Herramienta administrativa para organizadores — visualización de confirmados, estadísticas y métricas de asistencia (OBS-P1-001). Reutiliza infraestructura Sheets + Apps Script existente.
+**Operativa** (diferida hasta primer cliente real comprometido)
+- Onboarding de primer cliente real.
 - AdminPage: extensión para soportar generación de configs PREMIUM (campos §4.5).
+- Herramienta administrativa para organizadores — visualización de confirmados, estadísticas y métricas de asistencia (OBS-P1-001).
 
 **Infraestructura diferida**
 - Dynamic OG/SEO meta tags.
 - Ruta 404 para slugs desconocidos.
 - Revisión schema RSVP PREMIUM (OBS-P1-002) — requiere evidencia operativa previa.
-
 ---
 
 ## 16. PUNTO EXACTO DE CONTINUACIÓN
 
-**FASE 16 cerrada.** Ver `docs/Fase 16.md` para historial completo.
+**FASE 17 cerrada.** Ver `docs/Fase 17.md` para historial completo.
 
-**Próxima fase**: FASE 17 — a definir. Candidatos: P2, onboarding primer cliente real, herramienta administrativa para organizadores.
+**Próxima fase**: FASE 18 — P3 (Elegante / PREMIUM). Referencia arquitectónica: P1. Referencia visual: S3.
 
 ---
 
