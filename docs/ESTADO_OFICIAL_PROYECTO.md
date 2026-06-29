@@ -1,4 +1,4 @@
-[ESTADO_OFICIAL_PROYECTO_v6.md](https://github.com/user-attachments/files/29403223/ESTADO_OFICIAL_PROYECTO_v6.md)
+[ESTADO_OFICIAL_PROYECTO_v7.md](https://github.com/user-attachments/files/29403223/ESTADO_OFICIAL_PROYECTO_v7.md)
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
