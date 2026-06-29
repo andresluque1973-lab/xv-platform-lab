@@ -2,8 +2,8 @@
 [VARIANTES.md](https://github.com/user-attachments/files/28905171/VARIANTES.md)
 # VARIANTES — Catálogo Visual VELA
 
-Versión del documento: **2**
-Estado: **Vigente — actualizado FASE 16**
+Versión del documento: **3**
+Estado: **Vigente — actualizado FASE 17**
 Ubicación: `data/catalogo/VARIANTES.md`
 
 ---
@@ -369,6 +369,47 @@ persistente en todas las secciones.
 - El bloque al 55% es una instanciación entre otras posibles de
   Afirmación cromática. No congela la proporción como invariante.
 
+  ### §4.14 Evidencia de implementación — P2.1
+
+Esta sección registra las instanciaciones verificadas en la primera
+implementación PREMIUM de Con Carácter (P2.1, FASE 17). Constituye
+evidencia de referencia para implementaciones futuras de la familia
+en el tier PREMIUM.
+
+No reemplaza ni modifica la definición de la familia contenida en
+§4.1 a §4.12. La definición de familia prevalece sobre cualquier
+instanciación concreta.
+
+#### Principio adicional validado
+
+**Principio de densidad de identidad:** la identidad de familia no necesita
+expresarse con la misma intensidad en todas las secciones del recorrido PREMIUM.
+Las secciones de entrada (Cover, HeroSection, EventSection) establecen
+inequívocamente la identidad Con Carácter. Las secciones narrativas extensas
+pueden relajar la estructura compositiva preservando continuidad cromática,
+tipográfica y de tono.
+
+Evidencia empírica: el Cover fue identificado como la sección de mayor fuerza
+identitaria de P2. La puntuación global de la auditoría fue 10/10 con
+percepción de "S2 extendida al contrato PREMIUM".
+
+#### Instanciaciones verificadas en Preview Deployment
+
+| Rol obligatorio | Instanciación en P2.1 |
+|---|---|
+| Afirmación cromática | Bloque Negro `#1A1A1A` al 55% en secciones de entrada (Cover, Hero, EventSection). Campo Crema `#F8F5EF` como superficie dominante en secciones narrativas. Borde Champagne `#E6D3A8` como separador de jerarquía. |
+| Tipografía con intención identitaria | Bebas Neue en todos los niveles de etiqueta, título, hora e interacción. Cormorant Garamond en cuerpo narrativo. Identidad tipográfica mantenida en todas las secciones incluyendo Historia y Timeline. |
+| Quiebre compositivo localizable | División estructural 55/45 en Cover, Hero y EventSection. Header Negro de franja completa en ItinerarioSection como quiebre localizable en secciones narrativas. |
+| Postura en acto | Bloque entra desde izquierda con delay 700ms respecto al texto en Cover. `translateX(-100%) → translateX(0)`, `0.65s cubic-bezier(0.76, 0, 0.24, 1)`. Idéntico a S2.2 — instanciación heredada y verificada. |
+
+#### Estado de la evidencia
+
+- Auditoría 17C: todos los criterios aprobados. Ver `docs/Fase 17.md`.
+- VALIDACION-P2-001: P2 se percibe inequívocamente como familia Con Carácter. Coherencia familiar respecto de S2: aprobada. Diferenciación respecto de P1: aprobada.
+- OBS-P2-001: entre Historia y Momentos/Timeline en mobile algunos bloques de texto se perciben largos. No bloqueante. Requiere exposición real.
+- Bebas Neue confirmada como instanciación tipográfica de Con Carácter PREMIUM (segunda evidencia tras S2.2). No congela la elección como invariante permanente de familia.
+- El bloque al 55% heredado de S2.2 como segunda evidencia de la instanciación de Afirmación cromática. No congela la proporción como invariante.
+
   ---
 
 ## §5 Familia Elegante
@@ -569,8 +610,9 @@ S1 es una implementación de esa familia en un momento dado.
 | S2       | Con Carácter | Implementada y validada en producción           |
 | S3       | Elegante     | Implementada y validada en Preview (FASE 15)    |
 | P1       | Emotiva      | Implementada y validada en Preview (FASE 16)    |
-| P2       | Con Carácter | Declarada, sin implementación                   |
+| P2       | Con Carácter | Implementada y validada en Preview (FASE 17)    |
 | P3       | Elegante     | Declarada, sin implementación                   |
+
 
 El estado de implementación de cada variante se gobierna por las reglas
 definidas en `data/catalogo/CONTRATO.md` y `src/templates/templateRegistry.js`.
@@ -595,3 +637,4 @@ que cada variante debe cumplir cuando sea construida.
 | Versión | Fecha   | Estado   | Cambios |
 |---------|---------|----------|---------|
 | 1       | 2026-06 | Aprobado | Definición inicial. Tres familias visuales: Emotiva, Con Carácter, Elegante. Mapeo oficial a variantes S1–S3 y P1–P3. |
+| 3       | 2026-06 | Aprobado | §4.14 agregado: evidencia P2.1 (Con Carácter PREMIUM). Principio de densidad de identidad validado empíricamente. |
