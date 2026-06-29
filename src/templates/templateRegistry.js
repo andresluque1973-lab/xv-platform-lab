@@ -62,6 +62,7 @@ export const templateRegistry = {
     component:      P1,
     category:       'premium',
     implementation: 'P1',
+  },
     P2: {
   component:      P2,
   category:       'premium',
