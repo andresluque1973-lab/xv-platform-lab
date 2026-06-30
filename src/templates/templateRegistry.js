@@ -35,6 +35,10 @@ import P2 from './P2.jsx';
 // FASE 17 — segunda implementación del catálogo PREMIUM. Familia: Con Carácter.
 // No marcar como disponible en catálogo hasta validación en Preview Deployment.
 
+import P3 from './P3.jsx';
+// FASE 18 — tercera implementación del catálogo PREMIUM. Familia: Elegante.
+// No marcar como disponible en catálogo hasta validación en Preview Deployment.
+
 // ─────────────────────────────────────────────────────────────────────────────
 // templateRegistry
 // Cada entrada:
@@ -67,5 +71,10 @@ export const templateRegistry = {
   component:      P2,
   category:       'premium',
   implementation: 'P2',
+  },
+  P3: {
+    component:      P3,
+    category:       'premium',
+    implementation: 'P3',
   },
 };
