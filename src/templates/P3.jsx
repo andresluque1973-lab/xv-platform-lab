@@ -79,6 +79,19 @@ import { useCountdown } from "./shared/hooks";
 //
 // Infraestructura intacta: templateRegistry, TemplateLoader, useConfig,
 // S1, S2, S3, P1, P2.
+//
+// FASE 18D — refinamiento post-auditoría (acotado, sin reabrir Alt D):
+//   1. HeroSection ahora usa ChapterTitle (eyebrow "Bienvenidos" + config.titulo)
+//      como prólogo formal — refuerza orientación en la apertura del recorrido.
+//   2. Reclasificación funcional Taupe → Mocha en texto informativo (no
+//      decorativo): TimelineItem.fecha, dress_code.aclaracion, itinerario.hora.
+//      Los eyebrows y labels de formulario permanecen en Taupe (son
+//      redundantes/decorativos respecto del contenido que introducen).
+//   3. HistoriaSection: maxWidth reducido 34rem→31rem, espaciado entre
+//      párrafos aumentado para reducir fatiga de lectura en mobile.
+//   Cover deliberadamente NO modificado — pendiente de reevaluación empírica
+//   tras este ajuste, por hipótesis de que el vacío percibido podía deberse
+//   a la transición Cover→Hero sin ancla, no al Cover en sí mismo.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── Paleta ───────────────────────────────────────────────────────────────────
@@ -322,6 +335,10 @@ function HeroSection({ config }) {
       textAlign:  "center",
     }}>
       <div style={{ maxWidth: "44rem", margin: "0 auto" }}>
+        <ChapterTitle eyebrow="Bienvenidos" color={C.negro}>
+          {config.titulo}
+        </ChapterTitle>
+
         <p style={{
           fontFamily:    "'Cormorant Garamond', serif",
           fontSize:      "clamp(1rem, 2vw, 1.3rem)",
@@ -399,7 +416,7 @@ function HistoriaSection({ config }) {
       paddingLeft:   "clamp(2rem, 6vw, 4rem)",
       paddingRight:  "clamp(2rem, 6vw, 4rem)",
     }}>
-      <div style={{ maxWidth: "34rem", margin: "0 auto" }}>
+      <div style={{ maxWidth: "31rem", margin: "0 auto" }}>
         <ChapterTitle eyebrow="Historia" color={C.negro}>
           {config.historia.titulo || "Su historia"}
         </ChapterTitle>
@@ -412,7 +429,7 @@ function HistoriaSection({ config }) {
             color:         C.mocha,
             letterSpacing: "0.02em",
             lineHeight:    1.85,
-            marginBottom:  i < parrafos.length - 1 ? "clamp(1.25rem, 2.5vw, 1.75rem)" : 0,
+            marginBottom:  i < parrafos.length - 1 ? "clamp(1.75rem, 3.5vw, 2.5rem)" : 0,
             opacity:       vis ? 1 : 0,
             transform:     vis ? "translateY(0)" : "translateY(12px)",
             transition:    `opacity 0.6s ease ${0.1 + i * 0.08}s, transform 0.6s ease ${0.1 + i * 0.08}s`,
@@ -477,7 +494,7 @@ function TimelineItem({ item, index, last }) {
         fontFamily:    "'Cormorant Garamond', serif",
         fontSize:      "clamp(0.95rem, 1.7vw, 1.1rem)",
         fontWeight:    400,
-        color:         C.taupe,
+        color:         C.mocha,
         letterSpacing: "0.04em",
         lineHeight:    1.7,
         textAlign:     "right",
@@ -633,7 +650,7 @@ function EventSection({ config }) {
                 fontFamily:    "'Inter', sans-serif",
                 fontSize:      "clamp(0.75rem, 1.3vw, 0.88rem)",
                 fontWeight:    400,
-                color:         C.taupe,
+                color:         C.mocha,
                 letterSpacing: "0.03em",
                 fontStyle:     "italic",
               }}>
@@ -682,7 +699,7 @@ function ItinerarioSection({ config }) {
                 fontFamily:    "'Cormorant Garamond', serif",
                 fontSize:      "clamp(0.95rem, 1.7vw, 1.1rem)",
                 fontWeight:    400,
-                color:         C.taupe,
+                color:         C.mocha,
                 letterSpacing: "0.03em",
                 lineHeight:    1.7,
               }}>{item.hora}</p>
