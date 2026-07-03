@@ -1,7 +1,8 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29619394/ESTADO_OFICIAL_PROYECTO.md)
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 7 · Fecha de corte: 2026-06
+Versión: 9 · Fecha de corte: 2026-07
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -26,7 +27,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Catálogo visual oficial**: `data/catalogo/VARIANTES.md` es fuente de verdad visual. Si una propuesta la contradice, VARIANTES.md prevalece.
 
-**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`, `/docs/Fase 17.md`.
+**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`, `/docs/Fase 17.md`, `/docs/Fase 18.md`.
 
 **Protocolo**: Análisis→Riesgos→Alternativas→Recomendación→Cambio mínimo→Impacto→Esperando confirmación. No implementar sin aprobación. Diffs quirúrgicos. Preservar comentarios y deuda documentada. "Si algo funciona, no se toca."
 
@@ -267,7 +268,54 @@ Ver `docs/Fase 17.md` para historial completo de subfases, decisiones e incidenc
 
 ---
 
-## 11. QUÉ NO DEBE REABRIRSE
+## 12. FASE 18 — CERRADA Y VALIDADA
+
+**Objetivo**: construir P3.jsx como tercera y última variante del catálogo PREMIUM. Familia: Elegante. **Catálogo comercial VELA completo.**
+
+Ver `docs/Fase 18.md` para historial completo de subfases, decisiones e incidencias.
+
+### 12.1 Decisiones cerradas de FASE 18 — NO REABRIR
+
+**Criterio Alt D — Ritmo editorial (aprobado en FASE 18A):** P3 se orienta mediante ritmo editorial y NO mediante delimitación visual. Prohibido: líneas divisorias, cards, paneles, cajas, cambios sistemáticos de superficie. Tres mecanismos de orientación, ninguno introduce un organizador nuevo: (1) ancho variable como herramienta narrativa; (2) agrupación narrativa por diferencial de espaciado vertical; (3) titulación editorial como ancla cognitiva.
+
+**Diferenciador estratégico cerrado:** P3 no es el PREMIUM más completo. Es el PREMIUM más refinado.
+
+**Instanciación de Elegante en tier PREMIUM verificada:** Crema dominante en todo el recorrido. Champagne exclusivo en EventSection y ConfirmSection. Sin Bebas Neue. Sin bloque Negro estructural. Movimiento invisible (`opacity + translateY(10-12px)`, `0.5s ease`, sin cubic-bezier de carácter).
+
+**OBS-S3-001 formalizada y cerrada:** Champagne como superficie de sección en Elegante PREMIUM es instanciación válida de Cohesión tonal. No es anomalía. No se reabre.
+
+**Divergencias intencionales P3 vs S3:** sin `Divider()`, sin `borderTop` en Footer — reemplazados por espaciado diferencial. S3 no fue modificado. Divergencias documentadas en VARIANTES.md §5.14.
+
+**Hipótesis de aislamiento de Cover (FASE 18D) — confirmada:** la percepción de vacío en el Cover se disolvió al anclar HeroSection como prólogo formal, sin intervenir el Cover. El principio de mínima intervención + aislamiento empírico de la variable evitó una sobrecorrección sobre la pieza más delicada de la identidad Elegante.
+
+**P3 como tercera evidencia del patrón arquitectónico PREMIUM.** Archivo único autocontenido, 1.393 líneas, patrón P1/P2.
+
+### 12.2 Validaciones obtenidas
+
+| Criterio | Resultado |
+|---|---|
+| Coherencia familiar respecto de S3 | ✅ Aprobado — identidad Elegante desde el inicio, sin contaminación cruzada |
+| Diferenciación respecto de P1 y P2 | ✅ Aprobado — percibida como "más refinada y silenciosa" que otras variantes PREMIUM |
+| Sostenibilidad visual del recorrido PREMIUM | ✅ Aprobado tras FASE 18D |
+| Integración de capacidades PREMIUM en lenguaje Elegante | ✅ Aprobado — ConfirmSection percibida como superior al modelo S1 |
+| Gramática editorial continua (Alt D) | ✅ Validada empíricamente — criterio negativo y positivo superados |
+
+**Criterio de validación — resultado final:**
+- ✅ Prueba negativa: no se siente como navegar entre componentes.
+- ✅ Prueba positiva: sí se siente como avanzar a través de capítulos de una misma pieza editorial.
+
+### 12.3 Changeset de FASE 18
+
+| Archivo | Acción |
+|---|---|
+| `src/templates/P3.jsx` | Creado. 1.393 líneas, archivo único, patrón P1/P2. |
+| `src/templates/templateRegistry.js` | +1 import P3, +1 entrada `category: 'premium'`. |
+| `public/clientes/prueba/config.json` | `"template": "P3"` durante validación. Revertir tras cierre. |
+| `data/catalogo/VARIANTES.md` | v4 — §5.14 P3.1 incorporado. |
+
+---
+
+## 13. QUÉ NO DEBE REABRIRSE
 
 - Sección 1 completa (FASE 1–10).
 - FASE 11 completa.
@@ -280,17 +328,19 @@ Ver `docs/Fase 17.md` para historial completo de subfases, decisiones e incidenc
 - FASE 15 completa — S3.1 como referencia operativa de Elegante, catálogo STANDARD validado.
 - FASE 16 completa — P1.1 como referencia operativa de Emotiva PREMIUM, contrato §4.5, instanciación Emotiva en paleta oficial VELA.
 - FASE 17 completa — P2.1 como referencia operativa de Con Carácter PREMIUM, principio de densidad de identidad validado empíricamente.
+- FASE 18 completa — P3.1 como referencia operativa de Elegante PREMIUM, criterio Alt D (Ritmo editorial) validado empíricamente, OBS-S3-001 formalizada y cerrada.
 
 **Excepción explícita única vigente**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si durante la construcción de implementaciones futuras aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos.
 
 ---
 
-## 12. OBSERVACIONES ABIERTAS (sin prioridad — requieren exposición real)
+## 14. OBSERVACIONES ABIERTAS (sin prioridad — requieren exposición real)
 
 **OBS-001** (S2.2) — Si S2.2 se lee como identidad propia vs. variante oscura de S1.
 **OBS-002** (S2.2) — Tratamientos alternativos para el bloque negro.
 **OBS-003** (S2.2) — Bebas Neue como validación de instanciación, no decisión permanente de familia.
-**OBS-S3-001** (S3.1) — EventSection usa Champagne como fondo de sección. Introduce color como separador secundario además del espacio. Dentro de Cohesión tonal. Evaluar con exposición real.
+**OBS-S3-001** (S3.1) — ~~EventSection usa Champagne como fondo de sección. Introducía color como separador secundario además del espacio.~~ **RESUELTA en FASE 18:** formalizada como instanciación válida de Cohesión tonal en Elegante PREMIUM. Extendida a ConfirmSection en P3. No es anomalía. No se reabre.
+**OBS-P3-001** (P3.1) — Contraste Taupe-sobre-Crema en labels y eyebrows pequeños (`clamp(0.5rem, 0.9vw, 0.65rem)`) puede resultar insuficiente en mobile en recorridos narrativos largos. Patrón heredado de S3 y amplificado por volumen. Parcialmente corregido en FASE 18D (textos informativos reclasificados a Mocha). Patrón persiste en eyebrows y labels de formulario. Evaluar con exposición real de clientes.
 **OBS-P1-001** (P1.1) — `ConfirmadosSection` en P1 tiene como consumidor actual a los invitados de la invitación. La intención comercial es que confirmados, estadísticas y métricas de asistencia migren en fases futuras a una herramienta administrativa para el organizador, reutilizando la misma infraestructura Sheets + Apps Script. Sin impacto en P1 ni en §4.5.
 **OBS-P1-002** (P1.1) — Schema simplificado de §4.5 puede no reflejar completamente las necesidades operativas reales. Candidatos para revisión futura: múltiples asistentes por confirmación, restricciones con opciones controladas, reducción de campos libres. Requiere evidencia operativa antes de reabrir §4.5.
 **OBS-P1-003** (P1.1) — Historia ampliada genera scroll largo en mobile. No es defecto de implementación sino consecuencia natural del volumen narrativo PREMIUM. Evaluar con contenido real de cliente.
@@ -298,7 +348,7 @@ Ver `docs/Fase 17.md` para historial completo de subfases, decisiones e incidenc
 
 ---
 
-## 13. ESTADO DE IMPLEMENTACIÓN DEL CATÁLOGO
+## 15. ESTADO DE IMPLEMENTACIÓN DEL CATÁLOGO
 
 | Variante | Familia | Tier | Estado |
 |---|---|---|---|
@@ -307,11 +357,11 @@ Ver `docs/Fase 17.md` para historial completo de subfases, decisiones e incidenc
 | S3 | Elegante | STANDARD | ✅ Validada en Preview Deployment |
 | P1 | Emotiva | PREMIUM | ✅ Validada en Preview Deployment |
 | P2 | Con Carácter | PREMIUM | ✅ Validada en Preview Deployment |
-| P3 | Elegante | PREMIUM | ⬜ Declarada |
+| P3 | Elegante | PREMIUM | ✅ Validada en Preview Deployment |
 
 ---
 
-## 14. DEUDAS TÉCNICAS ACTIVAS
+## 16. DEUDAS TÉCNICAS ACTIVAS
 
 | ID | Descripción | Estado |
 |---|---|---|
@@ -319,27 +369,33 @@ Ver `docs/Fase 17.md` para historial completo de subfases, decisiones e incidenc
 
 ---
 
-## 15. ROADMAP — LÍNEAS HABILITADAS PARA FASE 18
+## 17. ROADMAP — HORIZONTE ESTRATÉGICO POST-CATÁLOGO
 
-**Catálogo PREMIUM**
-- P3 (Elegante / PREMIUM) — tercera y última variante del catálogo PREMIUM. P1 es su referencia arquitectónica.
+**Catálogo comercial VELA: COMPLETO.** S1 ✅ · S2 ✅ · S3 ✅ · P1 ✅ · P2 ✅ · P3 ✅
 
-**Operativa** (diferida hasta primer cliente real comprometido)
+La fase de construcción de templates ha concluido. El proyecto pasa a modo mantenimiento hasta que se active la fase operativa.
+
+**Condición de activación**: cliente real comprometido.
+
+**Líneas operativas habilitadas cuando la condición se cumpla:**
 - Onboarding de primer cliente real.
 - AdminPage: extensión para soportar generación de configs PREMIUM (campos §4.5).
 - Herramienta administrativa para organizadores — visualización de confirmados, estadísticas y métricas de asistencia (OBS-P1-001).
 
-**Infraestructura diferida**
+**Hipótesis de mayor generador de aprendizaje (registrada FASE 17, vigente):** onboarding real + AdminPage PREMIUM = mayor generador de aprendizaje operativo cuando exista cliente comprometido. No activa el roadmap en su ausencia.
+
+**Infraestructura diferida** (sin condición de activación específica):
 - Dynamic OG/SEO meta tags.
 - Ruta 404 para slugs desconocidos.
 - Revisión schema RSVP PREMIUM (OBS-P1-002) — requiere evidencia operativa previa.
+
 ---
 
-## 16. PUNTO EXACTO DE CONTINUACIÓN
+## 18. PUNTO EXACTO DE CONTINUACIÓN
 
-**FASE 17 cerrada.** Ver `docs/Fase 17.md` para historial completo.
+**FASE 18 cerrada.** Ver `docs/Fase 18.md` para historial completo.
 
-**Próxima fase**: FASE 18 — P3 (Elegante / PREMIUM). Referencia arquitectónica: P1. Referencia visual: S3.
+**Catálogo comercial VELA completo.** El proyecto permanece en modo mantenimiento hasta la aparición de un cliente real comprometido que active la fase operativa.
 
 ---
 
