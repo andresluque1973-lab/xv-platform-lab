@@ -566,6 +566,52 @@ instanciación concreta.
 - OBS-S3-001: EventSection usa Champagne como fondo de sección, introduciendo color como separador secundario además del espacio. Dentro de Cohesión tonal. Pendiente de evaluación con exposición real.
 - S3.1 establece el patrón arquitectónico de archivo único autocontenido adoptado también por P1.
 
+## §5.14 — P3.1 (Elegante / PREMIUM)
+
+**Estado:** Validada en Preview Deployment — FASE 18 cerrada  
+**Arquitectura:** Archivo único autocontenido (`P3.jsx`, 1.393 líneas), patrón P1/P2
+
+### Identidad de familia verificada
+
+| Rol | Instanciación en P3.1 |
+|---|---|
+| Paleta → Cohesión tonal | Crema dominante en 13/17 secciones. Champagne exclusivo en EventSection y ConfirmSection (ver nota OBS-S3-001 resuelta). Negro solo como acento tipográfico puntual. Sin bloques estructurales en Negro. |
+| Tipografía → Proporcional | Cormorant Garamond + Inter. Sin Bebas Neue (reservado para familia Con Carácter). Anclaje por aire asimétrico y tracking, nunca por peso o tamaño. |
+| Composición → Espacio sin sobrante | Gramática editorial continua: ancho variable como herramienta narrativa, agrupación por diferencial de espaciado, titulación editorial como ancla cognitiva. Sin separadores, cards, paneles ni cajas. |
+| Movimiento → Al servicio | `opacity + translateY(10-12px)`, `0.5s ease`. Sin cubic-bezier de carácter. Sin delays identitarios. Invisible como mecanismo. |
+
+### Gramática editorial continua (Alt D, FASE 18A)
+
+Mecanismo de orientación del recorrido (3 herramientas, ninguna introduce organizador nuevo):
+1. **Ancho variable:** Cover/Hero amplio (44rem) → Historia lectura (31rem) → Timeline intermedio (38rem) → Fotos amplio (52rem) → Funcional estándar (36rem)
+2. **Diferencial de espaciado:** apertura de bloque con `clamp(6rem,12vw,10rem)`, continuidad intra-bloque con `clamp(2.5rem,5vw,4rem)`
+3. **ChapterTitle:** eyebrow + h2 proporcional + aire asimétrico (marginTop reducido, marginBottom generoso) — presente en 8 secciones incluyendo HeroSection como prólogo formal
+
+### Divergencias intencionales respecto de S3.jsx
+
+| Elemento | S3.jsx | P3.jsx | Justificación |
+|---|---|---|---|
+| `Divider()` | Usado entre Hero/Countdown y entre Lugar/Dress code | No heredado | Alt D prohíbe cualquier línea divisoria como mecanismo sistemático |
+| Footer `borderTop` | `1px solid Champagne` | Removido | Mismo criterio — el cierre se marca con padding superior |
+| HeroSection | Sin título editorial | ChapterTitle (eyebrow "Bienvenidos") | Prólogo formal del recorrido PREMIUM (FASE 18D) |
+| HistoriaSection | N/A (no existe en STANDARD) | maxWidth 31rem, gap párrafos `clamp(1.75rem,3.5vw,2.5rem)` | Legibilidad mobile en recorrido narrativo largo |
+
+Estas divergencias no son inconsistencias — son la lógica Elegante llevada a sus últimas consecuencias en el contrato PREMIUM. S3.jsx no fue modificado.
+
+### OBS-S3-001 — Resuelta
+
+Champagne como superficie de sección en EventSection (observación abierta desde S3.1) queda formalizada como instanciación válida de Cohesión tonal en Elegante PREMIUM. En P3 se extiende también a ConfirmSection. No es anomalía. No se reabre.
+
+### OBS-P3-001 — Abierta
+
+Taupe-sobre-Crema en labels y eyebrows pequeños (`clamp(0.5rem,0.9vw,0.65rem)`) produce contraste insuficiente en mobile en recorridos narrativos largos. Heredado literalmente de S3 — en S3 el volumen menor lo oculta. En P3 fue parcialmente corregido (textos informativos reclasificados a Mocha en 18D), pero el patrón persiste en eyebrows y labels de formulario. Evaluar con exposición real de clientes.
+
+### Criterio de validación — resultado
+
+✅ Prueba negativa: no se siente como navegar entre componentes.  
+✅ Prueba positiva: sí se siente como avanzar a través de capítulos de una misma pieza editorial.
+
+
 ---
 
 ## §6 Relación entre familias y variantes técnicas
