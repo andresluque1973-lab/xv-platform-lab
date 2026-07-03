@@ -12,7 +12,7 @@ import { useCountdown } from "./shared/hooks";
 // por el TemplateLoader, o hace fetch directo si el hook está disponible.
 // En preview de Claude: usa MOCK_CONFIG definido abajo.
 //
-// Roles de familia demostrados (pendiente auditoría):
+// Roles de familia validados en auditoría 18C/18D:
 //   Paleta      → Cohesión tonal (Crema dominante, Champagne en EventSection)
 //   Tipografía  → Tipografía proporcional (Cormorant Garamond + Inter)
 //   Composición → Espacio sin sobrante (ritmo editorial, sin separadores)
@@ -320,10 +320,12 @@ function Cover({ config, onEnter }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HeroSection — nombre + subtítulo + countdown
-// Ancho: amplio (capítulo de apertura). Fuente directa: S3.jsx, sin Divider —
-// el espacio entre subtítulo y countdown reemplaza la línea divisoria por
-// diferencial de espaciado vertical (mecanismo 2: agrupación narrativa).
+// HeroSection — prólogo formal del recorrido
+// Ancho: amplio. FASE 18D: incorpora ChapterTitle (eyebrow "Bienvenidos" +
+// config.titulo) como ancla cognitiva de apertura — resuelve la transición
+// Cover → recorrido sin introducir nuevos organizadores visuales.
+// Sin Divider (heredado de S3 pero no adoptado, ver nota en cabecera):
+// el diferencial de espaciado entre subtítulo y countdown sustituye la línea.
 // ─────────────────────────────────────────────────────────────────────────────
 function HeroSection({ config }) {
   const { days, hours, minutes, seconds } = useCountdown(config.contador);
