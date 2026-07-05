@@ -1,8 +1,9 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29681351/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29619394/ESTADO_OFICIAL_PROYECTO.md)
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 9 · Fecha de corte: 2026-07
+Versión: 10 · Fecha de corte: 2026-07
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -27,7 +28,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Catálogo visual oficial**: `data/catalogo/VARIANTES.md` es fuente de verdad visual. Si una propuesta la contradice, VARIANTES.md prevalece.
 
-**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`, `/docs/Fase 17.md`, `/docs/Fase 18.md`.
+**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`, `/docs/Fase 17.md`, `/docs/Fase 18.md`, `/docs/Fase 19.md`, `/docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md`.
 
 **Protocolo**: Análisis→Riesgos→Alternativas→Recomendación→Cambio mínimo→Impacto→Esperando confirmación. No implementar sin aprobación. Diffs quirúrgicos. Preservar comentarios y deuda documentada. "Si algo funciona, no se toca."
 
@@ -391,11 +392,50 @@ La fase de construcción de templates ha concluido. El proyecto pasa a modo mant
 
 ---
 
-## 18. PUNTO EXACTO DE CONTINUACIÓN
+## 18. FASE 19 — AUDITORÍA ARQUITECTÓNICA CON FOCO OPERATIVO — CERRADA
 
-**FASE 18 cerrada.** Ver `docs/Fase 18.md` para historial completo.
+**Objetivo cumplido**: auditoría del repositorio completo (`xv-platform-lab`) desde la perspectiva de escalabilidad operativa, no de templates. Ningún código fue modificado. Ninguna implementación fue aprobada. Fase exclusivamente de descubrimiento y consolidación de riesgos.
 
-**Catálogo comercial VELA completo.** El proyecto permanece en modo mantenimiento hasta la aparición de un cliente real comprometido que active la fase operativa.
+**Documento de referencia completo**: `docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md` — informe ejecutivo con evidencia de repositorio, riesgos de escala y clasificación por tema.
+
+**Fortalezas confirmadas (preservar)**: separación templateRegistry/catálogo comercial; patrón de archivo único autocontenido por template; ortogonalidad Familia × Tier; disciplina de contratos documentados (`CONTRATO.md`); metodología de fases cerradas sin reapertura.
+
+**Temas arquitectónicos identificados**:
+
+| Tema | Descripción | Clasificación |
+|---|---|---|
+| A | Ausencia de capa de validación de datos entre creación y consumo de `config.json` | 🔴 Resolver antes de Owner Tool |
+| B | Fallos silenciosos por diseño — fallback `TemplateLoader`→S1 y RSVP `no-cors` asumido como éxito (impacto no equivalente entre ambos componentes) | 🔴 Resolver antes de Owner Tool |
+| C | Registro de clientes (`index.json`) embebido en bundle JS — requiere rebuild+redeploy para cualquier alta | 🔴 Resolver antes de Owner Tool |
+| D | `AdminPage.jsx` solo genera schema STANDARD; no cubre contrato PREMIUM §4.5 | 🔴 Resolver antes de Owner Tool |
+| E | Exposición pública de `apps_script_url`/`sheet_id` en `config.json` bajo `public/` — explotabilidad real depende de configuración de Apps Script no auditada en esta fase | 🔵 Mejora inmediata (revisión, no remediación estructural) |
+| F | Modelo de dominio: Cliente/Evento fusionados, `config.json` sobrecargado con 5 responsabilidades | 🟢 Puede esperar — no es deuda activa contra el modelo comercial vigente |
+| G | Slug como única integridad referencial entre 3 capas desacopladas | 🟡 Deuda aceptable — subsumido en Tema A |
+| H | Sin punto de integración para CI/validación automatizada | 🟡 Deuda aceptable — consecuencia de resolver Tema A |
+| I | Ausencia de estado dinámico propio de plataforma (sin DB, RSVP vive solo en Sheets) | 🟢 Puede esperar — disparador: autoservicio, no volumen de clientes |
+
+**Corrección registrada durante la auditoría**: el estado `"proximamente"` de S3/P1/P2/P3 en `data/catalogo/templates.js` no es documentation drift. Es consistente con §5.3 de `PRODUCTOS.md` (exige validación funcional en producción, no solo en Preview, para el estado `disponible`). Catálogo comercialmente completo ≠ todas las variantes formalmente `disponible`. Ambas afirmaciones son correctas y no se contradicen entre sí.
+
+**Decisiones cerradas — NO REABRIR**:
+- Ninguna implementación fue aprobada durante FASE 19.
+- Los temas A, B, C, D quedan registrados como bloqueantes conceptuales de la futura fase de Owner Tool, no como trabajo en curso.
+- El Tema F queda explícitamente documentado como NO deuda activa — no debe interpretarse como pendiente de refactor.
+- Priorización entre temas 🔴 y cualquier decisión de intervención quedan diferidas a una fase posterior específica, siguiendo el protocolo obligatorio del proyecto.
+
+**Changeset aplicado**:
+```
+docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md  ← nuevo, informe completo de auditoría
+docs/Fase 19.md                                ← nuevo, documento de cierre oficial
+docs/ESTADO_OFICIAL_PROYECTO.md                ← v10, sección 18 incorporada
+```
+
+---
+
+## 19. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 19 cerrada.** Ver `docs/Fase 19.md` y `docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md` para historial completo.
+
+**Catálogo comercial VELA completo. Mapa de riesgos arquitectónico consolidado.** El proyecto permanece en modo mantenimiento. Próximo paso pendiente de decisión de Andrés: priorización de los temas 🔴 (A, B, C, D) del mapa de riesgos, a resolver antes de activar la fase de Owner Tool — o bien la aparición de un cliente real comprometido, lo que ocurra primero.
 
 ---
 
