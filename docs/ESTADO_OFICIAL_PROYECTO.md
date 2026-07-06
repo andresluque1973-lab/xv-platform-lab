@@ -1,9 +1,8 @@
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29681351/ESTADO_OFICIAL_PROYECTO.md)
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29619394/ESTADO_OFICIAL_PROYECTO.md)
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29684615/ESTADO_OFICIAL_PROYECTO.md)
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 10 · Fecha de corte: 2026-07
+Versión: 11 · Fecha de corte: 2026-07
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -28,7 +27,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Catálogo visual oficial**: `data/catalogo/VARIANTES.md` es fuente de verdad visual. Si una propuesta la contradice, VARIANTES.md prevalece.
 
-**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`, `/docs/Fase 17.md`, `/docs/Fase 18.md`, `/docs/Fase 19.md`, `/docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md`.
+**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`, `/docs/Fase 17.md`, `/docs/Fase 18.md`, `/docs/Fase 19.md`, `/docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md`, `/docs/Fase 20.md`.
 
 **Protocolo**: Análisis→Riesgos→Alternativas→Recomendación→Cambio mínimo→Impacto→Esperando confirmación. No implementar sin aprobación. Diffs quirúrgicos. Preservar comentarios y deuda documentada. "Si algo funciona, no se toca."
 
@@ -330,6 +329,8 @@ Ver `docs/Fase 18.md` para historial completo de subfases, decisiones e incidenc
 - FASE 16 completa — P1.1 como referencia operativa de Emotiva PREMIUM, contrato §4.5, instanciación Emotiva en paleta oficial VELA.
 - FASE 17 completa — P2.1 como referencia operativa de Con Carácter PREMIUM, principio de densidad de identidad validado empíricamente.
 - FASE 18 completa — P3.1 como referencia operativa de Elegante PREMIUM, criterio Alt D (Ritmo editorial) validado empíricamente, OBS-S3-001 formalizada y cerrada.
+- FASE 19 completa — mapa de riesgos consolidado (Riesgos A–I), fortalezas arquitectónicas confirmadas. Ver sección 18.
+- FASE 20 completa — Minimum Architecture Upgrade (MAU) de 4 elementos. Ver sección 19.
 
 **Excepción explícita única vigente**: el filtro de modo (Atmósfera/Estructura/Servicio) puede reabrirse si durante la construcción de implementaciones futuras aparece una decisión correcta para alguna familia que no pueda describirse mediante estos tres modos.
 
@@ -374,14 +375,12 @@ Ver `docs/Fase 18.md` para historial completo de subfases, decisiones e incidenc
 
 **Catálogo comercial VELA: COMPLETO.** S1 ✅ · S2 ✅ · S3 ✅ · P1 ✅ · P2 ✅ · P3 ✅
 
-La fase de construcción de templates ha concluido. El proyecto pasa a modo mantenimiento hasta que se active la fase operativa.
+La fase de construcción de templates concluyó en FASE 18. FASE 19 auditó el sistema con foco operativo y consolidó un mapa de riesgos. FASE 20 transformó ese mapa en una decisión arquitectónica (el MAU — ver sección 19). El proyecto entra ahora en **Horizonte 3A**: implementación del MAU como prerequisito del Owner Tool.
 
-**Condición de activación**: cliente real comprometido.
-
-**Líneas operativas habilitadas cuando la condición se cumpla:**
-- Onboarding de primer cliente real.
-- AdminPage: extensión para soportar generación de configs PREMIUM (campos §4.5).
-- Herramienta administrativa para organizadores — visualización de confirmados, estadísticas y métricas de asistencia (OBS-P1-001).
+**Horizontes vigentes:**
+- **Horizonte 3A** — Prerequisitos del Owner Tool: implementación de los 4 elementos del MAU (sección 19), en el orden que se defina en la subfase siguiente de FASE 20/Horizonte 3A, bajo protocolo obligatorio.
+- **Horizonte 3B** — Construcción del Owner Tool sobre el MAU ya implementado.
+- **Etapa 4** — Capacidades de autoservicio para clientes.
 
 **Hipótesis de mayor generador de aprendizaje (registrada FASE 17, vigente):** onboarding real + AdminPage PREMIUM = mayor generador de aprendizaje operativo cuando exista cliente comprometido. No activa el roadmap en su ausencia.
 
@@ -389,10 +388,14 @@ La fase de construcción de templates ha concluido. El proyecto pasa a modo mant
 - Dynamic OG/SEO meta tags.
 - Ruta 404 para slugs desconocidos.
 - Revisión schema RSVP PREMIUM (OBS-P1-002) — requiere evidencia operativa previa.
+- Riesgo E (credenciales expuestas en `config.json` público) — requiere auditoría de permisos de Apps Script no realizada aún.
+- Riesgos F e I — fuera de alcance, ver sección 18.
 
 ---
 
 ## 18. FASE 19 — AUDITORÍA ARQUITECTÓNICA CON FOCO OPERATIVO — CERRADA
+
+**Esta sección no fue modificada por FASE 20. Se preserva íntegra como resultado histórico de la auditoría.**
 
 **Objetivo cumplido**: auditoría del repositorio completo (`xv-platform-lab`) desde la perspectiva de escalabilidad operativa, no de templates. Ningún código fue modificado. Ninguna implementación fue aprobada. Fase exclusivamente de descubrimiento y consolidación de riesgos.
 
@@ -422,6 +425,8 @@ La fase de construcción de templates ha concluido. El proyecto pasa a modo mant
 - El Tema F queda explícitamente documentado como NO deuda activa — no debe interpretarse como pendiente de refactor.
 - Priorización entre temas 🔴 y cualquier decisión de intervención quedan diferidas a una fase posterior específica, siguiendo el protocolo obligatorio del proyecto.
 
+**Nota de trazabilidad (agregada en FASE 20, sin alterar el contenido anterior)**: la priorización diferida en el último punto fue resuelta en FASE 20 mediante la definición del Minimum Architecture Upgrade (MAU) — ver sección 19. El MAU es la interpretación estratégica de los Temas A–D; no los reclasifica ni los invalida.
+
 **Changeset aplicado**:
 ```
 docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md  ← nuevo, informe completo de auditoría
@@ -431,11 +436,82 @@ docs/ESTADO_OFICIAL_PROYECTO.md                ← v10, sección 18 incorporada
 
 ---
 
-## 19. PUNTO EXACTO DE CONTINUACIÓN
+## 19. FASE 20 — TRANSFORMACIÓN DEL MAPA DE RIESGOS EN ARQUITECTURA DE CAPACIDADES — CERRADA
 
-**FASE 19 cerrada.** Ver `docs/Fase 19.md` y `docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md` para historial completo.
+**Objetivo cumplido**: transformar el mapa de riesgos de FASE 19 (Temas A–D) en un plan de intervención arquitectónica mínimo, priorizado y alineado con el desarrollo del Owner Tool. Fase exclusivamente estratégica — no se implementó ni modificó código.
 
-**Catálogo comercial VELA completo. Mapa de riesgos arquitectónico consolidado.** El proyecto permanece en modo mantenimiento. Próximo paso pendiente de decisión de Andrés: priorización de los temas 🔴 (A, B, C, D) del mapa de riesgos, a resolver antes de activar la fase de Owner Tool — o bien la aparición de un cliente real comprometido, lo que ocurra primero.
+**Documento de referencia completo**: `docs/Fase 20.md`.
+
+**Relación con FASE 19**: FASE 19 identifica y clasifica. FASE 20 interpreta esos hallazgos y decide cuáles integran la arquitectura mínima necesaria. El MAU es la consecuencia estratégica de la auditoría, no su reemplazo. La sección 18 de este documento permanece sin alteración.
+
+**Grafo de dependencias técnicas (verificado por inspección directa de código)**:
+
+```
+RIESGO-A (contrato + validación) — fundacional, sin dependencias
+   │
+   ├──► RIESGO-B2 (fallback ambiguo TemplateLoader→S1)
+   ├──► RIESGO-D (schema PREMIUM en AdminPage)
+   └──► RIESGO-C (registro dinámico seguro)
+
+RIESGO-B1 (RSVP no-cors) — aislado, sin dependencias
+```
+
+**Reinterpretación de riesgos como capacidades de plataforma**:
+
+| Riesgo FASE 19 | Capacidad de plataforma | Clasificación |
+|---|---|---|
+| Riesgo A | Contrato Ejecutable de Configuración | Fundacional |
+| Riesgo C | Gestión Dinámica de Clientes | Habilitadora |
+| Riesgo D | Generación Universal de Configuraciones | Habilitadora |
+| Riesgo B | Observabilidad Operativa | Evolutiva (técnica) / estratégicamente acoplada al éxito de las otras tres |
+
+**Distinción metodológica establecida en esta fase**: dependencia técnica (¿puede construirse sin romper el sistema?) y dependencia estratégica (¿con qué mínimo estamos dispuestos a liberar la primera operación real?) no son equivalentes. El éxito de una capacidad puede volver imprescindible otra que técnicamente era opcional.
+
+**Condiciones de liberación de la plataforma** (no del Owner Tool como herramienta aislada, sino de VELA como plataforma operable):
+
+Imprescindibles:
+1. Alta de cliente sin deploy.
+2. Cobertura completa de las seis variantes del catálogo comercial.
+3. Validez de configuración verificable antes de publicar.
+4. Detección explícita de los fallos críticos ya identificados sin depender de inspección manual.
+
+Deseables (no bloquean la primera liberación):
+5. Vista de estado consolidado de salud de todos los clientes.
+6. Automatizaciones adicionales de notificación/alerta.
+
+**DECISIÓN ARQUITECTÓNICA OFICIAL — Minimum Architecture Upgrade (MAU)**:
+
+| Elemento | Condición que satisface | Capacidad de FASE 19 que reinterpreta |
+|---|---|---|
+| **MAU-1** — Contrato Ejecutable de Configuración | Validez verificable antes de publicar | Riesgo A |
+| **MAU-2** — Generación Universal de Configuraciones | Cobertura completa de las 6 variantes | Riesgo D |
+| **MAU-3** — Fuente Dinámica de Registro de Clientes | Alta de clientes sin deploy | Riesgo C |
+| **MAU-4** — Señalización Explícita de Fallos Críticos | Detección de fallos sin inspección manual | Riesgo B |
+
+**Relación entre los cuatro elementos**: MAU-1 es la base sobre la que MAU-2 y MAU-4 validan lo que producen; MAU-3 se apoya en MAU-1 pero es arquitectónicamente independiente en su construcción. MAU-2 y MAU-3 son paralelos entre sí y, juntos, completan la primera pantalla operativa de la plataforma. MAU-4 no bloquea a los otros tres, pero su ausencia convierte el éxito de los otros tres en el vector del próximo incidente no detectado. Justificación completa de cada elemento (por qué no puede diferirse, qué ocurriría si se omitiera, qué habilita, qué principio arquitectónico preserva) en `docs/Fase 20.md`, sección 6.
+
+**Decisiones cerradas — NO REABRIR**:
+- El MAU de 4 elementos es la respuesta oficial de FASE 20. Ninguna implementación fue aprobada — es una decisión arquitectónica, no un changeset.
+- Los Riesgos A–D de FASE 19 (sección 18) no se reclasifican ni se invalidan.
+- Riesgos E, F, G, H, I permanecen exactamente en el estado documentado en FASE 19. Fuera de alcance de esta fase.
+- El orden de implementación de los 4 elementos del MAU y el diseño de pantallas del Owner Tool quedan diferidos a Horizonte 3A.
+
+**Fuera de alcance de FASE 20**: implementación de código; diseño de pantallas del Owner Tool; orden de intervención entre los elementos del MAU; Riesgo E; Riesgos F e I; herramienta de autoservicio para clientes.
+
+**Changeset aplicado**:
+```
+docs/Fase 20.md                     ← nuevo, documento de cierre oficial
+docs/ESTADO_OFICIAL_PROYECTO.md     ← v11, sección 19 incorporada; sección 18 sin alterar
+Instrucciones maestras del proyecto ← actualizadas a versión FASE 20
+```
+
+---
+
+## 20. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 20 cerrada.** Ver `docs/Fase 20.md` para historial completo de subfases. El MAU (sección 19) queda establecido como decisión arquitectónica oficial de la plataforma.
+
+**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20).** Próximo paso pendiente de decisión de Andrés: iniciar Horizonte 3A — definir, bajo protocolo obligatorio, el orden de intervención para implementar los 4 elementos del MAU (Contrato Ejecutable de Configuración, Generación Universal de Configuraciones, Fuente Dinámica de Registro de Clientes, Señalización Explícita de Fallos Críticos) — o bien la aparición de un cliente real comprometido, lo que ocurra primero. No se implementa código hasta que ese orden sea aprobado explícitamente.
 
 ---
 
