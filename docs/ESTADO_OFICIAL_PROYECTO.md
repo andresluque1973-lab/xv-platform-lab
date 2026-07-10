@@ -1,8 +1,9 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29908361/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29684615/ESTADO_OFICIAL_PROYECTO.md)
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 11 · Fecha de corte: 2026-07
+Versión: 12 · Fecha de corte: 2026-07
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -27,7 +28,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Catálogo visual oficial**: `data/catalogo/VARIANTES.md` es fuente de verdad visual. Si una propuesta la contradice, VARIANTES.md prevalece.
 
-**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`, `/docs/Fase 17.md`, `/docs/Fase 18.md`, `/docs/Fase 19.md`, `/docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md`, `/docs/Fase 20.md`.
+**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`, `/docs/Fase 17.md`, `/docs/Fase 18.md`, `/docs/Fase 19.md`, `/docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md`, `/docs/Fase 20.md`, `/docs/Fase 21.md`.
 
 **Protocolo**: Análisis→Riesgos→Alternativas→Recomendación→Cambio mínimo→Impacto→Esperando confirmación. No implementar sin aprobación. Diffs quirúrgicos. Preservar comentarios y deuda documentada. "Si algo funciona, no se toca."
 
@@ -507,11 +508,63 @@ Instrucciones maestras del proyecto ← actualizadas a versión FASE 20
 
 ---
 
-## 20. PUNTO EXACTO DE CONTINUACIÓN
+## 20. [Sección histórica reemplazada — ver sección 22]
 
-**FASE 20 cerrada.** Ver `docs/Fase 20.md` para historial completo de subfases. El MAU (sección 19) queda establecido como decisión arquitectónica oficial de la plataforma.
+La sección 20 de la versión anterior de este documento ("Punto exacto de continuación" al cierre de FASE 20) queda reemplazada por las secciones 21 y 22, que incorporan el cierre de FASE 21. Contenido preservado en `docs/Fase 20.md`, sección 10, sin alteración.
 
-**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20).** Próximo paso pendiente de decisión de Andrés: iniciar Horizonte 3A — definir, bajo protocolo obligatorio, el orden de intervención para implementar los 4 elementos del MAU (Contrato Ejecutable de Configuración, Generación Universal de Configuraciones, Fuente Dinámica de Registro de Clientes, Señalización Explícita de Fallos Críticos) — o bien la aparición de un cliente real comprometido, lo que ocurra primero. No se implementa código hasta que ese orden sea aprobado explícitamente.
+---
+
+## 21. FASE 21 — PLANIFICACIÓN DE IMPLEMENTACIÓN DEL MAU — CERRADA
+
+**Objetivo cumplido**: definir la relación de dependencias y el plan de secuenciación para implementar los cuatro elementos del MAU (Horizonte 3A), auditado contra el estado real del código. Fase exclusivamente de planificación — no se implementó ni modificó código de la aplicación.
+
+**Documento de referencia completo**: `docs/Fase 21.md`.
+
+**Relación con FASE 20**: FASE 20 definió el MAU y su grafo de dependencias de alto nivel. FASE 21 no reabre esa definición — la audita contra el código real, la profundiza en radio de impacto, costo, riesgo y beneficio por componente, y la traduce en un plan de secuenciación operable. El MAU permanece compuesto por 4 elementos, sin subdivisión arquitectónica. La sección 19 de este documento permanece sin alteración.
+
+**Hallazgos de código incorporados en esta fase** (auditoría directa sobre `xv-platform-lab`, no memoria de sesión):
+- El patrón de fallo silencioso de RSVP (Riesgo B1 / parte de MAU-4) está duplicado de forma independiente en seis archivos de template (`ConfirmSection.jsx`, `S2.jsx`, `S3.jsx`, `P1.jsx`, `P2.jsx`, `P3.jsx`), no centralizado — ajusta el radio de impacto real de MAU-4 sin alterar su clasificación arquitectónica.
+- `data/catalogo/templates.js` marca S3/P1/P2/P3 como `"proximamente"`, con solo P1 expuesto en AdminPage vía el flag temporal `LEGACY_VISIBLE`. Confirmado que esto no es documentation drift — es consistente con §5.3 de `PRODUCTOS.md` (exige validación en producción para el estado formal `disponible`). Queda incorporado como parte del alcance de MAU-2, sin alterar la decisión de catálogo comercial completo (FASE 18).
+
+**Relación de dependencias (Horizonte 3A) — decisión oficial de secuenciación**:
+- MAU-1 es fundacional. Debe implementarse primero. Prerrequisito técnico de MAU-2 y de MAU-4.
+- MAU-2 depende técnicamente de MAU-1. Sin dependencia técnica con MAU-3 — planificable en paralelo.
+- MAU-3 sin dependencia técnica con MAU-1 ni MAU-2 — planificable en paralelo con MAU-2.
+- MAU-4 se planifica como componente de cierre del MAU: consolida observabilidad y señalización explícita de fallos sobre la arquitectura ya implementada por los otros tres. Su ubicación responde a un criterio estratégico, no a una dependencia técnica estricta.
+
+**Matriz comparativa final** (detalle completo de radio de impacto, riesgo, costo y beneficio por componente en `docs/Fase 21.md`, secciones 10–11):
+
+| | MAU-1 | MAU-2 | MAU-3 | MAU-4 |
+|---|---|---|---|---|
+| Dependencia técnica | Ninguna | MAU-1 | Ninguna | Ninguna |
+| Criterio estratégico | Fundacional | — | — | Componente de cierre |
+| Riesgo | Bajo-Medio | Medio | Bajo | Medio-Alto |
+| Costo | Medio | Alto | Bajo | Medio |
+| Beneficio | Bajo (preventivo) | Alto | Medio | Alto |
+| Relación de orden | Primero | Paralelo con MAU-3, tras MAU-1 | Paralelo con MAU-2 | Cierre del MAU |
+
+**Decisiones de implementación explícitamente postergadas** (no forman parte del plan arquitectónico congelado; se resuelven al comenzar cada componente): orden de construcción interno del contrato de MAU-1; priorización de variante PREMIUM y tratamiento de `templates.js` en MAU-2; mecanismo técnico concreto de lectura dinámica en MAU-3; y en MAU-4, si el flujo RSVP se resuelve con una función compartida o con correcciones independientes por sitio. Detalle completo, incluyendo tres supuestos identificados como no demostrados en el código (extracción de util RSVP; orden STANDARD→PREMIUM del contrato; `LEGACY_VISIBLE` como señal de demanda), en `docs/Fase 21.md`, sección 14.
+
+**Decisiones cerradas — NO REABRIR**:
+- El MAU permanece compuesto por 4 elementos, tal como se cerró en FASE 20. Ninguna implementación fue aprobada en FASE 21 — es una decisión de planificación, no un changeset de código.
+- Los Riesgos A–D de FASE 19 y su reinterpretación como MAU en FASE 20 no se reclasifican ni se invalidan.
+- Riesgos E, F, G, H, I permanecen exactamente en el estado documentado en FASE 19. Fuera de alcance de esta fase.
+
+**Fuera de alcance de FASE 21**: implementación de código; diseño de pantallas del Owner Tool (Horizonte 3B); reapertura del MAU o de decisiones cerradas en FASE 19/20; Riesgo E; Riesgos F e I; herramienta de autoservicio para clientes.
+
+**Changeset aplicado**:
+```
+docs/Fase 21.md                     ← nuevo, documento de cierre oficial
+docs/ESTADO_OFICIAL_PROYECTO.md     ← v12, sección 21 incorporada; secciones 1–19 sin alterar
+```
+
+---
+
+## 22. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 21 cerrada.** Ver `docs/Fase 21.md` para historial completo del análisis de secuenciación y ejecución. El Plan Arquitectónico de Implementación del MAU (sección 21) queda congelado.
+
+**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación del MAU congelado (FASE 21).** Próximo paso: inicio de la implementación incremental del MAU, comenzando por **MAU-1 — Contrato Ejecutable de Configuración**, bajo el protocolo obligatorio del proyecto (Análisis → Riesgos → Alternativas → Recomendación → Cambio mínimo → Impacto esperado → Esperando confirmación). No se implementa código hasta que cada paso sea aprobado explícitamente por Andrés.
 
 ---
 
