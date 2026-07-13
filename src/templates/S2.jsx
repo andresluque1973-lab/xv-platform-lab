@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 import { useCountdown } from "./shared/hooks";
+import { useConfig } from "../hooks/useConfig";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // S2.jsx — S2.2
@@ -79,29 +80,7 @@ const MOCK_CONFIG = {
 // En producción: importar useConfig y reemplazar este hook por el real.
 // En preview: usa MOCK_CONFIG directamente.
 function useConfigCompat(slug) {
-  const [config, setConfig] = useState(null);
-  const [error,  setError]  = useState(null);
-
-  useEffect(() => {
-    // Si hay config inyectado por el entorno (producción vía TemplateLoader)
-    if (window.__VELA_CONFIG__) {
-      setConfig(window.__VELA_CONFIG__);
-      return;
-    }
-    // Intento de fetch real (producción normal)
-    fetch(`/clientes/${slug}/config.json`)
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then(setConfig)
-      .catch(() => {
-        // Fallback a mock (preview de Claude u otros entornos sin servidor)
-        setConfig(MOCK_CONFIG);
-      });
-  }, [slug]);
-
-  return { config, error };
+  return useConfig(slug);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
