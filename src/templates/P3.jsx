@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 import { useCountdown } from "./shared/hooks";
+import { useConfig } from "../hooks/useConfig";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // P3.jsx — P3.1
@@ -165,24 +166,7 @@ const MOCK_CONFIG = {
 
 // ── Compatibilidad producción / preview ───────────────────────────────────────
 function useConfigCompat(slug) {
-  const [config, setConfig] = useState(null);
-  const [error,  setError]  = useState(null);
-
-  useEffect(() => {
-    if (window.__VELA_CONFIG__) {
-      setConfig(window.__VELA_CONFIG__);
-      return;
-    }
-    fetch(`/clientes/${slug}/config.json`)
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then(setConfig)
-      .catch(() => setConfig(MOCK_CONFIG));
-  }, [slug]);
-
-  return { config, error };
+  return useConfig(slug);
 }
 
 // ── Animación de entrada — movimiento al servicio ─────────────────────────────
