@@ -1,9 +1,10 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30068577/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29908361/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29684615/ESTADO_OFICIAL_PROYECTO.md)
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 12 · Fecha de corte: 2026-07
+Versión: 13 · Fecha de corte: 2026-07
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -28,7 +29,7 @@ Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume
 
 **Catálogo visual oficial**: `data/catalogo/VARIANTES.md` es fuente de verdad visual. Si una propuesta la contradice, VARIANTES.md prevalece.
 
-**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`, `/docs/Fase 17.md`, `/docs/Fase 18.md`, `/docs/Fase 19.md`, `/docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md`, `/docs/Fase 20.md`, `/docs/Fase 21.md`.
+**Documentación complementaria registrada**: `/docs/FASE_12_2.md`, `/docs/FASE_12_3.md`, `/docs/AUDITORIA_S2.md`, `/docs/AUDITORIA_S2_CIERRE.md`, `/docs/Fase 13.md`, `/docs/Fase 14.md`, `/docs/Fase 15.md`, `/docs/Fase 16.md`, `/docs/Fase 17.md`, `/docs/Fase 18.md`, `/docs/Fase 19.md`, `/docs/VELA_FASE19_AUDITORIA_ARQUITECTONICA.md`, `/docs/Fase 20.md`, `/docs/Fase 21.md`, `/docs/Fase 22.md`.
 
 **Protocolo**: Análisis→Riesgos→Alternativas→Recomendación→Cambio mínimo→Impacto→Esperando confirmación. No implementar sin aprobación. Diffs quirúrgicos. Preservar comentarios y deuda documentada. "Si algo funciona, no se toca."
 
@@ -560,11 +561,63 @@ docs/ESTADO_OFICIAL_PROYECTO.md     ← v12, sección 21 incorporada; secciones 
 
 ---
 
-## 22. PUNTO EXACTO DE CONTINUACIÓN
+## 22. [Sección histórica reemplazada — ver sección 24]
 
-**FASE 21 cerrada.** Ver `docs/Fase 21.md` para historial completo del análisis de secuenciación y ejecución. El Plan Arquitectónico de Implementación del MAU (sección 21) queda congelado.
+La sección 22 de la versión anterior de este documento ("Punto exacto de continuación" al cierre de FASE 21) queda reemplazada por las secciones 23 y 24, que incorporan el cierre de FASE 22. Contenido preservado en `docs/Fase 21.md`, sin alteración.
 
-**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación del MAU congelado (FASE 21).** Próximo paso: inicio de la implementación incremental del MAU, comenzando por **MAU-1 — Contrato Ejecutable de Configuración**, bajo el protocolo obligatorio del proyecto (Análisis → Riesgos → Alternativas → Recomendación → Cambio mínimo → Impacto esperado → Esperando confirmación). No se implementa código hasta que cada paso sea aprobado explícitamente por Andrés.
+---
+
+## 23. FASE 22 — IMPLEMENTACIÓN Y CIERRE DE MAU-1 — CERRADA
+
+**Objetivo cumplido**: implementar y validar MAU-1 — Contrato Ejecutable de Configuración, el primer de los cuatro elementos del MAU, bajo protocolo obligatorio completo. Primera fase de esta secuencia que modifica código de la aplicación (`src/hooks/useConfig.js` y, como prerrequisito técnico, `src/templates/{S2,S3,P1,P2}.jsx` y `P3.jsx`).
+
+**Documento de referencia completo**: `docs/Fase 22.md`.
+
+**Relación con FASE 21**: FASE 21 dejó explícitamente diferido el alcance exacto del primer contrato ejecutable para el inicio de este componente. FASE 22 responde esa pregunta con auditoría de código real, no con la hipótesis no demostrada que FASE 21 registró (contrato STANDARD-primero-PREMIUM-después) — la evidencia mostró que la variación de campos obligatorios ocurre por template individual, no por plan comercial. La sección 21 de este documento permanece sin alteración.
+
+**Hallazgo no anticipado en la planificación de FASE 21**: cinco de los seis templates (S2, S3, P1, P2, P3) no consumían `useConfig.js` real — resolvían su configuración mediante un mecanismo paralelo (`useConfigCompat`) con fallback silencioso a un `MOCK_CONFIG` hardcodeado. Resuelto como **prerrequisito técnico de MAU-1**, validado en Preview Deployment, antes de implementar el contrato. Encuadre explícito: esta intervención no extiende DEUDA-001 — elimina una bifurcación accidental del flujo de carga que nunca formó parte de esa deuda documentada.
+
+**Contrato Ejecutable — resumen de diseño** (detalle completo, esquema por template y justificación campo por campo en `docs/Fase 22.md`, secciones 5–7):
+- Punto único de integración: `useConfig.js`, entre `res.json()` y `setConfig()`. Cubre los 6 templates gracias al prerrequisito técnico.
+- Resolución del template efectivo: `useConfig.js` importa `templateRegistry` y aplica la misma regla de fallback que `TemplateLoader.jsx` — decisión deliberada para no introducir una segunda fuente de verdad sobre qué templates existen.
+- Criterio de obligatoriedad: un campo es obligatorio para un template si su código lo consume mediante acceso directo, sin `?.` ni `\|\|` equivalente. Derivado por lectura completa de los 6 templates, no por muestreo.
+- Alcance exclusivamente estructural: solo `undefined`/`null` cuentan como campo faltante. Cadenas vacías no se validan — validación de contenido queda fuera de MAU-1.
+- `sheet_id` se mantiene opcional en las 6 variantes, incluida P1, pese a una inconsistencia interna detectada en `ConfirmadosSection` de P1 — documentada como observación técnica, no incorporada como regla.
+
+**Validación funcional en Preview Deployment**: ejecutada por Andrés en dos etapas (prerrequisito técnico; luego contrato ejecutable). Confirmada satisfactoria en ambas — sin regresiones visuales ni funcionales en los clientes reales (`sofia`, `valentina`, `andres`), los 6 templates cargan correctamente vía `useConfig()` real, y el contrato detecta configuraciones inválidas antes de renderizar.
+
+**Riesgo A (FASE 19, mapa de riesgos)**: queda resuelto por la implementación de MAU-1. El mapa de riesgos original de FASE 19 no se reclasifica ni se altera — esta es una nota de seguimiento, no una revisión del documento histórico.
+
+**Decisiones cerradas — NO REABRIR**:
+- MAU-1 queda implementado y validado como primer elemento del MAU. El MAU permanece compuesto por 4 elementos, sin alteración de FASE 20.
+- El contrato es por template (S1–P3), no por plan comercial — decisión tomada con evidencia empírica de código, no reabrir sin nueva evidencia.
+- `sheet_id` es opcional en las 6 variantes, incluida P1 — inconsistencia de P1 documentada como observación técnica, no como bug a corregir en esta fase.
+- El acoplamiento `useConfig.js` → `templateRegistry` es una decisión arquitectónica deliberada, justificada en `docs/Fase 22.md` sección 6. No reabrir sin evidencia de que el costo real superó lo previsto.
+- El alcance del contrato es exclusivamente estructural. Validación de contenido o calidad de datos queda fuera de MAU-1.
+- El prerrequisito técnico no extiende DEUDA-001 — elimina una bifurcación accidental del flujo de carga. DEUDA-001 permanece en el estado ya documentado (sección 1), ahora uniforme en los 6 templates.
+
+**Fuera de alcance de FASE 22**: MAU-2, MAU-3, MAU-4; diseño de pantallas del Owner Tool (Horizonte 3B); reapertura de decisiones cerradas en FASE 19, 20 o 21; corrección de inconsistencias de código que no constituyan bug objetivo que impida cumplir el criterio de aceptación de MAU-1.
+
+**Changeset aplicado**:
+```
+docs/Fase 22.md                     ← nuevo, documento de cierre oficial
+docs/ESTADO_OFICIAL_PROYECTO.md     ← v13, sección 23 incorporada; secciones 1–21 sin alterar
+Instrucciones maestras del proyecto ← actualizadas a versión FASE 22
+src/hooks/useConfig.js              ← MAU-1: Contrato Ejecutable de Configuración implementado
+src/templates/S2.jsx                ← prerrequisito técnico: useConfigCompat delega a useConfig() real
+src/templates/S3.jsx                ← ídem
+src/templates/P1.jsx                ← ídem
+src/templates/P2.jsx                ← ídem
+src/templates/P3.jsx                ← ídem
+```
+
+---
+
+## 24. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 22 cerrada.** Ver `docs/Fase 22.md` para historial completo de auditoría, diseño e implementación. MAU-1 — Contrato Ejecutable de Configuración queda implementado y validado.
+
+**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado y validado (FASE 22).** Próximo paso: inicio de MAU-2 — Generación Universal de Configuraciones y/o MAU-3 — Fuente Dinámica de Registro de Clientes, planificables en paralelo según la relación de dependencias congelada en FASE 21. Ninguno de los dos tiene análisis de implementación iniciado — cada uno debe comenzar con su propia auditoría de código real, bajo el protocolo obligatorio completo. No se implementa código hasta que cada paso sea aprobado explícitamente por Andrés.
 
 ---
 
