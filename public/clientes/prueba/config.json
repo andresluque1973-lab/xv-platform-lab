@@ -56,6 +56,6 @@
     { "hora": "00:00", "descripcion": "Torta y brindis" },
     { "hora": "00:30", "descripcion": "Pista de baile" }
   ],
-  //"apps_script_url": "https://script.google.com/macros/s/PLACEHOLDER/exec",
+  "apps_script_url": "https://script.google.com/macros/s/PLACEHOLDER/exec",
   "sheet_id": "PLACEHOLDER_SHEET_ID"
 }
