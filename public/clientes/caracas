@@ -1,0 +1,32 @@
+{
+  "plan": "STANDARD",
+  "template": "S1",
+  "nombre": "caracas",
+  "titulo": "Mis XV",
+  "subtitulo": "podes venir si queres",
+  "fecha_display": "15 Enero 2028",
+  "fecha_larga": "15 de enero",
+  "dia_semana": "Sábado",
+  "anio": "2028",
+  "hora": "12:30 hs",
+  "contador": "2028-01-15T12:30:00",
+  "confirmacion_limite": "31 de diciembre",
+  "lugar": {
+    "nombre": "floresta",
+    "maps_url": "https://share.google/7QINtYExNyfvPDljN"
+  },
+  "dress_code": {
+    "descripcion": "Super elegante",
+    "aclaracion": "sin medias"
+  },
+  "musica": {
+    "src": "/clientes/caracas/musica.mp3",
+    "nombre": "rolling stones - wel"
+  },
+  "regalo": {
+    "alias": "caracas.mp",
+    "cvu": "0000000000000123456"
+  },
+  "apps_script_url": "https://script.google.com/macros/s/AKfycbwSizWqqLNOtRKFmcBy8PsgJl2lg8OndDHnO5ImE0koO3_v7GjhKyW6D7uToSfuQrQeHw/exec",
+  "sheet_id": "sheet_id\":\"1oMy2NlFAkDyfn65SW3YntEutD5O2m9z-XC93ogsewXc"
+}
