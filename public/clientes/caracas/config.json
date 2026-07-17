@@ -2,7 +2,7 @@
   "plan": "STANDARD",
   "template": "S1",
   "nombre": "caracas",
-  "titulo": "Mis XV",
+  "titulo": "Mis 50 años",
   "subtitulo": "podes venir si queres",
   "fecha_display": "15 Enero 2028",
   "fecha_larga": "15 de enero",
@@ -27,6 +27,6 @@
     "alias": "caracas.mp",
     "cvu": "0000000000000123456"
   },
-  "apps_script_url": "https://script.google.com/macros/s/AKfycbwSizWqqLNOtRKFmcBy8PsgJl2lg8OndDHnO5ImE0koO3_v7GjhKyW6D7uToSfuQrQeHw/exec",
-  "sheet_id": "sheet_id\":\"1oMy2NlFAkDyfn65SW3YntEutD5O2m9z-XC93ogsewXc"
+  "apps_script_url":"https://script.google.com/macros/s/AKfycbwSizWqqLNOtRKFmcBy8PsgJl2lg8OndDHnO5ImE0koO3_v7GjhKyW6D7uToSfuQrQeHw/exec",
+  "sheet_id":"1oMy2NlFAkDyfn65SW3YntEutD5O2m9z-XC93ogsewXc"
 }
