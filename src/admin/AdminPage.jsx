@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { catalogo } from '../../data/catalogo/templates.js';
+import { REQUIRED_FIELDS, validate } from '../hooks/useConfig.js';
+import { templateRegistry } from '../templates/templateRegistry.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PLANES — derivado desde catálogo
@@ -19,6 +21,33 @@ const PLANES = catalogo.templates.reduce((acc, t) => {
   }
   return acc;
 }, {});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Modo Validación (MAU-2) — verdad técnica de qué templates existen y
+// funcionan, sin pasar por el filtro comercial de PLANES. El catálogo
+// (data/catalogo/templates.js) sigue siendo la única fuente de verdad sobre
+// disponibilidad comercial; esto solo habilita generar un config.json de
+// prueba para un template que el catálogo todavía marca "proximamente",
+// como paso previo a su validación en Preview Deployment.
+// ─────────────────────────────────────────────────────────────────────────────
+const TEMPLATES_TECNICOS_POR_PLAN = Object.entries(templateRegistry).reduce(
+  (acc, [codigo, meta]) => {
+    const plan = meta.category === 'premium' ? 'PREMIUM' : 'STANDARD';
+    if (!acc[plan]) acc[plan] = [];
+    acc[plan].push(codigo);
+    return acc;
+  },
+  {}
+);
+
+const ESTADO_POR_CODIGO = catalogo.templates.reduce((acc, t) => {
+  acc[t.codigo] = t.estado;
+  return acc;
+}, {});
+
+function esEnValidacion(codigo) {
+  return ESTADO_POR_CODIGO[codigo] !== 'disponible' && !LEGACY_VISIBLE.includes(codigo);
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helper — genera el valor autogenerado esperado para musica_src. 
@@ -69,10 +98,43 @@ function isMusicSrcValid(src) {
   );
 }
 // ─────────────────────────────────────────────────────────────────────────────
-// buildConfig — mapeo explícito de fields → estructura JSON del cliente
-// Contrato: replica exactamente las claves que consume standard1.jsx
+// parseLineItems — MAU-2. Convierte texto de un <textarea> (una línea por
+// ítem) en un array. Si itemFields es null, cada línea es un string directo
+// (uso: fotos). Si itemFields es un array de nombres (ej. ['hora',
+// 'descripcion']), cada línea se separa por "|" y se arma un objeto — las
+// líneas con una cantidad de segmentos distinta a la esperada se reportan
+// en `errores` con su número de línea, en vez de generarse silenciosamente
+// incompletas.
 // ─────────────────────────────────────────────────────────────────────────────
-function buildConfig(fields) {
+function parseLineItems(text, itemFields) {
+  const lineas = (text || '').split('\n').map(l => l.trim()).filter(Boolean);
+  const errores = [];
+
+  const items = lineas.map((linea, i) => {
+    if (!itemFields) return linea;
+
+    const partes = linea.split('|').map(p => p.trim());
+
+    if (partes.length !== itemFields.length) {
+      errores.push(
+        `Línea ${i + 1}: se esperaban ${itemFields.length} campos separados por "|" ` +
+        `(${itemFields.join(' | ')}), se encontraron ${partes.length}.`
+      );
+    }
+
+    return Object.fromEntries(itemFields.map((campo, idx) => [campo, partes[idx] ?? '']));
+  });
+
+  return { items, errores };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// buildConfigS1 — mapeo explícito de fields → estructura JSON del cliente
+// Contrato: replica exactamente las claves que consume standard1.jsx
+// Renombrada desde buildConfig() en MAU-2 (FASE 23) — sin cambios de lógica,
+// pasa a ser una de las 6 funciones del dispatcher TEMPLATE_BUILDERS.
+// ─────────────────────────────────────────────────────────────────────────────
+function buildConfigS1(fields) {
   const { slug, nombre, subtitulo, fecha, hora, salon } = fields;
 
   const fechas = derivarFechas(fields.contador);
@@ -132,6 +194,204 @@ function buildConfig(fields) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// buildConfigS2 — mismos campos base que S1, sin dress_code_descripcion
+// requerido, sumando whatsapp_url (campo propio de S2). Campos derivados
+// mecánicamente de REQUIRED_FIELDS.S2 en useConfig.js.
+// ─────────────────────────────────────────────────────────────────────────────
+function buildConfigS2(fields) {
+  const { slug, nombre, subtitulo, fecha, hora, salon } = fields;
+  const fechas = derivarFechas(fields.contador);
+
+  return {
+    plan:     fields.plan     || 'STANDARD',
+    template: fields.template || 'S2',
+
+    nombre:    nombre    || '',
+    subtitulo: subtitulo || '',
+
+    fecha_display: fecha || '',
+    fecha_larga:   fechas?.fecha_larga ?? '',
+    dia_semana:    fechas?.dia_semana  ?? '',
+    anio:          fechas?.anio        ?? '',
+    hora:          hora  || '',
+
+    contador:            fields.contador            || '',
+    confirmacion_limite: fields.confirmacion_limite || '',
+    whatsapp_url:        fields.whatsapp_url         || '',
+
+    lugar: {
+      nombre:   salon           || '',
+      maps_url: fields.maps_url || '',
+    },
+
+    dress_code: {
+      descripcion: fields.dress_code_descripcion || '',
+      aclaracion:  fields.dress_code_aclaracion  || '',
+    },
+
+    musica: {
+      src:    fields.musica_src    || autoSrc(slug),
+      nombre: fields.musica_nombre || '',
+    },
+
+    regalo: {
+      alias: fields.alias || '',
+      cvu:   fields.cvu   || '',
+    },
+
+    apps_script_url: fields.apps_script_url || '',
+    sheet_id:        fields.sheet_id        || '',
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// buildConfigS3 — reutiliza la forma de S2 (mismos campos base + whatsapp_url)
+// sumando titulo (requerido en S3, no en S2) y fotos (opcional, array de
+// URLs). Campos derivados de REQUIRED_FIELDS.S3.
+// ─────────────────────────────────────────────────────────────────────────────
+function buildConfigS3(fields) {
+  const base = buildConfigS2({ ...fields, template: fields.template || 'S3' });
+  const { items: fotos } = parseLineItems(fields.fotos_raw, null);
+
+  return {
+    ...base,
+    titulo: fields.titulo || '',
+    fotos,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// buildConfigP1 — primera forma PREMIUM. Introduce historia{}, timeline[],
+// itinerario[] y fotos[] (los tres arrays via parseLineItems). Campos
+// derivados de REQUIRED_FIELDS.P1.
+// ─────────────────────────────────────────────────────────────────────────────
+function buildConfigP1(fields) {
+  const { slug, nombre, subtitulo, fecha, hora, salon } = fields;
+  const fechas = derivarFechas(fields.contador);
+
+  const { items: fotos }      = parseLineItems(fields.fotos_raw, null);
+  const { items: itinerario } = parseLineItems(fields.itinerario_raw, ['hora', 'descripcion']);
+  const { items: timeline }   = parseLineItems(fields.timeline_raw, ['fecha', 'texto']);
+
+  return {
+    plan:     fields.plan     || 'PREMIUM',
+    template: fields.template || 'P1',
+
+    nombre:    nombre    || '',
+    subtitulo: subtitulo || '',
+
+    fecha_display: fecha || '',
+    fecha_larga:   fechas?.fecha_larga ?? '',
+    dia_semana:    fechas?.dia_semana  ?? '',
+    anio:          fechas?.anio        ?? '',
+    hora:          hora  || '',
+
+    contador:            fields.contador            || '',
+    confirmacion_limite: fields.confirmacion_limite || '',
+
+    historia: {
+      titulo: fields.historia_titulo || '',
+      cuerpo: fields.historia_cuerpo || '',
+    },
+    timeline,
+    itinerario,
+    fotos,
+
+    lugar: {
+      nombre:   salon           || '',
+      maps_url: fields.maps_url || '',
+    },
+
+    dress_code: {
+      descripcion: fields.dress_code_descripcion || '',
+      aclaracion:  fields.dress_code_aclaracion  || '',
+    },
+
+    musica: {
+      src:    fields.musica_src    || autoSrc(slug),
+      nombre: fields.musica_nombre || '',
+    },
+
+    regalo: {
+      alias: fields.alias || '',
+      cvu:   fields.cvu   || '',
+    },
+
+    apps_script_url: fields.apps_script_url || '',
+    sheet_id:        fields.sheet_id        || '',
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// buildConfigP2 — misma forma que P1 (REQUIRED_FIELDS.P2 es un subconjunto
+// de los mismos campos; historia/timeline/itinerario no son obligatorios
+// para P2 pero el template los consume si están presentes, por eso se
+// generan igual, como arrays vacíos si el operador no completó el textarea).
+// ─────────────────────────────────────────────────────────────────────────────
+function buildConfigP2(fields) {
+  return buildConfigP1({
+    ...fields,
+    plan:     fields.plan     || 'PREMIUM',
+    template: fields.template || 'P2',
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// buildConfigP3 — misma forma que P1/P2, sumando titulo (requerido en P3,
+// no en P1/P2). Campos derivados de REQUIRED_FIELDS.P3.
+// ─────────────────────────────────────────────────────────────────────────────
+function buildConfigP3(fields) {
+  const base = buildConfigP1({
+    ...fields,
+    plan:     fields.plan     || 'PREMIUM',
+    template: fields.template || 'P3',
+  });
+
+  return {
+    ...base,
+    titulo: fields.titulo || '',
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TEMPLATE_BUILDERS — dispatcher. Único punto que decide qué forma de config
+// se construye según fields.template. Las 6 funciones derivan su lista de
+// campos obligatorios de REQUIRED_FIELDS (useConfig.js) — no hay una segunda
+// definición del contrato aquí, solo el mapeo de cada campo a su input del
+// formulario.
+// ─────────────────────────────────────────────────────────────────────────────
+const TEMPLATE_BUILDERS = {
+  S1: buildConfigS1,
+  S2: buildConfigS2,
+  S3: buildConfigS3,
+  P1: buildConfigP1,
+  P2: buildConfigP2,
+  P3: buildConfigP3,
+};
+
+function buildConfig(fields) {
+  const builder = TEMPLATE_BUILDERS[fields.template] || buildConfigS1;
+  return builder(fields);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ARRAY_FIELDS_POR_TEMPLATE — qué campos de texto libre (arrays) tiene cada
+// template y con qué forma de ítem, para poder validarlos ANTES de construir
+// el config (ver erroresDeArrays, usado en generar()).
+// ─────────────────────────────────────────────────────────────────────────────
+const ARRAY_FIELDS_POR_TEMPLATE = {
+  S3: [['fotos_raw', null]],
+  P1: [['fotos_raw', null], ['itinerario_raw', ['hora', 'descripcion']], ['timeline_raw', ['fecha', 'texto']]],
+  P2: [['fotos_raw', null], ['itinerario_raw', ['hora', 'descripcion']], ['timeline_raw', ['fecha', 'texto']]],
+  P3: [['fotos_raw', null], ['itinerario_raw', ['hora', 'descripcion']], ['timeline_raw', ['fecha', 'texto']]],
+};
+
+function erroresDeArrays(fields) {
+  const specs = ARRAY_FIELDS_POR_TEMPLATE[fields.template] || [];
+  return specs.flatMap(([campo, itemFields]) => parseLineItems(fields[campo], itemFields).errores);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // AdminPage
 // ─────────────────────────────────────────────────────────────────────────────
 export default function AdminPage() {
@@ -163,7 +423,25 @@ export default function AdminPage() {
     // Servicio
     apps_script_url: '',
     sheet_id: '',
+    // Campos propios de S2/S3 (whatsapp) y S3/P3 (titulo)
+    whatsapp_url: '',
+    titulo: '',
+    // Campos propios de P1/P2/P3
+    historia_titulo: '',
+    historia_cuerpo: '',
+    itinerario_raw: '',
+    timeline_raw: '',
+    fotos_raw: '',
   });
+
+  // Modo Validación (MAU-2): permite elegir cualquier template registrado
+  // técnicamente, sin pasar por el filtro comercial de PLANES. El catálogo
+  // sigue siendo la única fuente de verdad de disponibilidad comercial.
+  const [modoValidacion, setModoValidacion] = useState(false);
+
+  // Errores del Contrato Ejecutable (MAU-1) + del parser de arrays,
+  // detectados antes de generar el config.json — ver generar().
+  const [contratoErrores, setContratoErrores] = useState([]);
 
   const [json,      setJson]      = useState('');
   const [stage,     setStage]     = useState('form'); // 'form' | 'preview'
@@ -202,10 +480,14 @@ export default function AdminPage() {
   };
 
   const updatePlan = (nuevoPlan) => {
+    const lista = modoValidacion
+      ? TEMPLATES_TECNICOS_POR_PLAN[nuevoPlan]
+      : PLANES[nuevoPlan];
+
     setFields(prev => ({
       ...prev,
       plan:     nuevoPlan,
-      template: PLANES[nuevoPlan]?.[0] || 'S1',
+      template: lista?.[0] || 'S1',
     }));
   };
 
@@ -228,9 +510,28 @@ export default function AdminPage() {
     setContadorError(false);
   
     setScriptWarn(!fields.apps_script_url.trim());
-  
-    const config = buildConfig({ ...fields, slug });
-  
+
+    const fieldsConSlug = { ...fields, slug };
+    const config = buildConfig(fieldsConSlug);
+
+    // Contrato Ejecutable (MAU-1) + parser de arrays (MAU-2) — misma función
+    // validate() que usa useConfig.js en producción, sin una segunda lista
+    // de campos obligatorios definida acá.
+    const schema = REQUIRED_FIELDS[fields.template] || REQUIRED_FIELDS.S1;
+    const camposFaltantes = validate(config, schema);
+    const erroresArrays   = erroresDeArrays(fieldsConSlug);
+
+    const errores = [
+      ...erroresArrays,
+      ...camposFaltantes.map(campo => `Falta completar: ${campo}`),
+    ];
+
+    if (errores.length > 0) {
+      setContratoErrores(errores);
+      return;
+    }
+    setContratoErrores([]);
+
     setJson(JSON.stringify(config, null, 2));
   
     setStage('preview');
@@ -365,12 +666,56 @@ export default function AdminPage() {
           {/* SECCIÓN: Producto VELA                                       */}
           {/* ══════════════════════════════════════════════════════════════ */}
           <p style={sectionTitle}>Producto VELA</p>
-          
+
+          <div className="mb-7 flex items-center justify-between">
+            <label style={{ ...labelStyle, marginBottom: 0 }}>Modo Validación</label>
+            <button
+              type="button"
+              onClick={() => {
+                const activar = !modoValidacion;
+                setModoValidacion(activar);
+                // Al cambiar de modo, reencuadrar el template activo contra
+                // la lista correspondiente (evita quedar en un template que
+                // dejó de estar visible al desactivar el modo).
+                const lista = activar
+                  ? TEMPLATES_TECNICOS_POR_PLAN[fields.plan]
+                  : PLANES[fields.plan];
+                if (!lista?.includes(fields.template)) {
+                  setFields(prev => ({ ...prev, template: lista?.[0] || 'S1' }));
+                }
+              }}
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: 11,
+                letterSpacing: '0.25em',
+                textTransform: 'uppercase',
+                padding: '5px 14px',
+                border: modoValidacion ? '1px solid #8B7355' : '1px solid rgba(185,166,142,0.4)',
+                background: modoValidacion ? '#8B7355' : 'transparent',
+                color: modoValidacion ? '#F8F5EF' : '#8B7355',
+                cursor: 'pointer',
+                transition: 'all .2s',
+              }}
+            >
+              {modoValidacion ? 'Activado' : 'Desactivado'}
+            </button>
+          </div>
+
+          {modoValidacion && (
+            <div className="mb-7 p-4" style={{ background: 'rgba(139,115,85,0.12)', borderLeft: '2px solid #8B7355' }}>
+              <p style={{ fontSize: 12, color: '#8B7355', fontWeight: 500, lineHeight: 1.6 }}>
+                ⚠ Modo Validación activo — se muestran todos los templates registrados técnicamente,
+                incluso los que el catálogo aún marca "En validación" y no están disponibles
+                comercialmente. Usar solo para generar configs de prueba en Preview Deployment.
+              </p>
+            </div>
+          )}
+
           <div className="mb-7">
             <label style={labelStyle}>Plan</label>
           
             <div className="flex gap-4 mt-1">
-              {Object.keys(PLANES).map(plan => (
+              {Object.keys(modoValidacion ? TEMPLATES_TECNICOS_POR_PLAN : PLANES).map(plan => (
                 <button
                   key={plan}
                   type="button"
@@ -410,8 +755,8 @@ export default function AdminPage() {
           <div className="mb-7">
             <label style={labelStyle}>Template</label>
           
-            <div className="flex gap-4 mt-1">
-              {(PLANES[fields.plan] || []).map(tpl => (
+            <div className="flex gap-4 mt-1 flex-wrap">
+              {(modoValidacion ? TEMPLATES_TECNICOS_POR_PLAN[fields.plan] : PLANES[fields.plan] || []).map(tpl => (
                 <button
                   key={tpl}
                   type="button"
@@ -443,6 +788,9 @@ export default function AdminPage() {
                   }}
                 >
                   {tpl}
+                  {modoValidacion && esEnValidacion(tpl) && (
+                    <span style={{ marginLeft: 8, fontSize: 9, opacity: 0.75 }}>· En validación</span>
+                  )}
                 </button>
               ))}
             </div>
@@ -490,6 +838,19 @@ export default function AdminPage() {
               placeholder="Melani"
             />
           </div>
+
+          {(fields.template === 'S3' || fields.template === 'P3') && (
+            <div className="mb-7">
+              <label style={labelStyle}>Título</label>
+              <input
+                style={inputStyle}
+                value={fields.titulo}
+                onChange={e => update('titulo', e.target.value)}
+                placeholder="Mis XV"
+              />
+              <p style={hintStyle}>Campo propio de S3 y P3 — se muestra como encabezado, independiente del nombre.</p>
+            </div>
+          )}
 
           <div className="mb-7">
             <label style={labelStyle}>Frase</label>
@@ -599,6 +960,19 @@ export default function AdminPage() {
             <p style={hintStyle}>URL completa del lugar en Google Maps.</p>
           </div>
 
+          {(fields.template === 'S2' || fields.template === 'S3') && (
+            <div className="mb-7">
+              <label style={labelStyle}>Link de WhatsApp</label>
+              <input
+                style={inputStyle}
+                value={fields.whatsapp_url}
+                onChange={e => update('whatsapp_url', e.target.value)}
+                placeholder="https://wa.me/549..."
+              />
+              <p style={hintStyle}>Campo propio de S2 y S3 — obligatorio para este template.</p>
+            </div>
+          )}
+
           {divider}
 
           {/* ══════════════════════════════════════════════════════════════ */}
@@ -702,6 +1076,94 @@ export default function AdminPage() {
           {divider}
 
           {/* ══════════════════════════════════════════════════════════════ */}
+          {/* SECCIÓN: Historia y contenido PREMIUM (P1/P2/P3)               */}
+          {/* ══════════════════════════════════════════════════════════════ */}
+          {['P1', 'P2', 'P3'].includes(fields.template) && (
+            <>
+              <p style={sectionTitle}>Historia</p>
+
+              <div className="mb-7">
+                <label style={labelStyle}>Título de la historia</label>
+                <input
+                  style={inputStyle}
+                  value={fields.historia_titulo}
+                  onChange={e => update('historia_titulo', e.target.value)}
+                  placeholder="Nuestra historia"
+                />
+              </div>
+
+              <div className="mb-7">
+                <label style={labelStyle}>Cuerpo</label>
+                <textarea
+                  style={{ ...inputStyle, minHeight: 90 }}
+                  value={fields.historia_cuerpo}
+                  onChange={e => update('historia_cuerpo', e.target.value)}
+                  placeholder="Texto libre, se muestra tal cual."
+                  rows={4}
+                />
+              </div>
+
+              {divider}
+
+              <p style={sectionTitle}>Timeline</p>
+              <div className="mb-7">
+                <label style={labelStyle}>Una línea por ítem — formato: fecha | texto</label>
+                <textarea
+                  style={{ ...inputStyle, minHeight: 90, fontFamily: 'monospace', fontSize: 13 }}
+                  value={fields.timeline_raw}
+                  onChange={e => update('timeline_raw', e.target.value)}
+                  placeholder={'2010 | Nace Melani\n2020 | Primer viaje en familia'}
+                  rows={4}
+                  spellCheck={false}
+                />
+                <p style={hintStyle}>El orden de las líneas se preserva tal cual en el array final.</p>
+              </div>
+
+              {divider}
+
+              <p style={sectionTitle}>Itinerario</p>
+              <div className="mb-7">
+                <label style={labelStyle}>Una línea por ítem — formato: hora | descripción</label>
+                <textarea
+                  style={{ ...inputStyle, minHeight: 90, fontFamily: 'monospace', fontSize: 13 }}
+                  value={fields.itinerario_raw}
+                  onChange={e => update('itinerario_raw', e.target.value)}
+                  placeholder={'19:00 | Recepción de invitados\n21:00 | Entrada de la quinceañera'}
+                  rows={4}
+                  spellCheck={false}
+                />
+              </div>
+
+              {divider}
+            </>
+          )}
+
+          {/* ══════════════════════════════════════════════════════════════ */}
+          {/* SECCIÓN: Fotos (S3 opcional · P1/P2/P3)                        */}
+          {/* ══════════════════════════════════════════════════════════════ */}
+          {['S3', 'P1', 'P2', 'P3'].includes(fields.template) && (
+            <>
+              <p style={sectionTitle}>Fotos</p>
+              <div className="mb-7">
+                <label style={labelStyle}>Una URL por línea</label>
+                <textarea
+                  style={{ ...inputStyle, minHeight: 90, fontFamily: 'monospace', fontSize: 13 }}
+                  value={fields.fotos_raw}
+                  onChange={e => update('fotos_raw', e.target.value)}
+                  placeholder={'https://ejemplo.com/foto1.jpg\nhttps://ejemplo.com/foto2.jpg'}
+                  rows={4}
+                  spellCheck={false}
+                />
+                <p style={hintStyle}>
+                  {fields.template === 'S3' ? 'Opcional en S3.' : 'Sin URLs, se genera un array vacío.'}
+                </p>
+              </div>
+
+              {divider}
+            </>
+          )}
+
+          {/* ══════════════════════════════════════════════════════════════ */}
           {/* SECCIÓN: Servicio                                              */}
           {/* ══════════════════════════════════════════════════════════════ */}
           <p style={sectionTitle}>Servicio</p>
@@ -752,6 +1214,20 @@ export default function AdminPage() {
               ID de la hoja de Google Sheets vinculada.
             </p>
           </div>
+
+          {/* ── Errores del Contrato Ejecutable (MAU-1) + parser (MAU-2) ── */}
+          {contratoErrores.length > 0 && (
+            <div className="mb-5 p-4" style={{ background: 'rgba(196,132,138,0.1)', borderLeft: '2px solid #c4848a' }}>
+              <p style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c4848a', fontWeight: 600, marginBottom: 8 }}>
+                No se puede generar — {contratoErrores.length} {contratoErrores.length === 1 ? 'problema' : 'problemas'}
+              </p>
+              <ul style={{ margin: 0, paddingLeft: 18 }}>
+                {contratoErrores.map((e, i) => (
+                  <li key={i} style={{ fontSize: 12, color: '#8B4550', marginBottom: 4, lineHeight: 1.5 }}>{e}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* ── Botón generar ── */}
           <button
