@@ -1,8 +1,8 @@
 {
-  "plan": "STANDARD",
-  "template": "S2",
-  "nombre": "pruebaS2",
-  "subtitulo": "hola sandard S2",
+  "plan": "PREMIUM",
+  "template": "P1",
+  "nombre": "pruebaP1",
+  "subtitulo": "hola sandard P1",
   "fecha_display": "15 Agosto 2027",
   "fecha_larga": "15 de agosto",
   "dia_semana": "Domingo",
@@ -10,7 +10,38 @@
   "hora": "23:35 hs",
   "contador": "2027-08-15T23:35:00",
   "confirmacion_limite": "1 de agosto",
-  "whatsapp_url": "http://wa.me/5491161084650",
+  "historia": {
+    "titulo": "Como empezo todo esto P1",
+    "cuerpo": "empezo con un tarjeta simple y esccalo a SaaS"
+  },
+  "timeline": [
+    {
+      "fecha": "2024",
+      "texto": "comienzo noecocina"
+    },
+    {
+      "fecha": "2025",
+      "texto": "continuacion SaaS"
+    },
+    {
+      "fecha": "2026",
+      "texto": "puesta en marcha"
+    }
+  ],
+  "itinerario": [
+    {
+      "hora": "20:00",
+      "descripcion": "muestra"
+    },
+    {
+      "hora": "21:00",
+      "descripcion": "salida"
+    }
+  ],
+  "fotos": [
+    "https://drive.google.com/file/d/153vK4wLeExfqM9NQWIiH71PiaI1P7smI/view?usp=drive_link",
+    "https://drive.google.com/file/d/1dfOYSzi67W6HTEM4zUYywXJYajMc4QsT/view?usp=drive_link"
+  ],
   "lugar": {
     "nombre": "flores",
     "maps_url": "https://share.google/lSGY2toB3j0OakAMS"
@@ -26,5 +57,7 @@
   "regalo": {
     "alias": "pruebaS2",
     "cvu": "000000000222222222222"
-  }
+  },
+  "apps_script_url": "https://script.google.com/macros/s/AKfycbwSizWqqLNOtRKFmcBy8PsgJl2lg8OndDHnO5ImE0koO3_v7GjhKyW6D7uToSfuQrQeHw/exec",
+  "sheet_id": "1oMy2NlFAkDyfn65SW3YntEutD5O2m9z-XC93ogsewXc"
 }
