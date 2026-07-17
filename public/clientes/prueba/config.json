@@ -1,61 +1,29 @@
 {
-  "plan": "Premium",
-  "template": "P1",
-  "nombre": "Valentina",
-  "titulo": "Mis XV",
-  "subtitulo": "Quiero que seas parte de este momento",
-  "fecha_display": "Sábado 15 · Agosto · 2026",
+  "plan": "STANDARD",
+  "template": "S2",
+  "nombre": "pruebaS2",
+  "subtitulo": "hola sandard S2",
+  "fecha_display": "15 Agosto 2027",
   "fecha_larga": "15 de agosto",
-  "dia_semana": "Sábado",
-  "anio": "2026",
-  "hora": "21:00 hs",
-  "contador": "2026-08-15T21:00:00",
+  "dia_semana": "Domingo",
+  "anio": "2027",
+  "hora": "23:35 hs",
+  "contador": "2027-08-15T23:35:00",
   "confirmacion_limite": "1 de agosto",
+  "whatsapp_url": "http://wa.me/5491161084650",
   "lugar": {
-    "nombre": "Espacio 1805",
-    "maps_url": "https://maps.google.com"
+    "nombre": "flores",
+    "maps_url": "https://share.google/lSGY2toB3j0OakAMS"
   },
   "dress_code": {
-    "descripcion": "Formal",
-    "aclaracion": "Evitar zapatillas deportivas"
+    "descripcion": "Elegante",
+    "aclaracion": "Evitar zapatillas"
   },
   "musica": {
-    "src": "/clientes/prueba/musica.mp3",
-    "nombre": "Taylor Swift — Cruel Summer"
+    "src": "/clientes/sofia/musica.mp3",
+    "nombre": "Taylor - Cruel"
   },
   "regalo": {
-    "alias": "valentina.mp",
-    "cvu": "0000003100086337366028"
-  },
-  "historia": {
-    "titulo": "Nuestra Valentina",
-    "cuerpo": "Hace quince años llegaste a iluminar cada rincón de nuestra familia.\n\nDesde el primer día supiste cómo llenar los espacios con tu risa, tu curiosidad y esa forma tan tuya de ver el mundo.\n\nHoy, al verte convertida en la joven increíble que sos, solo podemos estar agradecidos por cada momento compartido."
-  },
-  "timeline": [
-    { "fecha": "2009",     "texto": "Llegaste al mundo y todo cambió para siempre." },
-    { "fecha": "2013",     "texto": "Tus primeros pasos de danza — ya sabíamos que el escenario te pertenecía." },
-    { "fecha": "2017",     "texto": "Viaje a Bariloche con la familia. Nevó por primera vez." },
-    { "fecha": "2021",     "texto": "Comenzaste el secundario. Nuevos amigos, nuevas historias." },
-    { "fecha": "Este año", "texto": "Tus XV. El comienzo de la mejor etapa." }
-  ],
-  "fotos": [
-    "https://picsum.photos/seed/val1/800/600",
-    "https://picsum.photos/seed/val2/600/800",
-    "https://picsum.photos/seed/val3/800/600",
-    "https://picsum.photos/seed/val4/600/600",
-    "https://picsum.photos/seed/val5/800/500",
-    "https://picsum.photos/seed/val6/600/800",
-    "https://picsum.photos/seed/val7/800/600",
-    "https://picsum.photos/seed/val8/600/600"
-  ],
-  "itinerario": [
-    { "hora": "21:00", "descripcion": "Recepción de invitados" },
-    { "hora": "21:30", "descripcion": "Ingreso de la festejada" },
-    { "hora": "22:00", "descripcion": "Vals y baile de honor" },
-    { "hora": "22:30", "descripcion": "Cena" },
-    { "hora": "00:00", "descripcion": "Torta y brindis" },
-    { "hora": "00:30", "descripcion": "Pista de baile" }
-  ],
-  "apps_script_url": "https://script.google.com/macros/s/PLACEHOLDER/exec",
-  "sheet_id": "PLACEHOLDER_SHEET_ID"
-}
+    "alias": "pruebaS2",
+    "cvu": "000000000222222222222"
+  }
