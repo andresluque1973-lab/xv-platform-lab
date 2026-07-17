@@ -39,8 +39,14 @@
     }
   ],
   "fotos": [
-    "https://drive.google.com/file/d/153vK4wLeExfqM9NQWIiH71PiaI1P7smI/view?usp=drive_link",
-    "https://drive.google.com/file/d/1dfOYSzi67W6HTEM4zUYywXJYajMc4QsT/view?usp=drive_link"
+    "https://picsum.photos/seed/val1/800/600",
+    "https://picsum.photos/seed/val2/600/800",
+    "https://picsum.photos/seed/val3/800/600",
+    "https://picsum.photos/seed/val4/600/600",
+    "https://picsum.photos/seed/val5/800/500",
+    "https://picsum.photos/seed/val6/600/800",
+    "https://picsum.photos/seed/val7/800/600",
+    "https://picsum.photos/seed/val8/600/600"
   ],
   "lugar": {
     "nombre": "flores",
