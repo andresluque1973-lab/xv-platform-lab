@@ -35,7 +35,12 @@ import { templateRegistry } from "../templates/templateRegistry";
 //     observación técnica, no como regla del contrato.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const REQUIRED_FIELDS = {
+// Exportado desde MAU-2 (FASE 23) para que AdminPage.jsx reutilice el mismo
+// contrato en vez de replicar los nombres de campo — evita una segunda
+// fuente de verdad que pueda divergir de este contrato. Contenido y alcance
+// sin cambios respecto de MAU-1 (FASE 22); solo se agrega la palabra clave
+// `export`. Ver análisis de la decisión en el chat de MAU-2.
+export const REQUIRED_FIELDS = {
   S1: [
     "nombre", "fecha_display", "fecha_larga", "hora", "dia_semana",
     "contador", "confirmacion_limite", "lugar.maps_url", "musica.src",
@@ -73,7 +78,8 @@ function getPath(obj, path) {
 
 // Solo undefined/null cuentan como campo faltante (alcance estructural,
 // no de contenido — ver nota de alcance más arriba).
-function validate(data, schema) {
+// Exportado desde MAU-2 (FASE 23) — mismo motivo que REQUIRED_FIELDS arriba.
+export function validate(data, schema) {
   return schema.filter((path) => {
     const v = getPath(data, path);
     return v === undefined || v === null;
