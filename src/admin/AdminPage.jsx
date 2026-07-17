@@ -239,8 +239,10 @@ function buildConfigS2(fields) {
       cvu:   fields.cvu   || '',
     },
 
-    apps_script_url: fields.apps_script_url || '',
-    sheet_id:        fields.sheet_id        || '',
+    // apps_script_url / sheet_id deliberadamente ausentes: no forman parte
+    // del contrato de datos de STANDARD (PRODUCTOS.md §3.4, nota "Campos
+    // heredados de S1") ni son consumidos por S2.jsx/S3.jsx. Auditado
+    // 2026-07 — ver hallazgo de MAU-2 sobre RIESGO-D / matriz de campos.
   };
 }
 
@@ -509,7 +511,8 @@ export default function AdminPage() {
   
     setContadorError(false);
   
-    setScriptWarn(!fields.apps_script_url.trim());
+    const REQUIERE_APPS_SCRIPT = ['S1', 'P1', 'P2', 'P3'];
+    setScriptWarn(REQUIERE_APPS_SCRIPT.includes(fields.template) && !fields.apps_script_url.trim());
 
     const fieldsConSlug = { ...fields, slug };
     const config = buildConfig(fieldsConSlug);
@@ -1164,56 +1167,63 @@ export default function AdminPage() {
           )}
 
           {/* ══════════════════════════════════════════════════════════════ */}
-          {/* SECCIÓN: Servicio                                              */}
+          {/* SECCIÓN: Servicio (RSVP integrado)                             */}
+          {/* Exclusivo PREMIUM según PRODUCTOS.md §4.5, con S1 como única   */}
+          {/* excepción histórica documentada en §6. NO se muestra para      */}
+          {/* S2/S3 — no forma parte de su contrato de datos.                */}
           {/* ══════════════════════════════════════════════════════════════ */}
-          <p style={sectionTitle}>Servicio</p>
-          
-          <div className="mb-7">
-            <label style={labelStyle}>Apps Script URL</label>
-          
-            <input
-              style={inputStyle}
-              value={fields.apps_script_url}
-              onChange={e => {
-                update('apps_script_url', e.target.value);
-                setScriptWarn(false);
-              }}
-              placeholder="https://script.google.com/macros/s/..."
-            />
-          
-            <p style={hintWarnStyle}>
-              Campo crítico. Sin esta URL las confirmaciones de asistencia no llegan a Google Sheets.
-            </p>
-          
-            {scriptWarn && (
-              <p
-                style={{
-                  fontSize:11,
-                  color:'#c4848a',
-                  marginTop:6,
-                  fontWeight:500
-                }}
-              >
-                ⚠ Generaste sin Apps Script URL — las confirmaciones no funcionarán.
-              </p>
-            )}
-          </div>
-          
-          {/* NUEVO: Sheet ID */}
-          <div className="mb-7">
-            <label style={labelStyle}>Sheet ID</label>
-          
-            <input
-              style={inputStyle}
-              value={fields.sheet_id}
-              onChange={e => update('sheet_id', e.target.value)}
-              placeholder="ID de la hoja"
-            />
-          
-            <p style={hintStyle}>
-              ID de la hoja de Google Sheets vinculada.
-            </p>
-          </div>
+          {['S1', 'P1', 'P2', 'P3'].includes(fields.template) && (
+            <>
+              <p style={sectionTitle}>Servicio</p>
+              
+              <div className="mb-7">
+                <label style={labelStyle}>Apps Script URL</label>
+              
+                <input
+                  style={inputStyle}
+                  value={fields.apps_script_url}
+                  onChange={e => {
+                    update('apps_script_url', e.target.value);
+                    setScriptWarn(false);
+                  }}
+                  placeholder="https://script.google.com/macros/s/..."
+                />
+              
+                <p style={hintWarnStyle}>
+                  Campo crítico. Sin esta URL las confirmaciones de asistencia no llegan a Google Sheets.
+                </p>
+              
+                {scriptWarn && (
+                  <p
+                    style={{
+                      fontSize:11,
+                      color:'#c4848a',
+                      marginTop:6,
+                      fontWeight:500
+                    }}
+                  >
+                    ⚠ Generaste sin Apps Script URL — las confirmaciones no funcionarán.
+                  </p>
+                )}
+              </div>
+              
+              {/* NUEVO: Sheet ID */}
+              <div className="mb-7">
+                <label style={labelStyle}>Sheet ID</label>
+              
+                <input
+                  style={inputStyle}
+                  value={fields.sheet_id}
+                  onChange={e => update('sheet_id', e.target.value)}
+                  placeholder="ID de la hoja"
+                />
+              
+                <p style={hintStyle}>
+                  ID de la hoja de Google Sheets vinculada.
+                </p>
+              </div>
+            </>
+          )}
 
           {/* ── Errores del Contrato Ejecutable (MAU-1) + parser (MAU-2) ── */}
           {contratoErrores.length > 0 && (
