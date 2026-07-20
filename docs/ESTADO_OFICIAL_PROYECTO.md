@@ -1,10 +1,11 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30173027/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30068577/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29908361/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29684615/ESTADO_OFICIAL_PROYECTO.md)
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 13 · Fecha de corte: 2026-07
+Versión: 14 · Fecha de corte: 2026-07
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -613,11 +614,59 @@ src/templates/P3.jsx                ← ídem
 
 ---
 
-## 24. PUNTO EXACTO DE CONTINUACIÓN
+## 24. [Sección histórica reemplazada — ver sección 27]
 
-**FASE 22 cerrada.** Ver `docs/Fase 22.md` para historial completo de auditoría, diseño e implementación. MAU-1 — Contrato Ejecutable de Configuración queda implementado y validado.
+La sección 24 de la versión anterior de este documento ("Punto exacto de continuación" al cierre de FASE 22) queda reemplazada por las secciones 25, 26 y 27, que incorporan el cierre de FASE 23 y FASE 24. Contenido preservado en `docs/Fase 22.md`, sin alteración.
 
-**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado y validado (FASE 22).** Próximo paso: inicio de MAU-2 — Generación Universal de Configuraciones y/o MAU-3 — Fuente Dinámica de Registro de Clientes, planificables en paralelo según la relación de dependencias congelada en FASE 21. Ninguno de los dos tiene análisis de implementación iniciado — cada uno debe comenzar con su propia auditoría de código real, bajo el protocolo obligatorio completo. No se implementa código hasta que cada paso sea aprobado explícitamente por Andrés.
+---
+
+## 25. FASE 23 — IMPLEMENTACIÓN Y CIERRE DE MAU-2 — CERRADA
+
+**Objetivo cumplido**: implementar y validar MAU-2 — Generación Universal de Configuraciones, extendiendo `AdminPage.jsx` para generar configuraciones válidas de las seis variantes del catálogo comercial.
+
+**Documento de referencia completo**: `docs/Fase 23.md`.
+
+**Diseño implementado**: dispatcher por template (`TEMPLATE_BUILDERS`, 6 funciones); `REQUIRED_FIELDS`/`validate()` de `useConfig.js` exportados y reutilizados como única fuente de verdad del contrato (sin extraer a un módulo compartido — evaluado y diferido hasta que exista un consumidor real fuera de React); parser de arrays por texto con separador `|` y detección de líneas malformadas antes de generar el config; Modo Validación (permite generar configs para templates `proximamente`, sin alterar la disponibilidad comercial gobernada por el catálogo); corrección de alcance — la sección "Servicio" (Apps Script URL/Sheet ID) queda condicionada a S1/P1/P2/P3, dejando de exponerse para S2/S3.
+
+**Validación funcional en Preview Deployment**: confirmada por Andrés. Único hallazgo reportado (P1 no registraba RSVP en Sheets) investigado y determinado ajeno al Generador — ver sección 26.
+
+**Hallazgos documentados, no resueltos en esta fase**: `config.fotos` en `S3.jsx` contradice `PRODUCTOS.md` §3.3; `titulo`/`subtitulo` inconsistentes entre variantes del mismo producto (violación de `PRODUCTOS.md` §5.2). Ambos quedan como observaciones arquitectónicas abiertas.
+
+**Decisiones cerradas — NO REABRIR**: ver `docs/Fase 23.md` sección 5.
+
+**Fuera de alcance de FASE 23**: MAU-3, MAU-4; Owner Tool; implementación del Contrato RSVP v2 (fase separada, ver sección 26).
+
+---
+
+## 26. FASE 24 — DISEÑO Y APROBACIÓN DEL CONTRATO RSVP v2 — CERRADA (SOLO DISEÑO)
+
+**Objetivo cumplido**: diseñar y aprobar un contrato de comunicación único entre S1, P1, P2 y P3 y el Apps Script de VELA, resolviendo tres esquemas de parámetros hoy mutuamente incompatibles, sin implementar ningún cambio de código.
+
+**Documento de referencia completo**: `docs/Fase 24.md`. **Documento de arquitectura producido**: `docs/CONTRATO_RSVP_V2.md`, aprobado con el mismo estatus documental que `PRODUCTOS.md` y `VARIANTES.md`.
+
+**Origen**: hallazgo detectado durante la validación funcional de MAU-2 (FASE 23) — un cliente P1 no registraba confirmaciones en Sheets. Auditoría de código (templates reales + Apps Script real, aportado por Andrés) determinó causa ajena al Generador: el Apps Script usaba la presencia del parámetro `code` como único criterio de dispatch, y P1/P2/P3 nunca lo envían — sus confirmaciones se descartaban antes de intentar escribir, sin error visible por el uso de `fetch` con `mode: "no-cors"`.
+
+**Encuadre explícito**: iniciativa arquitectónica nueva e independiente, fuera de los 4 elementos del MAU cerrados en FASE 20. No es deuda técnica ni parte de MAU-4.
+
+**Decisiones de diseño cerradas** (detalle completo en `docs/CONTRATO_RSVP_V2.md`): vocabulario canónico de campos (`sheet_id`, `nombre`, `asistencia`, `apellido`, `restricciones`, `observaciones`); normalización de `asistencia` a `"si"`/`"no"`; dispatch exclusivo por parámetro `action`, con inmutabilidad semántica una vez publicado; principios de no ruptura de clientes desplegados, manejo de campos desconocidos, y definición formal de versión del contrato; S1 permanece en su ruta legacy, sin modificación.
+
+**Decisiones cerradas — NO REABRIR**: ver `docs/Fase 24.md` sección 6.
+
+**Fuera de alcance de FASE 24**: cualquier implementación de código (Apps Script o templates); `action=getConfirmados` (gap independiente, documentado); migración de S1; incorporación de S2/S3 a un flujo de Sheets.
+
+---
+
+## 27. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 23 y FASE 24 cerradas.** Ver `docs/Fase 23.md` y `docs/Fase 24.md` para historial completo. MAU-2 — Generación Universal de Configuraciones queda implementado y validado. El Contrato RSVP v2 queda diseñado y aprobado como documento oficial de arquitectura (`docs/CONTRATO_RSVP_V2.md`), con su implementación explícitamente diferida.
+
+**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado y aprobado (FASE 24).**
+
+**Próximo paso — dos líneas de trabajo independientes, no mezclar**:
+1. **Implementación del Contrato RSVP v2** (Apps Script + `P1.jsx`/`P2.jsx`/`P3.jsx`), siguiendo `docs/CONTRATO_RSVP_V2.md` §13 como guía no normativa, bajo protocolo obligatorio completo. No tiene análisis de implementación iniciado.
+2. **MAU-3 — Fuente Dinámica de Registro de Clientes**, planificable en paralelo según la relación de dependencias congelada en FASE 21. No tiene análisis de implementación iniciado.
+
+Cada una debe comenzar con su propia auditoría de código real, bajo el protocolo obligatorio completo. No se implementa código hasta que cada paso sea aprobado explícitamente por Andrés.
 
 ---
 
