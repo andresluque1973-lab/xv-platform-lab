@@ -1,8 +1,8 @@
 {
   "plan": "PREMIUM",
-  "template": "P1",
-  "nombre": "pruebaP1",
-  "subtitulo": "hola sandard P1",
+  "template": "P2",
+  "nombre": "pruebaP2",
+  "subtitulo": "hola premium P2",
   "fecha_display": "15 Agosto 2027",
   "fecha_larga": "15 de agosto",
   "dia_semana": "Domingo",
@@ -11,7 +11,7 @@
   "contador": "2027-08-15T23:35:00",
   "confirmacion_limite": "1 de agosto",
   "historia": {
-    "titulo": "Como empezo todo esto P1",
+    "titulo": "Como empezo todo esto P2",
     "cuerpo": "empezo con un tarjeta simple y esccalo a SaaS"
   },
   "timeline": [
