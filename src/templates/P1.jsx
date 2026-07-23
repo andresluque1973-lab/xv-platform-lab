@@ -982,14 +982,17 @@ function ConfirmSection({ config }) {
     if (!validate()) return;
     setStatus("loading");
 
+    // Contrato RSVP v2 (FASE 25, docs/CONTRATO_RSVP_V2.md §5-§8). El estado
+    // interno del formulario (form.restricciones_alimentarias, etc.) no
+    // cambia de nombre — solo cambian las claves con las que viaja por URL.
     const params = new URLSearchParams();
-    params.set("timestamp",                  new Date().toISOString());
-    params.set("sheetId",                    config.sheet_id || "");
-    params.set("nombre",                     form.nombre.trim());
-    params.set("apellido",                   form.apellido.trim());
-    params.set("asistencia",                 form.asistencia === "si" ? "Confirmo" : "No asiste");
-    params.set("restricciones_alimentarias", form.restricciones_alimentarias.trim());
-    params.set("observaciones",              form.observaciones.trim());
+    params.set("action",         "rsvp");
+    params.set("sheet_id",       config.sheet_id || "");
+    params.set("nombre",         form.nombre.trim());
+    params.set("apellido",       form.apellido.trim());
+    params.set("asistencia",     form.asistencia); // "si" | "no" — el Apps Script traduce el label (§6)
+    params.set("restricciones",  form.restricciones_alimentarias.trim());
+    params.set("observaciones",  form.observaciones.trim());
 
     try {
       await fetch(config.apps_script_url + "?" + params.toString(), {
