@@ -1,3 +1,4 @@
+[CONTRATO_RSVP_v2 (1).md](https://github.com/user-attachments/files/30289759/CONTRATO_RSVP_v2.1.md)
 # CONTRATO RSVP v2 — Comunicación Frontend ↔ Apps Script
 
 Versión del documento: **1**
@@ -172,6 +173,16 @@ una operación ya publicada requiere un `action` nuevo, nunca una
 reinterpretación silenciosa del existente. Esta regla es la aplicación
 concreta, a nivel de `action`, del principio de compatibilidad de §9.
 
+### Regla de estructura de dispatch (aclaración — FASE 25)
+
+Esta regla no cambia el comportamiento definido en la tabla de §8 — aclara
+cómo debe implementarse en código para no arriesgarlo con el tiempo. Cada
+`action` se implementa como una rama de código independiente, evaluada
+antes que la rama de fallback (ruta legacy S1 / health check implícito).
+La rama de fallback nunca se modifica, nunca se reordena, y ninguna
+`action` nueva se anida dentro de su lógica. Agregar una `action` nueva
+significa agregar una condición hermana, no editar las existentes.
+
 ---
 
 ## §9 Principios de evolución y compatibilidad del contrato
@@ -283,3 +294,4 @@ documento quede aprobado y registrado en `ESTADO_OFICIAL_PROYECTO.md`.
 | Versión | Fecha | Cambios |
 |---|---|---|
 | 1 | 2026-07 | Definición inicial. Vocabulario canónico, normalización de valores, mecanismo de dispatch, principios de compatibilidad y evolución (§9), separación explícita entre contrato normativo y guía de migración (§2). Diseño cerrado, implementación diferida. |
+| 1 (aclaración, FASE 25) | 2026-07 | Se agrega "Regla de estructura de dispatch" bajo §8 — aclara cómo implementar en código el mecanismo de dispatch ya definido, sin cambiar ningún comportamiento ni valor del contrato. No constituye nueva versión (§9.3: ajuste editorial/estructural sin cambio funcional). |
