@@ -1116,11 +1116,19 @@ function ConfirmSection({ config }) {
     setEnviando(true);
     setError("");
     try {
+      // Contrato RSVP v2 (FASE 25, docs/CONTRATO_RSVP_V2.md §5-§8). El estado
+      // interno `asistencia` sigue guardando el string legible del radio —
+      // solo se traduce acá, al armar el request.
+      const ASISTENCIA_V2 = {
+        "Sí, voy a estar": "si",
+        "No voy a poder":  "no",
+      };
       const url = new URL(config.apps_script_url);
-      url.searchParams.set("nombre",      nombre.trim());
-      url.searchParams.set("asistencia",  asistencia);
-      url.searchParams.set("restriccion", restriccion.trim() || "Ninguna");
-      url.searchParams.set("sheet_id",    config.sheet_id || "");
+      url.searchParams.set("action",        "rsvp");
+      url.searchParams.set("nombre",        nombre.trim());
+      url.searchParams.set("asistencia",    ASISTENCIA_V2[asistencia] || "");
+      url.searchParams.set("restricciones", restriccion.trim() || "Ninguna");
+      url.searchParams.set("sheet_id",      config.sheet_id || "");
       await fetch(url.toString(), { method: "GET", mode: "no-cors" });
       setEnviado(true);
     } catch {
