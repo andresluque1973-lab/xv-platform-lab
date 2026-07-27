@@ -1,4 +1,4 @@
-[CONTRATO_RSVP_v2 (1).md](https://github.com/user-attachments/files/30289759/CONTRATO_RSVP_v2.1.md)
+[CONTRATO_RSVP_v2.md](https://github.com/user-attachments/files/30435306/CONTRATO_RSVP_v2.md)
 # CONTRATO RSVP v2 — Comunicación Frontend ↔ Apps Script
 
 Versión del documento: **1**
