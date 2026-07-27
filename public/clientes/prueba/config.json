@@ -1,8 +1,8 @@
 {
   "plan": "PREMIUM",
-  "template": "P2",
-  "nombre": "pruebaP2",
-  "subtitulo": "hola premium P2",
+  "template": "P3",
+  "nombre": "pruebaP3",
+  "subtitulo": "hola premium P3",
   "fecha_display": "15 Agosto 2027",
   "fecha_larga": "15 de agosto",
   "dia_semana": "Domingo",
@@ -11,7 +11,7 @@
   "contador": "2027-08-15T23:35:00",
   "confirmacion_limite": "1 de agosto",
   "historia": {
-    "titulo": "Como empezo todo esto P2",
+    "titulo": "Como empezo todo esto P3",
     "cuerpo": "empezo con un tarjeta simple y esccalo a SaaS"
   },
   "timeline": [
@@ -61,8 +61,8 @@
     "nombre": "Taylor - Cruel"
   },
   "regalo": {
-    "alias": "pruebaS2",
-    "cvu": "000000000222222222222"
+    "alias": "pruebaP3",
+    "cvu": "0000000003333333333"
   },
   "apps_script_url":"https://script.google.com/macros/s/AKfycbwSizWqqLNOtRKFmcBy8PsgJl2lg8OndDHnO5ImE0koO3_v7GjhKyW6D7uToSfuQrQeHw/exec",
   "sheet_id":"1oMy2NlFAkDyfn65SW3YntEutD5O2m9z-XC93ogsewXc"
