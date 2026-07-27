@@ -1,7 +1,8 @@
 {
   "plan": "PREMIUM",
   "template": "P3",
-  "nombre": "pruebaP3",
+  "titulo": "Mix XV",
+    "nombre": "pruebaP3",
   "subtitulo": "hola premium P3",
   "fecha_display": "15 Agosto 2027",
   "fecha_larga": "15 de agosto",
