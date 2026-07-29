@@ -1204,13 +1204,17 @@ function ConfirmadosSection({ config }) {
 
   const fetchConfirmados = async () => {
     try {
-      const res = await fetch(
-        `${config.apps_script_url}?action=list&sheetId=${config.sheet_id}`
-      );
+      // Contrato RSVP v2 — extensión FASE 26 (docs/CONTRATO_RSVP_V2.md,
+      // action=getConfirmados). Reemplaza el `action=list` / `sheetId`
+      // anteriores, que apuntaban a un endpoint inexistente.
+      const url = new URL(config.apps_script_url);
+      url.searchParams.set("action",   "getConfirmados");
+      url.searchParams.set("sheet_id", config.sheet_id || "");
+      const res  = await fetch(url.toString());
       const data = await res.json();
-      // El Apps Script debe devolver { confirmados: [{ nombre, apellido }] }
-      if (Array.isArray(data.confirmados)) {
-        setConfirmados(data.confirmados);
+      // Respuesta: array plano de confirmados, vocabulario canónico §5.
+      if (Array.isArray(data)) {
+        setConfirmados(data);
       }
     } catch {
       // Sin red o Apps Script no configurado: sin error visible, lista vacía
