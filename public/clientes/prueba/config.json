@@ -1,7 +1,7 @@
 {
   "plan": "PREMIUM",
   "template": "P3",
-  "titulo": "Mix XV",
+  "titulo": "Mix XV - P3",
     "nombre": "pruebaP3",
   "subtitulo": "hola premium P3",
   "fecha_display": "15 Agosto 2027",
@@ -63,7 +63,7 @@
   },
   "regalo": {
     "alias": "pruebaP3",
-    "cvu": "0000000003333333333"
+    "cvu": "000000000333333333333333"
   },
   "apps_script_url":"https://script.google.com/macros/s/AKfycbwSizWqqLNOtRKFmcBy8PsgJl2lg8OndDHnO5ImE0koO3_v7GjhKyW6D7uToSfuQrQeHw/exec",
   "sheet_id":"1oMy2NlFAkDyfn65SW3YntEutD5O2m9z-XC93ogsewXc"

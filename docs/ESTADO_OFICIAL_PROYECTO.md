@@ -1,3 +1,4 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30488908/ESTADO_OFICIAL_PROYECTO.md)
 [Uploading ESTADO_OFICIAL_PROYECTO.md…]()
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30173027/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30068577/ESTADO_OFICIAL_PROYECTO.md)
@@ -6,7 +7,7 @@
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 15 · Fecha de corte: 2026-07
+Versión: 16 · Fecha de corte: 2026-07
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -695,17 +696,60 @@ docs/ESTADO_OFICIAL_PROYECTO.md        ← v15, sección 28 incorporada; seccion
 Instrucciones maestras del proyecto    ← actualizadas a versión FASE 25
 ```
 
-## 29. PUNTO EXACTO DE CONTINUACIÓN
+## 29. [Sección histórica reemplazada — ver sección 31]
 
-**FASE 25 cerrada.** Ver `docs/Fase 25.md` para historial completo. El Contrato RSVP v2 queda implementado y validado en Preview Deployment para P1, P2 y P3. El Apps Script en producción sirve la versión FASE 25 (mismo deployment para todos los clientes, verificado).
+La sección 29 de la versión anterior de este documento ("Punto exacto de continuación" al cierre de FASE 25) queda reemplazada por las secciones 30 y 31, que incorporan el cierre de FASE 26. Contenido preservado en `docs/Fase 25.md`, sin alteración.
 
-**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado (FASE 24) e implementado (FASE 25).**
+## 30. FASE 26 — IMPLEMENTACIÓN DE `action=getConfirmados` (EXTENSIÓN DEL CONTRATO RSVP v2) — CERRADA
 
-**Próximo paso — dos líneas de trabajo independientes, no mezclar**:
-1. **Implementación de `action=getConfirmados`** (incluye resolver la divergencia `action=list` de P1) y, eventualmente, una aplicación administrativa sobre `RSVP_VELA`. No tiene análisis de implementación iniciado.
-2. **MAU-3 — Fuente Dinámica de Registro de Clientes** (incluye la regularización de `public/clientes/caracas/`). No tiene análisis de implementación iniciado.
+**Objetivo cumplido**: implementar y validar `action=getConfirmados` para P1, P2 y P3, unificando tres contratos de lectura hoy mutuamente incompatibles, sin modificar `handleRsvpV2`, `saveToSheetsV2` ni la ruta legacy de S1.
 
-Cada una debe comenzar con su propia auditoría de código real, bajo el protocolo obligatorio completo. No se implementa código hasta que cada paso sea aprobado explícitamente por Andrés.
+**Documento de referencia completo**: `docs/Fase 26.md`.
+
+**Encuadre explícito**: extensión del Contrato RSVP v2 vigente mediante `action` nuevo sobre el mismo mecanismo de dispatch de §8 — decisión explícita de Andrés de que esto **no** constituye una nueva versión formal del contrato. `action=rsvp` no fue tocado.
+
+**Auditoría inicial (frontend, caja negra sobre Apps Script)**: confirmada divergencia de tres capas entre P1 (`action=list`, `sheetId` sin guarda, shape `{ confirmados: [...] }`) y P2/P3 (`action=getConfirmados`, `sheet_id` con guarda, shape array plano), más un vocabulario de `asistencia` esperado en el filtro que no correspondía al canónico. **Hallazgo adicional**: bug interno en `P2.jsx` — escribía `restricciones` pero leía `c.restriccion` en el render.
+
+**Auditoría de Apps Script (caja blanca)**: confirmado que `RSVP_VELA` almacena `Asistencia` como `"Confirmo"`/`"No asiste"` (traducción aplicada en `handleRsvpV2` al escribir), no como `"si"`/`"no"`. Columnas confirmadas: `Timestamp | Nombre | Apellido | Asistencia | Restricciones | Observaciones`.
+
+**Decisiones de diseño cerradas**: traducción inversa de `Asistencia` implementada únicamente dentro de una función nueva y aislada, `handleGetConfirmadosV2`, sin modificar la ruta de escritura ni los datos ya persistidos (Alternativa A); backend expone exclusivamente vocabulario canónico (`"si"`/`"no"`), los textos de interfaz son responsabilidad del frontend; `Timestamp` fuera del contrato de esta fase; hoja inexistente o sin filas → `200`, `[]` (ausencia de datos no es error); respuesta de éxito = array plano, respuesta de error = `{ ok:false, error }`.
+
+**Implementación**: una rama nueva en `doGet` (`action === "getConfirmados"`), hermana de `action === "rsvp"`, sin reordenar el dispatch existente. `P1.jsx` migrado a `action=getConfirmados`/`sheet_id`/array plano; `P2.jsx` con filtro de `asistencia` migrado a `"si"/"no"` y bug de `c.restriccion` corregido; `P3.jsx` con filtro migrado a `"si"/"no"`. Ningún cambio de UI/producto en ningún template.
+
+**Validación funcional**: confirmada por Andrés — Apps Script redesplegado, `action=getConfirmados` verificado desde el navegador, vocabulario canónico confirmado en la respuesta, escritura sin regresión, P1/P2/P3 validados sin regresiones visuales. No ejercitado en esta ronda: el caso `RSVP_VELA` inexistente/sin filas (los tres clientes de prueba ya tenían confirmaciones previas).
+
+**Hallazgo de cierre, no arquitectónico**: al momento del cierre documental, un clon fresco de `main` en GitHub todavía no reflejaba el código de esta fase — consistente con el flujo de trabajo (subida manual a un branch antes del merge a `main`), pendiente de confirmación administrativa, no de código.
+
+**Decisiones cerradas — NO REABRIR**: ver `docs/Fase 26.md` sección 9.
+
+**Fuera de alcance de FASE 26**: aplicación administrativa de lectura sobre `RSVP_VELA` (agregados, exports, dashboard); MAU-3; MAU-4; regularización de `public/clientes/caracas/`.
+
+**Changeset aplicado**:
+
+```
+Apps Script VELA-RSVP-v1               ← nueva rama de dispatch action=getConfirmados, handleGetConfirmadosV2
+src/templates/P1.jsx                   ← ConfirmadosSection migrado al contrato de lectura unificado
+src/templates/P2.jsx                   ← filtro de asistencia + corrección c.restriccion → c.restricciones
+src/templates/P3.jsx                   ← filtro de asistencia migrado a vocabulario canónico
+docs/Fase 26.md                        ← nuevo, documento de cierre oficial
+docs/ESTADO_OFICIAL_PROYECTO.md        ← v16, sección 30 incorporada; secciones 1–28 sin alterar
+Instrucciones maestras del proyecto    ← actualizadas a versión FASE 26
+```
+
+## 31. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 26 cerrada.** Ver `docs/Fase 26.md` para historial completo. `action=getConfirmados` queda implementado y validado para P1, P2 y P3, como extensión del Contrato RSVP v2 vigente (no una v3). `action=rsvp`, S1 y el flujo legacy permanecen sin modificación.
+
+**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado (FASE 24), implementado (FASE 25) y extendido con lectura de confirmados (FASE 26).**
+
+**Punto administrativo pendiente de confirmación (no de código)**: verificar que el merge a `main` del branch de FASE 26 esté completo antes de asumir que el árbol de código en GitHub está sincronizado con esta documentación.
+
+**Próximo paso — una única línea de trabajo con análisis de implementación no iniciado**:
+1. **MAU-3 — Fuente Dinámica de Registro de Clientes** (incluye la regularización de `public/clientes/caracas/`, hallazgo de FASE 25).
+
+La línea de trabajo de lectura de confirmaciones (`action=getConfirmados`) queda cerrada con esta fase. Cualquier aplicación administrativa futura sobre `RSVP_VELA` (dashboard, exports, agregados) es una iniciativa nueva, sin análisis iniciado, a definir su alcance en su propia fase.
+
+MAU-3 debe comenzar con su propia auditoría de código real, bajo el protocolo obligatorio completo. No se implementa código hasta que sea aprobado explícitamente por Andrés.
 
 ---
 

@@ -1192,7 +1192,10 @@ function ConfirmadosSection({ config }) {
     return () => clearInterval(interval);
   }, [config.apps_script_url, config.sheet_id]);
 
-  const van = confirmados.filter(c => c.asistencia === "Sí, voy a estar");
+  // Contrato RSVP v2 — extensión FASE 26. El backend expone únicamente el
+  // vocabulario canónico ("si"/"no"); el texto de interfaz es responsabilidad
+  // de este componente.
+  const van = confirmados.filter(c => c.asistencia === "si");
 
   return (
     <section style={{

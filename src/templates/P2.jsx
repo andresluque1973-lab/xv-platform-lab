@@ -1370,8 +1370,11 @@ function ConfirmadosSection({ config }) {
     return () => clearInterval(interval);
   }, [config.apps_script_url, config.sheet_id]);
 
-  const van  = confirmados.filter(c => c.asistencia === "Sí, voy a estar");
-  const noVan= confirmados.filter(c => c.asistencia === "No voy a poder");
+  // Contrato RSVP v2 — extensión FASE 26. El backend expone únicamente el
+  // vocabulario canónico ("si"/"no"); la traducción a texto de interfaz
+  // ("ASISTEN", etc.) es responsabilidad de este componente, no del servidor.
+  const van  = confirmados.filter(c => c.asistencia === "si");
+  const noVan= confirmados.filter(c => c.asistencia === "no");
 
   return (
     <section style={{
@@ -1442,7 +1445,7 @@ function ConfirmadosSection({ config }) {
                 lineHeight:    1.1,
                 margin:        0,
               }}>{c.nombre}</p>
-              {c.restriccion && c.restriccion !== "Ninguna" && (
+              {c.restricciones && c.restricciones !== "Ninguna" && (
                 <p style={{
                   fontFamily:    "'Cormorant Garamond', serif",
                   fontSize:      "clamp(0.7rem, 1.1vw, 0.8rem)",
@@ -1450,7 +1453,7 @@ function ConfirmadosSection({ config }) {
                   color:         C.taupe,
                   letterSpacing: "0.04em",
                   marginTop:     "0.15rem",
-                }}>{c.restriccion}</p>
+                }}>{c.restricciones}</p>
               )}
             </div>
           ))}
