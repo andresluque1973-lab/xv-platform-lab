@@ -1,3 +1,4 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30878296/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30488908/ESTADO_OFICIAL_PROYECTO.md)
 [Uploading ESTADO_OFICIAL_PROYECTO.md…]()
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30173027/ESTADO_OFICIAL_PROYECTO.md)
@@ -7,7 +8,7 @@
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 16 · Fecha de corte: 2026-07
+Versión: 17 · Fecha de corte: 2026-08
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -736,20 +737,51 @@ docs/ESTADO_OFICIAL_PROYECTO.md        ← v16, sección 30 incorporada; seccion
 Instrucciones maestras del proyecto    ← actualizadas a versión FASE 26
 ```
 
-## 31. PUNTO EXACTO DE CONTINUACIÓN
+## 31. [Sección histórica reemplazada — ver sección 33]
 
-**FASE 26 cerrada.** Ver `docs/Fase 26.md` para historial completo. `action=getConfirmados` queda implementado y validado para P1, P2 y P3, como extensión del Contrato RSVP v2 vigente (no una v3). `action=rsvp`, S1 y el flujo legacy permanecen sin modificación.
+La sección 31 de la versión anterior de este documento ("Punto exacto de continuación" al cierre de FASE 26) queda reemplazada por las secciones 32 y 33, que incorporan el cierre de FASE 27. Contenido preservado en `docs/Fase 26.md`, sin alteración.
 
-**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado (FASE 24), implementado (FASE 25) y extendido con lectura de confirmados (FASE 26).**
+## 32. FASE 27 — MAU-3, PRIMERA ETAPA: VERIFICACIÓN DE CONSISTENCIA DEL REGISTRO DE CLIENTES — CERRADA
 
-**Punto administrativo pendiente de confirmación (no de código)**: verificar que el merge a `main` del branch de FASE 26 esté completo antes de asumir que el árbol de código en GitHub está sincronizado con esta documentación.
+**Objetivo cumplido**: iniciar MAU-3 ("Fuente Dinámica de Registro de Clientes", definido en FASE 20) resolviendo el problema evidenciado por el hallazgo de FASE 25 (`public/clientes/caracas/` sin registro) mediante un mecanismo de verificación de consistencia, sin construir infraestructura de registro dinámico en sentido literal.
 
-**Próximo paso — una única línea de trabajo con análisis de implementación no iniciado**:
-1. **MAU-3 — Fuente Dinámica de Registro de Clientes** (incluye la regularización de `public/clientes/caracas/`, hallazgo de FASE 25).
+**Documento de referencia completo**: `docs/Fase 27.md`.
 
-La línea de trabajo de lectura de confirmaciones (`action=getConfirmados`) queda cerrada con esta fase. Cualquier aplicación administrativa futura sobre `RSVP_VELA` (dashboard, exports, agregados) es una iniciativa nueva, sin análisis iniciado, a definir su alcance en su propia fase.
+**Auditoría inicial**: clon fresco del repositorio contra `5c0d232` (merge de FASE 26). Confirmado que el runtime público no consume `data/clientes/index.json` en ningún punto (routing por `window.location.pathname` → `TemplateLoader` → `useConfig` → `fetch('/clientes/{slug}/config.json')`); único consumidor del registro es `ClientesPage.jsx`, solo lectura. Confirmado `public/clientes/caracas/config.json` como invitación real y funcional (`apps_script_url`/`sheet_id` reales), sin entrada en el registro. Hallazgo adicional de auditoría: `public/clientes/prueba/` tampoco tenía entrada, inicialmente sin evidencia suficiente para su clasificación.
 
-MAU-3 debe comenzar con su propia auditoría de código real, bajo el protocolo obligatorio completo. No se implementa código hasta que sea aprobado explícitamente por Andrés.
+**Aprendizaje arquitectónico central de la fase**: la evidencia recogida en la auditoría demostró que el problema real no era la ausencia de una fuente *dinámica* externa (backend, KV, Sheet externo) — el proyecto no tiene backend salvo el Apps Script de RSVP, y todo alta de cliente ya requiere commit + deploy manual. El problema real era la **verificabilidad**: nada en el sistema señalaba cuándo el registro divergía del filesystem público, como demostró el caso `caracas` pasando inadvertido desde FASE 25. En consecuencia, MAU-3 se implementó en esta primera etapa como **Fuente Verificable de Registro de Clientes** — interpretación basada en evidencia, no en la intención original de FASE 20. **La denominación histórica del elemento "MAU-3 — Fuente Dinámica de Registro de Clientes" no se reescribe retroactivamente**; queda registrado aquí, de forma explícita, que su implementación fue reinterpretada conforme a la evidencia recogida durante esta fase, por decisión de Andrés. **MAU-3 permanece abierto — esta fase cierra únicamente su primera etapa, no el elemento completo.**
+
+**Implementación**:
+- `scripts/validar-registro-clientes.js` (nuevo): script Node.js de solo lectura, sin dependencias nuevas, que compara `public/clientes/*` contra `data/clientes/index.json` y reporta huérfanos de registro, huérfanos de filesystem, y el slug reservado `admin`. Ejecutable vía `npm run validar:clientes` (`package.json`).
+- `data/clientes/index.json`: regularizada la entrada de `caracas` (`plan: STANDARD`, `template: S1`, `deploy_estado: deployed`), conforme al schema de `data/clientes/CONTRATO.md` v1. Fechas `creado_en`/`deployed_en` establecidas en la fecha de esta regularización por ausencia de evidencia histórica, decisión explícita documentada en `notas`. `cliente_nombre: "caracas"` es un identificador provisional derivado del slug, no un dato comercial confirmado.
+- `public/clientes/prueba/config.json`: agregado `"_fixture": true`. Evidencia documental que respalda esta clasificación: `docs/ESTADO_OFICIAL_PROYECTO.md` (versión 15, sección 28) ya registraba que `prueba` es un fixture compartido, con su `template` alternado manualmente entre P1/P2/P3 durante validaciones de fase. `scripts/validar-registro-clientes.js` extendido con `esFixture()` (fail-safe explícito: archivo ausente, JSON inválido o marca ausente/distinta de `true` nunca excluyen una carpeta) para reconocer la marca y reportarla aparte, sin afectar el exit code.
+
+**Validación final**: `npm run validar:clientes` → `EXIT CODE 0` sobre el estado real del repositorio (`caracas` resuelto, `prueba` excluido explícitamente, sin huérfanos reales). `npm run build` → `EXIT CODE 0`, sin errores ni warnings.
+
+**Hallazgo de cierre, no arquitectónico**: el merge a `main` se completó en dos PRs (#43, estado intermedio previo a la corrección de `prueba`; #44, corrección con los tres artefactos finales). Verificación post-merge ejecutada de forma independiente sobre clones frescos de `main` después de cada merge, confirmando en el estado final (`9d1bafd`) coincidencia byte a byte con el estado auditado y aprobado.
+
+**Fuera de alcance de FASE 27, sin modificación**: runtime público, cualquier template (S1/S2/S3/P1/P2/P3), `useConfig.js`, `AdminPage.jsx`, `GeneradorPage.jsx`, Apps Script, Contrato RSVP v2, `CONTRATO.md` de clientes y de catálogo. **RIESGO-C (bundle JS de `/admin`) permanece conscientemente fuera de alcance y sin resolver** — decisión deliberada, no omisión.
+
+**Decisiones cerradas — NO REABRIR**: ver `docs/Fase 27.md` sección 10.
+
+**Changeset aplicado**:
+
+```
+scripts/validar-registro-clientes.js   ← nuevo
+data/clientes/index.json               ← entrada de caracas regularizada
+package.json                           ← comando validar:clientes
+public/clientes/prueba/config.json     ← "_fixture": true
+docs/Fase 27.md                        ← nuevo, documento de cierre oficial
+docs/ESTADO_OFICIAL_PROYECTO.md        ← v17, sección 32 incorporada; secciones 1–30 sin alterar
+```
+
+## 33. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 27 cerrada.** Ver `docs/Fase 27.md` para historial completo. MAU-3 tiene su primera etapa implementada y validada (`EXIT CODE 0` en registro y build, verificación post-merge confirmada sobre `main` real). **MAU-3 permanece abierto** — esta fase no lo cierra; etapas futuras no están definidas.
+
+**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado (FASE 24), implementado (FASE 25) y extendido con lectura de confirmados (FASE 26). MAU-3, primera etapa, implementada (FASE 27).**
+
+**Próximo paso**: no está definido. **No queda pre-aprobada ninguna FASE 28.** A diferencia de fases anteriores, no existe hoy una única línea de trabajo con análisis de implementación pendiente y aprobado. Antes de iniciar cualquier FASE 28, corresponde una **fase de análisis estratégico** que determine el alcance a seguir entre las líneas abiertas conocidas: continuación de MAU-3 (etapas futuras no definidas), MAU-4 (señalización de fallos críticos, no iniciado), o cualquier aplicación administrativa sobre `RSVP_VELA` (iniciativa independiente, señalada desde FASE 26, sin análisis iniciado). Ninguna de estas queda pre-aprobada por esta sección — su selección y alcance deben decidirse explícitamente al abrir la próxima fase, bajo protocolo obligatorio completo.
 
 ---
 
