@@ -1,6 +1,7 @@
 {
   "plan": "PREMIUM",
   "template": "P3",
+  "_fixture": true,
   "titulo": "Mix XV - P3",
     "nombre": "pruebaP3",
   "subtitulo": "hola premium P3",
