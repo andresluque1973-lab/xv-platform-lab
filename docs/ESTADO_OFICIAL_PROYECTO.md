@@ -1,3 +1,4 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31163953/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30878296/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30488908/ESTADO_OFICIAL_PROYECTO.md)
 [Uploading ESTADO_OFICIAL_PROYECTO.md…]()
@@ -775,13 +776,62 @@ docs/Fase 27.md                        ← nuevo, documento de cierre oficial
 docs/ESTADO_OFICIAL_PROYECTO.md        ← v17, sección 32 incorporada; secciones 1–30 sin alterar
 ```
 
-## 33. PUNTO EXACTO DE CONTINUACIÓN
+## 33. [Sección histórica reemplazada — ver sección 35]
 
-**FASE 27 cerrada.** Ver `docs/Fase 27.md` para historial completo. MAU-3 tiene su primera etapa implementada y validada (`EXIT CODE 0` en registro y build, verificación post-merge confirmada sobre `main` real). **MAU-3 permanece abierto** — esta fase no lo cierra; etapas futuras no están definidas.
+La sección 33 de la versión anterior de este documento ("Punto exacto de continuación" al cierre de FASE 27) queda reemplazada por las secciones 34 y 35, que incorporan el cierre de FASE 28. Contenido preservado en `docs/Fase 27.md`, sin alteración.
 
-**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado (FASE 24), implementado (FASE 25) y extendido con lectura de confirmados (FASE 26). MAU-3, primera etapa, implementada (FASE 27).**
+## 34. FASE 28 — PLATAFORMA ADMINISTRATIVA VELA: AUTENTICACIÓN DE `/admin` — CERRADA (PARCIAL)
 
-**Próximo paso**: no está definido. **No queda pre-aprobada ninguna FASE 28.** A diferencia de fases anteriores, no existe hoy una única línea de trabajo con análisis de implementación pendiente y aprobado. Antes de iniciar cualquier FASE 28, corresponde una **fase de análisis estratégico** que determine el alcance a seguir entre las líneas abiertas conocidas: continuación de MAU-3 (etapas futuras no definidas), MAU-4 (señalización de fallos críticos, no iniciado), o cualquier aplicación administrativa sobre `RSVP_VELA` (iniciativa independiente, señalada desde FASE 26, sin análisis iniciado). Ninguna de estas queda pre-aprobada por esta sección — su selección y alcance deben decidirse explícitamente al abrir la próxima fase, bajo protocolo obligatorio completo.
+**Objetivo cumplido**: proteger `/admin` (accesible sin ningún control desde su implementación original) mediante autenticación, sin introducir infraestructura desproporcionada para un proyecto SPA estático sin backend propio. **Objetivo no cumplido en esta fase**: visibilidad operativa de RSVP para P1/P2/P3 — línea B del alcance original, sin iniciar, diferida explícitamente a la fase siguiente.
+
+**Documento de referencia completo**: `docs/Fase 28.md`.
+
+**Origen**: fase de análisis estratégico previa (sin FASE 28 pre-aprobada al cierre de FASE 27), que evaluó continuación de MAU-3, MAU-4, y perfeccionamiento de la plataforma administrativa — esta última aprobada por tener evidencia directa de brecha real: `/admin` sin autenticación, y el contrato de lectura de RSVP (`action=getConfirmados`, FASE 26) sin ninguna superficie administrativa que lo consumiera.
+
+**Alternativa descartada — Routing Middleware**: `middleware.js` + `@vercel/functions/middleware`, auditada con evidencia real de npm (sin dependencia de Next.js en ningún nivel del árbol), preparada y probada empíricamente en Preview. **NO VALIDADA** — `The Edge Function "middleware" is referencing unsupported modules: @vercel/functions/middleware`. Causa técnica (confianza media): el pipeline de bundling de Edge Middleware para proyectos "Other"/Vite no resuelve dependencias de `node_modules` como sí lo hace para Next.js. No se intentó forzar ni corregir.
+
+**Solución implementada — Vercel Function Node.js standalone**: `api/admin-gate.js`, sin dependencias nuevas, validada incrementalmente en seis subetapas aisladas, cada una en su propia rama, con Preview antes de cualquier merge:
+
+- **Etapa 1B.1**: Function mínima reconocida y ejecutada por Vercel en `api/`, sin tocar `vercel.json` — VALIDADA.
+- **Etapa 1B.2**: lectura en runtime de `ADMIN_AUTH_USER`/`ADMIN_AUTH_PASS`, sin exponer valores — VALIDADA.
+- **Etapa 2A**: self-fetch de `index.html` en tiempo de request. Bloqueo no anticipado por Vercel Authentication interceptando también el tráfico saliente de la Function, resuelto con **Protection Bypass for Automation** (`VERCEL_AUTOMATION_BYPASS_SECRET`, System Environment Variable) — VALIDADA.
+- **Etapa 2B**: Basic Auth + self-fetch integrados en un único flujo (`401` sin credencial válida, `200` + HTML real con credencial válida) — VALIDADA.
+- **Etapa 2C**: conexión real de `/admin` y `/admin/*` vía `vercel.json`, preservando intacta la regla catch-all existente — VALIDADA, incluyendo confirmación empírica del orden de evaluación de `rewrites` (supuesto no verificado hasta esta subetapa).
+- **Etapa 2D**: merge a producción (PR #45), con auditoría pre-merge y post-merge sobre clones frescos de `main`, y verificación en producción real — VALIDADA.
+
+**Decisiones de diseño cerradas**: mecanismo de servido de `index.html` post-autenticación es self-fetch en tiempo de request, no `includeFiles`/`fs.readFileSync` (menor superficie de supuestos de plataforma no verificados). Credenciales exclusivamente en variables de entorno server-side, sin prefijo `VITE_`, nunca en el bundle del cliente — confirmado empíricamente en cada subetapa. `config.json` por cliente permanece deliberadamente fuera de alcance de esta fase.
+
+**Hallazgo registrado, sin acción**: al visitar `/api/admin-gate` o `/index.html` directamente en navegador, aparece `"No se pudo cargar la invitación."` — comportamiento preexistente del SPA (reproducible sin ningún código de esta fase), no relacionado con el mecanismo de autenticación.
+
+**Riesgo mitigado**: exposición sin autenticación de `/admin` (registro completo de clientes + Generador, visible a cualquiera que conociera o adivinara la URL).
+
+**Riesgos que permanecen abiertos, sin modificar en esta fase**: `public/clientes/{slug}/config.json` sigue público sin autenticación por cliente (Tema E de FASE 19); **RIESGO-C permanece sin resolver** — confirmado explícitamente que la autenticación de `/admin` no lo cierra, dado que el bundle JS que contiene `data/clientes/index.json` es el mismo que descarga cualquier visitante de cualquier invitación pública; MAU-3 (etapas posteriores a FASE 27); MAU-4; vista operativa de RSVP (línea B, sin iniciar).
+
+**Decisiones cerradas — NO REABRIR**: ver `docs/Fase 28.md` sección 16.
+
+**Fuera de alcance de FASE 28**: `src/**`, `public/clientes/**`, `data/clientes/index.json`, `package.json`, `package-lock.json`, Apps Script, Contrato RSVP v2, cualquier template, `useConfig.js`, catálogo comercial, MAU-3 posterior, MAU-4, RIESGO-C, CRUD de clientes, modelo Cliente/Evento, dashboard/analítica.
+
+**Variables de entorno de Vercel** (fuera del repositorio): `ADMIN_AUTH_USER` y `ADMIN_AUTH_PASS` (scope Preview + Production, configuradas manualmente); `VERCEL_AUTOMATION_BYPASS_SECRET` (System Environment Variable, todos los deployments, generada automáticamente por Vercel).
+
+**Changeset aplicado**:
+
+```
+api/admin-gate.js                      ← nuevo — Vercel Function Node.js, gate de Basic Auth + self-fetch de index.html
+vercel.json                            ← rewrites de /admin y /admin/(.*) agregados antes de la catch-all existente
+docs/Fase 28.md                        ← nuevo, documento de cierre oficial
+docs/ESTADO_OFICIAL_PROYECTO.md        ← v18, sección 34 incorporada; secciones 1–32 sin alterar
+Instrucciones maestras del proyecto    ← actualizadas a versión post FASE 28
+```
+
+## 35. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 28 cerrada — parcialmente.** Ver `docs/Fase 28.md` para historial completo. La línea A de su alcance original (autenticación de `/admin`) quedó implementada, validada en seis subetapas independientes, mergeada a `main` (`364c3ca`, PR #45) y verificada en producción real. La línea B (visibilidad operativa de RSVP para P1/P2/P3) **no fue iniciada** — es el punto de partida más directo y ya aprobado en el diagnóstico estratégico original, todavía sin implementación.
+
+**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado (FASE 24), implementado (FASE 25) y extendido con lectura de confirmados (FASE 26). MAU-3, primera etapa, implementada (FASE 27). Autenticación de `/admin` implementada y validada en producción (FASE 28).**
+
+**`main` en `364c3ca`.** `/admin` protegido con Basic Auth. `api/admin-gate.js` forma parte oficial de la arquitectura. `vercel.json` con las reglas de `/admin`/`/admin/*` antes de la catch-all preexistente, sin alterarla.
+
+**Próximo paso, no pre-aprobado por esta sección**: la vista operativa de RSVP para P1/P2/P3 (línea B de FASE 28, diseño conceptual ya aprobado en la Etapa 1 de esa fase — alcance en `docs/Fase 28.md` sección 1) es la línea de trabajo más directa y con menor incertidumbre arquitectónica pendiente, dado que reutiliza `action=getConfirmados` ya validado (FASE 26) y el patrón de acceso a `config.json` ya establecido (`useConfig.js`). No queda iniciada por esta sección — su apertura formal como FASE 29 requiere protocolo obligatorio completo, igual que toda fase anterior. Otras líneas abiertas, sin pre-aprobación: continuación de MAU-3, MAU-4, resolución de RIESGO-C, exposición sin autenticación de `config.json` por cliente.
 
 ---
 
