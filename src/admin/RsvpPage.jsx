@@ -1,12 +1,13 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // src/admin/RsvpPage.jsx
-// Vista operativa RSVP (P1/P2/P3) — FASE 29, Subetapa 29.1 (shell)
+// Vista operativa RSVP (P1/P2/P3) — FASE 29, Subetapas 29.1 + 29.2
 //
 // PROPÓSITO
-// Selector de clientes elegibles para la Vista RSVP. Esta subetapa NO llama
-// a `action=getConfirmados` ni renderiza la tabla de confirmados — eso es
-// objeto de subetapas posteriores (29.2/29.3). Aquí solo se resuelve el
-// universo de clientes elegibles y se lo muestra en un selector.
+// Selector de clientes elegibles para la Vista RSVP (29.1) y, sobre el
+// cliente seleccionado, verificación de que su configuración RSVP
+// (apps_script_url/sheet_id) está disponible para la futura consulta
+// (29.2). Esta subetapa NO llama a `action=getConfirmados` ni renderiza
+// la tabla de confirmados — eso es objeto de la Subetapa 29.3.
 //
 // REGLA DE ELEGIBILIDAD (aprobada en Subetapa 29.0.1 — sin excepciones)
 // 1. `data/clientes/index.json` aporta el universo de slugs candidatos y el
@@ -25,9 +26,19 @@
 // selector únicamente porque no está registrado en `index.json` — el mismo
 // comportamiento que tendría cualquier otro cliente no registrado.
 //
-// ALCANCE DE ESTA SUBETAPA
+// ALCANCE ACUMULADO (29.1 + 29.2)
 // Solo lectura. Sin `action=getConfirmados`, sin tabla de confirmados, sin
-// routing URL nuevo, sin cache, sin backend nuevo.
+// routing URL nuevo, sin cache, sin backend nuevo. 29.2 no agrega ningún
+// fetch adicional — reutiliza el config.json ya obtenido durante la
+// resolución de elegibilidad de 29.1.
+//
+// VALIDACIÓN EMPÍRICA PENDIENTE (29.2)
+// Con el catálogo productivo actual no existe ningún cliente P1/P2/P3
+// elegible para seleccionar, por lo que la rama de selección de esta
+// subetapa (comprobación de configDisponible) no pudo validarse
+// empíricamente en Preview. Queda pendiente hasta que exista un cliente
+// productivo real — decisión explícita: NO se usó el fixture `prueba`
+// para suplir esto (ver docs/Fase 29.md, decisión de Subetapa 29.2).
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useEffect, useState } from 'react';
@@ -46,10 +57,13 @@ const PALETA = {
 };
 
 // ── Resolución de elegibilidad ───────────────────────────────────────────────
-// Dado un cliente de index.json, hace fetch a su config.json público y
-// determina si es elegible (category === 'premium'). No lanza — cualquier
-// fallo (config.json ausente, JSON inválido, template desconocido) resuelve
-// a "no elegible", sin interrumpir la resolución del resto de los clientes.
+// Dado un cliente de index.json, hace fetch a su config.json público,
+// determina si es elegible (category === 'premium') y, si lo es, retiene
+// apps_script_url/sheet_id del mismo config.json ya obtenido (Subetapa 29.2)
+// para que la selección posterior no necesite un segundo fetch. No lanza —
+// cualquier fallo (config.json ausente, JSON inválido, template desconocido)
+// resuelve a "no elegible", sin interrumpir la resolución del resto de los
+// clientes.
 async function resolverElegibilidad(cliente) {
   try {
     const res = await fetch(`/clientes/${cliente.slug}/config.json`, { cache: 'no-store' });
@@ -62,9 +76,15 @@ async function resolverElegibilidad(cliente) {
     if (!entry || entry.category !== 'premium') return null;
 
     return {
-      slug:           cliente.slug,
-      cliente_nombre: cliente.cliente_nombre,
+      slug:            cliente.slug,
+      cliente_nombre:  cliente.cliente_nombre,
       template,
+      // Subetapa 29.2 — se retienen del mismo config.json ya obtenido acá
+      // arriba (sin fetch adicional) para preparar la futura consulta
+      // getConfirmados (29.3). Mismos dos campos que ya usan P1/P2/P3
+      // (ver src/templates/{P1,P2,P3}.jsx) — no se inventan campos nuevos.
+      apps_script_url: config?.apps_script_url || '',
+      sheet_id:        config?.sheet_id || '',
     };
   } catch {
     // Sin red, config.json ausente o JSON inválido: cliente no elegible.
@@ -188,22 +208,33 @@ export default function RsvpPage() {
           </div>
         )}
 
-        {/* ── Placeholder del panel de detalle ── */}
-        {seleccionado && (
-          <>
-            <div className="h-px my-9" style={{ background: PALETA.borde }} />
-            <p style={{ ...labelStyle, marginBottom: 16 }}>Confirmados</p>
-            <p style={{
-              fontSize:   13,
-              color:      PALETA.taupe,
-              fontWeight: 300,
-              fontStyle:  'italic',
-            }}>
-              {seleccionado} — vista de confirmados pendiente de
-              implementación (Subetapa 29.3).
-            </p>
-          </>
-        )}
+        {/* ── Estado de configuración RSVP del cliente seleccionado (29.2) ── */}
+        {/* Reutiliza el objeto ya resuelto en `elegibles` (29.1) — sin fetch
+            nuevo. Solo verifica disponibilidad; no llama a getConfirmados
+            (eso es 29.3). No muestra valores ni URLs en pantalla. */}
+        {seleccionado && (() => {
+          const clienteSeleccionado = elegibles.find(c => c.slug === seleccionado);
+          const configDisponible = Boolean(
+            clienteSeleccionado?.apps_script_url && clienteSeleccionado?.sheet_id
+          );
+
+          return (
+            <>
+              <div className="h-px my-9" style={{ background: PALETA.borde }} />
+              <p style={{ ...labelStyle, marginBottom: 16 }}>Confirmados</p>
+              <p style={{
+                fontSize:   13,
+                color:      PALETA.taupe,
+                fontWeight: 300,
+                fontStyle:  'italic',
+              }}>
+                {configDisponible
+                  ? 'Configuración RSVP disponible para este cliente.'
+                  : 'Configuración RSVP incompleta para este cliente — falta apps_script_url y/o sheet_id.'}
+              </p>
+            </>
+          );
+        })()}
 
       </div>
     </div>
