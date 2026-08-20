@@ -10,6 +10,7 @@
 // TABS
 // - generador → GeneradorPage (genera config.json)
 // - clientes  → ClientesPage  (registro operativo de clientes)
+// - rsvp      → RsvpPage      (vista operativa RSVP P1/P2/P3 — FASE 29)
 //
 // EXTENSIÓN FUTURA
 // Al agregar un nuevo tab: agregar entrada a TABS y caso en el render.
@@ -19,11 +20,13 @@
 import { useState } from 'react';
 import GeneradorPage from './GeneradorPage.jsx';
 import ClientesPage  from './ClientesPage.jsx';
+import RsvpPage       from './RsvpPage.jsx';
 
 // ── Definición de tabs ────────────────────────────────────────────────────────
 const TABS = [
   { id: 'generador', label: 'Generador' },
   { id: 'clientes',  label: 'Clientes'  },
+  { id: 'rsvp',      label: 'RSVP'      },
 ];
 
 // ── Estilos (coherentes con AdminPage / paleta VELA) ─────────────────────────
@@ -115,6 +118,7 @@ export default function AdminShell() {
       {/* ── Contenido del tab activo ── */}
       {tabActivo === 'generador' && <GeneradorPage />}
       {tabActivo === 'clientes'  && <ClientesPage  />}
+      {tabActivo === 'rsvp'      && <RsvpPage      />}
     </>
   );
 }
