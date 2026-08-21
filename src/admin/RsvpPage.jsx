@@ -1,13 +1,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // src/admin/RsvpPage.jsx
-// Vista operativa RSVP (P1/P2/P3) — FASE 29, Subetapas 29.1 + 29.2
+// Vista operativa RSVP (P1/P2/P3) — FASE 29, Subetapas 29.1 + 29.2 + 29.3
 //
 // PROPÓSITO
-// Selector de clientes elegibles para la Vista RSVP (29.1) y, sobre el
-// cliente seleccionado, verificación de que su configuración RSVP
-// (apps_script_url/sheet_id) está disponible para la futura consulta
-// (29.2). Esta subetapa NO llama a `action=getConfirmados` ni renderiza
-// la tabla de confirmados — eso es objeto de la Subetapa 29.3.
+// Selector de clientes elegibles para la Vista RSVP (29.1), verificación de
+// que la configuración RSVP del cliente seleccionado está disponible (29.2)
+// y, si lo está, consulta real a `action=getConfirmados` con render de los
+// confirmados en una tabla de estructura fija (29.3).
 //
 // REGLA DE ELEGIBILIDAD (aprobada en Subetapa 29.0.1 — sin excepciones)
 // 1. `data/clientes/index.json` aporta el universo de slugs candidatos y el
@@ -26,19 +25,22 @@
 // selector únicamente porque no está registrado en `index.json` — el mismo
 // comportamiento que tendría cualquier otro cliente no registrado.
 //
-// ALCANCE ACUMULADO (29.1 + 29.2)
-// Solo lectura. Sin `action=getConfirmados`, sin tabla de confirmados, sin
-// routing URL nuevo, sin cache, sin backend nuevo. 29.2 no agrega ningún
-// fetch adicional — reutiliza el config.json ya obtenido durante la
-// resolución de elegibilidad de 29.1.
+// ALCANCE ACUMULADO (29.1 + 29.2 + 29.3)
+// Sin routing URL nuevo, sin cache, sin backend nuevo, sin polling, sin
+// refresh automático, sin filtros/búsqueda/exportación/estadísticas. 29.3
+// reutiliza exactamente el contrato de lectura ya validado en FASE 26
+// (mismo patrón que src/templates/{P1,P2,P3}.jsx) — un único fetch por
+// selección de cliente, disparado solo cuando `configDisponible === true`.
 //
-// VALIDACIÓN EMPÍRICA PENDIENTE (29.2)
+// VALIDACIÓN EMPÍRICA PENDIENTE (29.2 + 29.3)
 // Con el catálogo productivo actual no existe ningún cliente P1/P2/P3
-// elegible para seleccionar, por lo que la rama de selección de esta
-// subetapa (comprobación de configDisponible) no pudo validarse
-// empíricamente en Preview. Queda pendiente hasta que exista un cliente
-// productivo real — decisión explícita: NO se usó el fixture `prueba`
-// para suplir esto (ver docs/Fase 29.md, decisión de Subetapa 29.2).
+// elegible para seleccionar, por lo que las ramas de selección de estas
+// subetapas (disponibilidad de configuración, y consulta real de
+// confirmados con datos) no pudieron validarse empíricamente en Preview.
+// Quedan pendientes hasta que exista un cliente productivo real —
+// decisión explícita: NO se usó el fixture `prueba` para suplir esto, ni
+// se forzó artificialmente ningún escenario de error (ver docs/Fase 29.md,
+// decisiones de Subetapas 29.2 y 29.3).
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useEffect, useState } from 'react';
@@ -94,11 +96,27 @@ async function resolverElegibilidad(cliente) {
   }
 }
 
+// ── Traducción de presentación (29.3) ─────────────────────────────────────────
+// El backend entrega únicamente vocabulario canónico ("si"/"no" — Contrato
+// RSVP v2, FASE 26). Esta función traduce SOLO en el punto de render; el
+// array `confirmados` en memoria conserva el valor canónico intacto.
+function traducirAsistencia(valor) {
+  if (valor === 'si') return 'Confirma';
+  if (valor === 'no') return 'No asiste';
+  return valor ?? '—';
+}
+
 // ── RsvpPage ──────────────────────────────────────────────────────────────────
 export default function RsvpPage() {
   const [estado, setEstado]           = useState('cargando'); // 'cargando' | 'listo'
   const [elegibles, setElegibles]     = useState([]);
   const [seleccionado, setSeleccionado] = useState(null);
+
+  // Subetapa 29.3 — consulta de confirmados del cliente seleccionado.
+  // Estado independiente del de elegibilidad (arriba): no se reutiliza ni
+  // se mezcla con `estado`/`elegibles`.
+  const [estadoRsvp, setEstadoRsvp]     = useState('idle'); // 'idle' | 'cargando' | 'listo' | 'error'
+  const [confirmados, setConfirmados]   = useState([]);
 
   useEffect(() => {
     let cancelado = false;
@@ -120,6 +138,57 @@ export default function RsvpPage() {
     resolverUniverso();
     return () => { cancelado = true; };
   }, []);
+
+  // Subetapa 29.3 — dispara la consulta real a `action=getConfirmados`
+  // cuando cambia la selección, únicamente si la configuración del cliente
+  // está disponible (29.2). Reutiliza exactamente el contrato ya validado
+  // en FASE 26 (mismo patrón que src/templates/{P1,P2,P3}.jsx). Un único
+  // fetch por selección — sin polling, sin refresh automático.
+  useEffect(() => {
+    let cancelado = false;
+
+    const clienteSeleccionado = elegibles.find(c => c.slug === seleccionado);
+    const configDisponible = Boolean(
+      clienteSeleccionado?.apps_script_url && clienteSeleccionado?.sheet_id
+    );
+
+    if (!seleccionado || !configDisponible) {
+      setEstadoRsvp('idle');
+      setConfirmados([]);
+      return;
+    }
+
+    async function consultarConfirmados() {
+      setEstadoRsvp('cargando');
+      try {
+        const url = new URL(clienteSeleccionado.apps_script_url);
+        url.searchParams.set('action',   'getConfirmados');
+        url.searchParams.set('sheet_id', clienteSeleccionado.sheet_id);
+
+        const res = await fetch(url.toString(), { cache: 'no-store' });
+        const data = await res.json();
+
+        if (!res.ok || data?.ok === false || !Array.isArray(data)) {
+          throw new Error('Consulta RSVP no exitosa');
+        }
+
+        if (!cancelado) {
+          setConfirmados(data);
+          setEstadoRsvp('listo');
+        }
+      } catch {
+        // Ajuste 1 (aprobado): no se conserva el mensaje técnico del
+        // backend ni se muestra en la UI — alcanza con el estado 'error'.
+        if (!cancelado) {
+          setConfirmados([]);
+          setEstadoRsvp('error');
+        }
+      }
+    }
+
+    consultarConfirmados();
+    return () => { cancelado = true; };
+  }, [seleccionado, elegibles]);
 
   const labelStyle = {
     fontSize:      10,
@@ -208,10 +277,10 @@ export default function RsvpPage() {
           </div>
         )}
 
-        {/* ── Estado de configuración RSVP del cliente seleccionado (29.2) ── */}
+        {/* ── Detalle del cliente seleccionado (29.2 + 29.3) ── */}
         {/* Reutiliza el objeto ya resuelto en `elegibles` (29.1) — sin fetch
-            nuevo. Solo verifica disponibilidad; no llama a getConfirmados
-            (eso es 29.3). No muestra valores ni URLs en pantalla. */}
+            nuevo de config. La consulta a getConfirmados se dispara en el
+            useEffect de más arriba, solo si configDisponible === true. */}
         {seleccionado && (() => {
           const clienteSeleccionado = elegibles.find(c => c.slug === seleccionado);
           const configDisponible = Boolean(
@@ -222,22 +291,103 @@ export default function RsvpPage() {
             <>
               <div className="h-px my-9" style={{ background: PALETA.borde }} />
               <p style={{ ...labelStyle, marginBottom: 16 }}>Confirmados</p>
-              <p style={{
-                fontSize:   13,
-                color:      PALETA.taupe,
-                fontWeight: 300,
-                fontStyle:  'italic',
-              }}>
-                {configDisponible
-                  ? 'Configuración RSVP disponible para este cliente.'
-                  : 'Configuración RSVP incompleta para este cliente — falta apps_script_url y/o sheet_id.'}
-              </p>
+
+              {!configDisponible && (
+                <p style={{
+                  fontSize:   13,
+                  color:      PALETA.taupe,
+                  fontWeight: 300,
+                  fontStyle:  'italic',
+                }}>
+                  Configuración RSVP incompleta para este cliente — falta apps_script_url y/o sheet_id.
+                </p>
+              )}
+
+              {configDisponible && (
+                <div style={{
+                  border:    `1px solid ${PALETA.borde}`,
+                  overflowX: 'auto',
+                }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ background: 'rgba(185,166,142,0.08)' }}>
+                        <th style={thStyle()}>Nombre</th>
+                        <th style={thStyle()}>Apellido</th>
+                        <th style={thStyle()}>Asistencia</th>
+                        <th style={thStyle()}>Restricciones</th>
+                        <th style={thStyle()}>Observaciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {estadoRsvp === 'cargando' && (
+                        <FilaMensaje texto="Consultando confirmados…" />
+                      )}
+                      {estadoRsvp === 'listo' && confirmados.length === 0 && (
+                        <FilaMensaje texto="Todavía no hay confirmados." />
+                      )}
+                      {estadoRsvp === 'error' && (
+                        <FilaMensaje texto="No se pudo consultar RSVP." />
+                      )}
+                      {estadoRsvp === 'listo' && confirmados.map((c, idx) => (
+                        <FilaConfirmado
+                          key={idx}
+                          confirmado={c}
+                          esUltimo={idx === confirmados.length - 1}
+                        />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </>
           );
         })()}
 
       </div>
     </div>
+  );
+}
+
+// ── Fila de mensaje de estado (cargando / vacío / error) — 29.3 ──────────────
+function FilaMensaje({ texto }) {
+  return (
+    <tr>
+      <td
+        colSpan={5}
+        style={{
+          padding:    '18px 16px',
+          fontSize:   13,
+          color:      PALETA.taupe,
+          fontWeight: 300,
+          fontStyle:  'italic',
+          textAlign:  'center',
+        }}
+      >
+        {texto}
+      </td>
+    </tr>
+  );
+}
+
+// ── Fila de un confirmado real — 29.3 ─────────────────────────────────────────
+function FilaConfirmado({ confirmado, esUltimo }) {
+  const celdaBase = {
+    padding:       '14px 16px',
+    fontSize:      13,
+    color:         PALETA.negro,
+    fontWeight:    300,
+    verticalAlign: 'middle',
+    borderBottom:  esUltimo ? 'none' : `1px solid ${PALETA.borde}`,
+  };
+
+  return (
+    <tr>
+      <td style={celdaBase}>{confirmado.nombre || '—'}</td>
+      <td style={celdaBase}>{confirmado.apellido || '—'}</td>
+      <td style={celdaBase}>{traducirAsistencia(confirmado.asistencia)}</td>
+      <td style={celdaBase}>{confirmado.restricciones || '—'}</td>
+      <td style={celdaBase}>{confirmado.observaciones || '—'}</td>
+    </tr>
   );
 }
 
