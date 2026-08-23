@@ -1,3 +1,4 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31351492/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31163953/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30878296/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30488908/ESTADO_OFICIAL_PROYECTO.md)
@@ -823,15 +824,57 @@ docs/ESTADO_OFICIAL_PROYECTO.md        ← v18, sección 34 incorporada; seccion
 Instrucciones maestras del proyecto    ← actualizadas a versión post FASE 28
 ```
 
-## 35. PUNTO EXACTO DE CONTINUACIÓN
+## 35. [Sección histórica reemplazada — ver sección 36]
 
-**FASE 28 cerrada — parcialmente.** Ver `docs/Fase 28.md` para historial completo. La línea A de su alcance original (autenticación de `/admin`) quedó implementada, validada en seis subetapas independientes, mergeada a `main` (`364c3ca`, PR #45) y verificada en producción real. La línea B (visibilidad operativa de RSVP para P1/P2/P3) **no fue iniciada** — es el punto de partida más directo y ya aprobado en el diagnóstico estratégico original, todavía sin implementación.
+La sección 35 de la versión anterior de este documento ("Punto exacto de continuación" al cierre de FASE 28) queda reemplazada por la sección 36, que incorpora el cierre de FASE 29. Contenido preservado en `docs/Fase 28.md`, sin alteración.
 
-**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado (FASE 24), implementado (FASE 25) y extendido con lectura de confirmados (FASE 26). MAU-3, primera etapa, implementada (FASE 27). Autenticación de `/admin` implementada y validada en producción (FASE 28).**
+## 36. FASE 29 — VISTA OPERATIVA RSVP (P1/P2/P3) — IMPLEMENTADA Y VALIDADA EN SU ALCANCE VERIFICABLE ACTUAL
 
-**`main` en `364c3ca`.** `/admin` protegido con Basic Auth. `api/admin-gate.js` forma parte oficial de la arquitectura. `vercel.json` con las reglas de `/admin`/`/admin/*` antes de la catch-all preexistente, sin alterarla.
+**Objetivo cumplido en su totalidad**: construir la Vista RSVP dentro de `/admin` (tercer tab de `AdminShell`), con selector de clientes elegibles, verificación de configuración disponible y consulta real a `action=getConfirmados` con tabla de confirmados de estructura fija. No queda ninguna subetapa abierta ni ningún elemento del alcance original sin construir.
 
-**Próximo paso, no pre-aprobado por esta sección**: la vista operativa de RSVP para P1/P2/P3 (línea B de FASE 28, diseño conceptual ya aprobado en la Etapa 1 de esa fase — alcance en `docs/Fase 28.md` sección 1) es la línea de trabajo más directa y con menor incertidumbre arquitectónica pendiente, dado que reutiliza `action=getConfirmados` ya validado (FASE 26) y el patrón de acceso a `config.json` ya establecido (`useConfig.js`). No queda iniciada por esta sección — su apertura formal como FASE 29 requiere protocolo obligatorio completo, igual que toda fase anterior. Otras líneas abiertas, sin pre-aprobación: continuación de MAU-3, MAU-4, resolución de RIESGO-C, exposición sin autenticación de `config.json` por cliente.
+**Documento de referencia completo**: `docs/Fase 29.md`.
+
+**Origen**: línea B del alcance original de FASE 28 (diseño conceptual ya aprobado en su Etapa 1), diferida explícitamente al cierre de esa fase por no haber sido iniciada.
+
+**Subetapas, todas VALIDADAS en su alcance verificable**:
+
+- **29.0** (solo lectura, sin PR): auditoría del routing real de `/admin` (tabs en memoria, sin URL), del campo de variante en `index.json` (no confiable) y del shape real de `config.json` y de `getConfirmados`.
+- **29.0.1** (análisis, sin PR): regla de elegibilidad oficial — `index.json` aporta universo de slugs + `deploy_estado`; `config.json` por cliente es la fuente de verdad del template efectivo; `templateRegistry[template].category === "premium"` determina P1/P2/P3. `index.json.template` explícitamente descartado de la decisión.
+- **29.1**: tab `RSVP` en `AdminShell` + shell de `RsvpPage` con selector de elegibles.
+- **29.2**: resolución de `apps_script_url`/`sheet_id` del cliente seleccionado, reutilizando el `config.json` ya obtenido en 29.1 (sin fetch adicional).
+- **29.3**: consulta real a `action=getConfirmados` (mismo contrato de FASE 26) y tabla de confirmados de estructura fija (Nombre / Apellido / Asistencia / Restricciones / Observaciones), con traducción de `asistencia` únicamente en el punto de render.
+
+**Regla sobre el fixture `prueba` (formulación final, sin ambigüedad)**: `prueba` no fue utilizado en ningún punto de la FASE 29. No se incorporó al universo productivo, no se agregó a `index.json`, y no se usó como sustituto de un cliente P1/P2/P3 real. No existe ninguna condición especial por slug en el código. Su ausencia del selector se explica exclusivamente porque no está registrado en `index.json` — el mismo comportamiento que tendría cualquier otro slug no registrado.
+
+**Evidencia de Preview, consistente en 29.1/29.2/29.3**: Basic Auth OK; Generador OK; Clientes OK; tab RSVP aparece y funciona; requests a `config.json` únicamente para `sofia`, `valentina`, `andres`, `caracas` (los 4 clientes `deployed` de `index.json`); `prueba` nunca solicitado; `getConfirmados` con 0 requests en el catálogo actual; 0 errores de consola en ningún punto.
+
+**Riesgos que permanecen abiertos, sin modificar en esta fase**: RIESGO-C (bundle único de `/admin` con `index.json` embebido) — sin cambios, `RsvpPage.jsx` reutiliza el mismo import estático que ya usaba `ClientesPage.jsx`; `config.json` público sin autenticación por cliente individual — sin cambios, reutilizado tal cual para resolver elegibilidad y configuración, sin agravarlo ni resolverlo.
+
+**Dependencia de validación futura**: el catálogo productivo actual no contiene ningún cliente P1/P2/P3 real. La validación funcional con datos reales de `getConfirmados` (selector con al menos un cliente elegible listado, `configDisponible` sobre una selección real, tabla de confirmados con datos reales) podrá completarse cuando exista el primer cliente productivo P1/P2/P3 elegible. No constituye una limitación de la fase ni una deuda de implementación — es la ausencia de un dato externo que la fase no podía generar por sí misma.
+
+**Decisiones cerradas — NO REABRIR**: ver `docs/Fase 29.md`.
+
+**Fuera de alcance de FASE 29**: Apps Script (no modificado, solo consumido), Contrato RSVP v2 (`docs/CONTRATO_RSVP_v2.md`, sin cambios), `templateRegistry.js` (sin cambios), `index.json`/`config.json` de cualquier cliente (sin cambios), routing URL nuevo, cache, backend nuevo, polling, refresh automático, filtros, búsqueda, exportación, estadísticas, resolución de RIESGO-C.
+
+**Changeset aplicado**:
+
+```
+src/admin/AdminShell.jsx               ← tab RSVP agregado (+4 líneas)
+src/admin/RsvpPage.jsx                 ← nuevo (455 líneas) — selector + configDisponible + tabla getConfirmados
+docs/Fase 29.md                        ← nuevo, documento de cierre oficial
+docs/ESTADO_OFICIAL_PROYECTO.md        ← v19, sección 36 incorporada; secciones 1–34 sin alterar
+Instrucciones maestras del proyecto    ← actualizadas a versión post FASE 29
+```
+
+## 37. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 29 implementada y validada en su alcance verificable actual.** Ver `docs/Fase 29.md` para historial completo. La Vista RSVP quedó completa, buildeada y validada en Preview en todo lo que el catálogo actual permite verificar. La validación funcional con datos reales queda registrada como dependencia de validación futura, condicionada a la existencia del primer cliente productivo P1/P2/P3 — no es una subetapa abierta de esta fase.
+
+**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado (FASE 24), implementado (FASE 25) y extendido con lectura de confirmados (FASE 26). MAU-3, primera etapa, implementada (FASE 27). Autenticación de `/admin` implementada y validada en producción (FASE 28). Vista operativa RSVP implementada y validada en su alcance verificable actual (FASE 29).**
+
+**`main` en `27366a5`** al momento de abrir FASE 29 (heredado del cierre de FASE 28). Pendiente de actualizar a la revisión real post-merge de FASE 29 una vez completado el merge.
+
+**Próximo paso, no pre-aprobado por esta sección**: cuando exista el primer cliente productivo P1/P2/P3, completar la validación funcional registrada como dependencia (sin cambios de código esperados, salvo que la integración revele algo no anticipado). Otras líneas abiertas, sin pre-aprobación: continuación de MAU-3, MAU-4, resolución de RIESGO-C, exposición sin autenticación de `config.json` por cliente, funcionalidades adicionales sobre RSVP (exports, agregados, filtros — explícitamente fuera de alcance de FASE 29).
 
 ---
 
