@@ -43,7 +43,7 @@
 // decisiones de Subetapas 29.2 y 29.3).
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import registroRaw from '../../data/clientes/index.json';
 import { templateRegistry } from '../templates/templateRegistry.js';
 
@@ -58,41 +58,55 @@ const PALETA = {
   bordeMedio: 'rgba(185,166,142,0.5)',
 };
 
-// ── Resolución de elegibilidad ───────────────────────────────────────────────
-// Dado un cliente de index.json, hace fetch a su config.json público,
-// determina si es elegible (category === 'premium') y, si lo es, retiene
+// ── Resolución de elegibilidad (FASE 30) ─────────────────────────────────────
+// Dado un cliente de index.json, hace fetch a su config.json público y
+// clasifica el resultado en uno de tres desenlaces — nunca retorna null:
+//   'elegible'       → template resuelto y category === 'premium'
+//   'no_elegible'    → template resuelto pero no premium (S1/S2/S3), o
+//                       config.json responde ok pero sin template reconocible
+//                       en templateRegistry (regla de negocio, silencioso)
+//   'no_verificable' → config.json ausente/inaccesible (!res.ok), o excepción
+//                       (sin red, JSON inválido) — no pudimos aplicar la regla,
+//                       distinto de que la regla haya dicho que no
+// La regla de elegibilidad en sí (FASE 29, 29.0.1) no cambia — solo se
+// clasifica mejor el resultado de aplicarla. Si es elegible, retiene
 // apps_script_url/sheet_id del mismo config.json ya obtenido (Subetapa 29.2)
-// para que la selección posterior no necesite un segundo fetch. No lanza —
-// cualquier fallo (config.json ausente, JSON inválido, template desconocido)
-// resuelve a "no elegible", sin interrumpir la resolución del resto de los
-// clientes.
+// para que la selección posterior no necesite un segundo fetch.
 async function resolverElegibilidad(cliente) {
   try {
     const res = await fetch(`/clientes/${cliente.slug}/config.json`, { cache: 'no-store' });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      return { slug: cliente.slug, resultado: 'no_verificable', datos: null };
+    }
 
     const config = await res.json();
     const template = config?.template;
     const entry = template ? templateRegistry[template] : null;
 
-    if (!entry || entry.category !== 'premium') return null;
+    if (!entry || entry.category !== 'premium') {
+      return { slug: cliente.slug, resultado: 'no_elegible', datos: null };
+    }
 
     return {
-      slug:            cliente.slug,
-      cliente_nombre:  cliente.cliente_nombre,
-      template,
-      // Subetapa 29.2 — se retienen del mismo config.json ya obtenido acá
-      // arriba (sin fetch adicional) para preparar la futura consulta
-      // getConfirmados (29.3). Mismos dos campos que ya usan P1/P2/P3
-      // (ver src/templates/{P1,P2,P3}.jsx) — no se inventan campos nuevos.
-      apps_script_url: config?.apps_script_url || '',
-      sheet_id:        config?.sheet_id || '',
+      slug:      cliente.slug,
+      resultado: 'elegible',
+      datos: {
+        slug:            cliente.slug,
+        cliente_nombre:  cliente.cliente_nombre,
+        template,
+        // Subetapa 29.2 — se retienen del mismo config.json ya obtenido acá
+        // arriba (sin fetch adicional) para preparar la futura consulta
+        // getConfirmados (29.3). Mismos dos campos que ya usan P1/P2/P3
+        // (ver src/templates/{P1,P2,P3}.jsx) — no se inventan campos nuevos.
+        apps_script_url: config?.apps_script_url || '',
+        sheet_id:        config?.sheet_id || '',
+      },
     };
   } catch {
-    // Sin red, config.json ausente o JSON inválido: cliente no elegible.
-    // No es un error de la Vista RSVP — es información insuficiente sobre
-    // ese cliente puntual.
-    return null;
+    // Sin red o JSON inválido: no pudimos verificar este candidato puntual.
+    // No es información suficiente para decir "no elegible" — es un fallo
+    // de verificación (FASE 30).
+    return { slug: cliente.slug, resultado: 'no_verificable', datos: null };
   }
 }
 
@@ -109,8 +123,24 @@ function traducirAsistencia(valor) {
 // ── RsvpPage ──────────────────────────────────────────────────────────────────
 export default function RsvpPage() {
   const [estado, setEstado]           = useState('cargando'); // 'cargando' | 'listo'
-  const [elegibles, setElegibles]     = useState([]);
+  // FASE 30 — fuente única de verdad de la Máquina A: lista completa de
+  // ResultadoCandidato ({ slug, resultado, datos }), sin filtrar. `elegibles`
+  // y `noVerificables` se derivan de acá por filtro simple más abajo — no
+  // son estado propio.
+  const [resultados, setResultados]   = useState([]);
   const [seleccionado, setSeleccionado] = useState(null);
+
+  // Memoizados: la Máquina B (más abajo) depende de `elegibles` en su propio
+  // useEffect — sin memoizar, cada render produciría un array nuevo y
+  // dispararía la consulta a getConfirmados de forma espuria.
+  const elegibles = useMemo(
+    () => resultados.filter(r => r.resultado === 'elegible').map(r => r.datos),
+    [resultados]
+  );
+  const noVerificables = useMemo(
+    () => resultados.filter(r => r.resultado === 'no_verificable'),
+    [resultados]
+  );
 
   // Subetapa 29.3 — consulta de confirmados del cliente seleccionado.
   // Estado independiente del de elegibilidad (arriba): no se reutiliza ni
@@ -126,11 +156,10 @@ export default function RsvpPage() {
         c => c.deploy_estado === 'deployed'
       );
 
-      const resultados = await Promise.all(candidatos.map(resolverElegibilidad));
-      const encontrados = resultados.filter(Boolean);
+      const resueltos = await Promise.all(candidatos.map(resolverElegibilidad));
 
       if (!cancelado) {
-        setElegibles(encontrados);
+        setResultados(resueltos);
         setEstado('listo');
       }
     }
@@ -235,7 +264,9 @@ export default function RsvpPage() {
           </p>
         )}
 
-        {estado === 'listo' && elegibles.length === 0 && (
+        {/* FASE 30 — caso sin errores de verificación: comportamiento y
+            mensaje idénticos a FASE 29, sin cambios. */}
+        {estado === 'listo' && elegibles.length === 0 && noVerificables.length === 0 && (
           <p style={{
             fontSize:   13,
             color:      PALETA.taupe,
@@ -245,6 +276,39 @@ export default function RsvpPage() {
             No hay clientes P1/P2/P3 desplegados todavía. El catálogo
             productivo actual no incluye ningún cliente elegible para
             esta vista.
+          </p>
+        )}
+
+        {/* FASE 30 — 0 elegibles + N no verificables: no debe presentarse
+            como equivalente a "no hay elegibles". */}
+        {estado === 'listo' && elegibles.length === 0 && noVerificables.length > 0 && (
+          <p style={{
+            fontSize:   13,
+            color:      PALETA.taupe,
+            fontWeight: 300,
+            fontStyle:  'italic',
+          }}>
+            No se pudo verificar la elegibilidad de {noVerificables.length}{' '}
+            {noVerificables.length === 1 ? 'cliente' : 'clientes'}. No hay
+            clientes P1/P2/P3 confirmados para mostrar. El listado puede
+            estar incompleto.
+          </p>
+        )}
+
+        {/* FASE 30 — señal agregada de resolución parcial cuando sí hay
+            elegibles disponibles: los elegibles se siguen mostrando con
+            normalidad debajo. */}
+        {estado === 'listo' && elegibles.length > 0 && noVerificables.length > 0 && (
+          <p style={{
+            fontSize:     13,
+            color:        PALETA.taupe,
+            fontWeight:   300,
+            fontStyle:    'italic',
+            marginBottom: 16,
+          }}>
+            No se pudo verificar la elegibilidad de {noVerificables.length}{' '}
+            {noVerificables.length === 1 ? 'cliente' : 'clientes'}. Los
+            resultados mostrados pueden estar incompletos.
           </p>
         )}
 
