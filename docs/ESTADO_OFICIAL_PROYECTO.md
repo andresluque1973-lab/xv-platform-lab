@@ -1,3 +1,4 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31402140/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31351492/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31163953/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30878296/ESTADO_OFICIAL_PROYECTO.md)
@@ -866,15 +867,54 @@ docs/ESTADO_OFICIAL_PROYECTO.md        ← v19, sección 36 incorporada; seccion
 Instrucciones maestras del proyecto    ← actualizadas a versión post FASE 29
 ```
 
-## 37. PUNTO EXACTO DE CONTINUACIÓN
+## 37. [Sección histórica reemplazada — ver sección 39]
 
-**FASE 29 implementada y validada en su alcance verificable actual.** Ver `docs/Fase 29.md` para historial completo. La Vista RSVP quedó completa, buildeada y validada en Preview en todo lo que el catálogo actual permite verificar. La validación funcional con datos reales queda registrada como dependencia de validación futura, condicionada a la existencia del primer cliente productivo P1/P2/P3 — no es una subetapa abierta de esta fase.
+La sección 37 de la versión anterior de este documento ("Punto exacto de continuación" al cierre de FASE 29) queda reemplazada por la sección 39, que incorpora el cierre de FASE 30. Contenido preservado en `docs/Fase 29.md`, sin alteración.
 
-**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado (FASE 24), implementado (FASE 25) y extendido con lectura de confirmados (FASE 26). MAU-3, primera etapa, implementada (FASE 27). Autenticación de `/admin` implementada y validada en producción (FASE 28). Vista operativa RSVP implementada y validada en su alcance verificable actual (FASE 29).**
+## 38. FASE 30 — MÁQUINA A DE RSVPPAGE: DISTINCIÓN ELEGIBLE / NO_ELEGIBLE / NO_VERIFICABLE — CERRADA
 
-**`main` en `27366a5`** al momento de abrir FASE 29 (heredado del cierre de FASE 28). Pendiente de actualizar a la revisión real post-merge de FASE 29 una vez completado el merge.
+**Objetivo cumplido en su totalidad**: corregir la ambigüedad detectada en `resolverElegibilidad()` (`RsvpPage.jsx`), donde un fallo al verificar la elegibilidad de un candidato P1/P2/P3 se colapsaba al mismo valor (`null`) que un candidato legítimamente no elegible por regla de negocio. Se introdujo la distinción `elegible` / `no_elegible` / `no_verificable`, preservando íntegramente la regla de elegibilidad congelada en FASE 29 (29.0.1).
 
-**Próximo paso, no pre-aprobado por esta sección**: cuando exista el primer cliente productivo P1/P2/P3, completar la validación funcional registrada como dependencia (sin cambios de código esperados, salvo que la integración revele algo no anticipado). Otras líneas abiertas, sin pre-aprobación: continuación de MAU-3, MAU-4, resolución de RIESGO-C, exposición sin autenticación de `config.json` por cliente, funcionalidades adicionales sobre RSVP (exports, agregados, filtros — explícitamente fuera de alcance de FASE 29).
+**Documento de referencia completo**: `docs/Fase 30.md`.
+
+**Origen**: hallazgo de auditoría de estados administrativos del panel `/admin`, solicitada por la dirección técnica como preparación para una posible fase de observabilidad. El hallazgo se trató como fase propia y acotada, sin absorberlo en una iniciativa de observabilidad general (MAU-4, que permanece sin iniciar).
+
+**Modelo adoptado**: `ResultadoCandidato = { slug, resultado: 'elegible' | 'no_elegible' | 'no_verificable', datos }`. `resultados` (lista completa, sin filtrar) como única fuente de verdad de estado de la Máquina A; `elegibles` y `noVerificables` derivados vía `useMemo`. `Promise.all` mantenido sin cambios conceptuales — un fallo de un candidato no interrumpe la resolución del resto.
+
+**Decisión de implementación no prevista en el diseño original, formalmente aceptada**: uso de `useMemo` para `elegibles`/`noVerificables`, necesario para preservar la estabilidad de referencia que consume el `useEffect` de la Máquina B (`[seleccionado, elegibles]`) — sin memoizar, cada render habría disparado `getConfirmados` de forma espuria. Contenida enteramente en `src/admin/RsvpPage.jsx`, sin alterar el contrato ni el comportamiento de la Máquina B.
+
+**Evidencia de Preview**: deployment Ready; `/admin → RSVP` carga correctamente; mensaje observado idéntico al de FASE 29 para el caso sin errores ("No hay clientes P1/P2/P3 desplegados todavía..."); sin mensaje de `no_verificable` (0 no verificables reales en el catálogo actual); Network limpio; Console limpia. Único escenario disponible para validación empírica con el catálogo productivo actual: 0 elegibles + 0 no_verificables.
+
+**Auditoría pre-merge**: aprobada. Merge-base de la branch `fase-30-rsvp-maquina-a` con `main` = HEAD de `main` al momento de ramificar (sin drift); único archivo modificado (`src/admin/RsvpPage.jsx`); build re-ejecutado exitosamente sobre el checkout real de la branch; ausencia confirmada de cambios en Máquina B, Contrato RSVP v2, `configDisponible`, `getConfirmados`, Apps Script, `index.json`; confirmado que ningún dato de cliente `no_verificable` (slug, nombre) llega a la UI — `noVerificables` se consume únicamente vía `.length`.
+
+**Merge**: PR #47, branch `fase-30-rsvp-maquina-a` → `main`. `main` post-merge: `60b2e0e`. Deployment de `main`: Ready.
+
+**Riesgos que permanecen abiertos, sin modificar en esta fase**: RIESGO-C (bundle único de `/admin` con `index.json` embebido) — sin cambios, esta fase no toca ningún import de `index.json`; `config.json` público sin autenticación por cliente individual — sin cambios.
+
+**Dependencia de validación futura, heredada de FASE 29 y ahora también aplicable a los escenarios nuevos de esta fase**: los escenarios "elegibles + no_verificable" y "0 elegibles + no_verificable" no pudieron validarse empíricamente en Preview por ausencia de candidatos P1/P2/P3 productivos reales en el catálogo actual. No constituye una limitación de la fase ni una deuda de implementación.
+
+**Decisiones cerradas — NO REABRIR**: ver `docs/Fase 30.md`.
+
+**Fuera de alcance de FASE 30**: Contrato RSVP v2, `action=getConfirmados`, `configDisponible`, Apps Script, `index.json`, `config.json` de cualquier cliente, `templateRegistry.js`, exclusión del fixture `prueba`, `ErrorBoundary`, logging, Sentry, `AdminStatusPanel`, observabilidad general del panel (MAU-4), continuación de MAU-3, resolución de RIESGO-C.
+
+**Changeset aplicado**:
+
+```
+src/admin/RsvpPage.jsx                 ← único archivo funcional modificado (92 inserciones, 28 eliminaciones)
+docs/Fase 30.md                        ← nuevo, documento de cierre oficial
+docs/ESTADO_OFICIAL_PROYECTO.md        ← v20, secciones 38–39 incorporadas; secciones 1–36 sin alterar
+Instrucciones maestras del proyecto    ← actualizadas a versión post FASE 30
+```
+
+## 39. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 30 cerrada.** Ver `docs/Fase 30.md` para historial completo. La Máquina A de `RsvpPage.jsx` distingue ahora `elegible` / `no_elegible` / `no_verificable`, validada en Preview y mergeada a `main` en el escenario disponible con el catálogo actual (0 elegibles + 0 no_verificables). Los escenarios con candidatos P1/P2/P3 reales — tanto los heredados de FASE 29 (selector con elegibles, `configDisponible`, tabla de confirmados) como los nuevos de FASE 30 (mensajes de `no_verificable`) — permanecen como dependencia de validación futura, condicionada a la existencia del primer cliente productivo P1/P2/P3 real. No son subetapas abiertas de ninguna fase.
+
+**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado (FASE 24), implementado (FASE 25) y extendido con lectura de confirmados (FASE 26). MAU-3, primera etapa, implementada (FASE 27). Autenticación de `/admin` implementada y validada en producción (FASE 28). Vista operativa RSVP implementada y validada en su alcance verificable actual (FASE 29). Máquina A de RsvpPage corregida y cerrada (FASE 30).**
+
+**`main` en `60b2e0e`** (PR #47 mergeado, post FASE 30).
+
+**Próximo paso, no pre-aprobado por esta sección**: cuando exista el primer cliente productivo P1/P2/P3, completar las validaciones funcionales registradas como dependencia (sin cambios de código esperados, salvo que la integración revele algo no anticipado — ni de FASE 29 ni de FASE 30). Otras líneas abiertas, sin pre-aprobación: continuación de MAU-3, MAU-4 (observabilidad general del panel — la auditoría de FASE 30 dejó insumo de análisis pero no constituye pre-aprobación de implementación), resolución de RIESGO-C, exposición sin autenticación de `config.json` por cliente, funcionalidades adicionales sobre RSVP (exports, agregados, filtros — explícitamente fuera de alcance tanto de FASE 29 como de FASE 30).
 
 ---
 
