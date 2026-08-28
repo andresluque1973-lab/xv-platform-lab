@@ -56,6 +56,20 @@
       "email_contacto": "",
       "telefono_contacto": "",
       "notas": "Regularización FASE 27. Carpeta public/clientes/caracas/ existía en main con config.json real y funcional desde antes de esta fase, detectada como huérfana de registro en FASE 25 y formalmente registrada en FASE 27. No existe evidencia documental de la fecha real de creación o deploy original; creado_en/deployed_en usan la fecha de esta regularización por decisión explícita de Andrés."
+    },
+        {
+      "slug": "prueba-e2e-p1",
+      "cliente_nombre": "prueba-e2e-p1",
+      "plan": "PREMIUM",
+      "template": "P1",
+      "fecha_evento": "2026-10-31",
+      "deploy_estado": "draft",
+      "creado_en": "2026-08-28",
+      "deployed_en": null,
+      "vence_en": null,
+      "email_contacto": "",
+      "telefono_contacto": "",
+      "notas": "Cliente de prueba controlado — validación end-to-end FASE 31. No es cliente comercial. Apps Script/Sheet aislados, distintos de cualquier cliente real. Candidato a eliminación posterior a la validación."
     }
   ]
 }
