@@ -1,0 +1,34 @@
+{
+  "template": "P1",
+  "_fixture": true,
+  "nombre": "PruebaE2E",
+  "fecha_display": "Sábado 31 · Octubre · 2026",
+  "fecha_larga": "31 de octubre",
+  "dia_semana": "Sábado",
+  "anio": "2026",
+  "hora": "21:00 hs",
+  "contador": "2026-10-31T21:00:00",
+  "confirmacion_limite": "20 de octubre",
+  "subtitulo": "Cliente de prueba controlado — validación end-to-end FASE 31, no es un evento real",
+  "lugar": {
+    "nombre": "Salón de Pruebas FASE 31",
+    "maps_url": "https://www.google.com/maps"
+  },
+  "historia": {
+    "titulo": "Cliente de prueba — FASE 31",
+    "cuerpo": "Este contenido es ficticio y existe únicamente para validar el flujo end-to-end de VELA (alta, publicación, RSVP público, getConfirmados, /admin). No corresponde a ningún evento ni persona real."
+  },
+  "timeline": [
+    { "fecha": "2026", "texto": "Creación del cliente de prueba FASE 31." }
+  ],
+  "itinerario": [
+    { "hora": "21:00", "descripcion": "Apertura de prueba" },
+    { "hora": "21:30", "descripcion": "Validación de RSVP" }
+  ],
+  "fotos": [],
+  "musica": {
+    "nombre": "Sin música — cliente de prueba"
+  },
+  "apps_script_url": "https://script.google.com/macros/s/AKfycbyQycOIDMikLNDdueD2hyXaC__OplCyVpPD7mdZ-WMQXlkBUk4hzJqPW1WUlCJcnN5-IA/exec",
+  "sheet_id": "1ktT0NOyCsDsvMxjpqx_-Es6QZPVTJ8tF2k-azkjU6T0"
+}
