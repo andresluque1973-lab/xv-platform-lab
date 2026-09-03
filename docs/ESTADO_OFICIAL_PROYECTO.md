@@ -1,17 +1,8 @@
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31402140/ESTADO_OFICIAL_PROYECTO.md)
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31351492/ESTADO_OFICIAL_PROYECTO.md)
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31163953/ESTADO_OFICIAL_PROYECTO.md)
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30878296/ESTADO_OFICIAL_PROYECTO.md)
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30488908/ESTADO_OFICIAL_PROYECTO.md)
-[Uploading ESTADO_OFICIAL_PROYECTO.md…]()
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30173027/ESTADO_OFICIAL_PROYECTO.md)
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/30068577/ESTADO_OFICIAL_PROYECTO.md)
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29908361/ESTADO_OFICIAL_PROYECTO.md)
-[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/29684615/ESTADO_OFICIAL_PROYECTO.md)
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31767935/ESTADO_OFICIAL_PROYECTO.md)
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 17 · Fecha de corte: 2026-08
+Versión: 21 · Fecha de corte: 2026-08
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -906,15 +897,114 @@ docs/ESTADO_OFICIAL_PROYECTO.md        ← v20, secciones 38–39 incorporadas; 
 Instrucciones maestras del proyecto    ← actualizadas a versión post FASE 30
 ```
 
-## 39. PUNTO EXACTO DE CONTINUACIÓN
+## 39. [Sección histórica reemplazada — ver sección 41]
 
-**FASE 30 cerrada.** Ver `docs/Fase 30.md` para historial completo. La Máquina A de `RsvpPage.jsx` distingue ahora `elegible` / `no_elegible` / `no_verificable`, validada en Preview y mergeada a `main` en el escenario disponible con el catálogo actual (0 elegibles + 0 no_verificables). Los escenarios con candidatos P1/P2/P3 reales — tanto los heredados de FASE 29 (selector con elegibles, `configDisponible`, tabla de confirmados) como los nuevos de FASE 30 (mensajes de `no_verificable`) — permanecen como dependencia de validación futura, condicionada a la existencia del primer cliente productivo P1/P2/P3 real. No son subetapas abiertas de ninguna fase.
+La sección 39 de la versión anterior de este documento ("Punto exacto de continuación" al cierre de FASE 30) queda reemplazada por la sección 41, que incorpora el cierre de FASE 31. Contenido preservado en `docs/Fase 30.md`, sin alteración.
 
-**Catálogo comercial VELA completo. Mapa de riesgos consolidado (FASE 19). MAU definido (FASE 20). Plan de implementación congelado (FASE 21). MAU-1 implementado (FASE 22). MAU-2 implementado (FASE 23). Contrato RSVP v2 diseñado (FASE 24), implementado (FASE 25) y extendido con lectura de confirmados (FASE 26). MAU-3, primera etapa, implementada (FASE 27). Autenticación de `/admin` implementada y validada en producción (FASE 28). Vista operativa RSVP implementada y validada en su alcance verificable actual (FASE 29). Máquina A de RsvpPage corregida y cerrada (FASE 30).**
+## 40. FASE 31 — TRANSICIÓN DE ARQUITECTURA A PRODUCTO: VALIDACIÓN E2E DEL MVP — ANÁLISIS Y VALIDACIÓN COMPLETOS EN PREVIEW, CAMBIOS PENDIENTES DE MERGE
 
-**`main` en `60b2e0e`** (PR #47 mergeado, post FASE 30).
+**Cambio de criterio de fase**: a partir de FASE 31, la prioridad del proyecto pasó de consolidar arquitectura a validar producto — pregunta central: "¿qué necesita VELA para poder entregar su primera invitación digital a un cliente real?". No se convirtió automáticamente ningún riesgo histórico (MAU-3, MAU-4, RIESGO-C, exposición de `config.json`) en trabajo de esta fase — se mantienen en backlog, sin cambios.
 
-**Próximo paso, no pre-aprobado por esta sección**: cuando exista el primer cliente productivo P1/P2/P3, completar las validaciones funcionales registradas como dependencia (sin cambios de código esperados, salvo que la integración revele algo no anticipado — ni de FASE 29 ni de FASE 30). Otras líneas abiertas, sin pre-aprobación: continuación de MAU-3, MAU-4 (observabilidad general del panel — la auditoría de FASE 30 dejó insumo de análisis pero no constituye pre-aprobación de implementación), resolución de RIESGO-C, exposición sin autenticación de `config.json` por cliente, funcionalidades adicionales sobre RSVP (exports, agregados, filtros — explícitamente fuera de alcance tanto de FASE 29 como de FASE 30).
+**Documento de referencia completo**: `docs/Fase 31.md`.
+
+**Estado de cierre**: ANÁLISIS Y VALIDACIÓN E2E COMPLETOS EN PREVIEW. Los tres cambios preparados en esta fase (ver más abajo) **no fueron mergeados a `main` al cierre de este documento** — siguen como contenido preparado, pendiente de que Andrés los suba manualmente vía GitHub UI, siguiendo el protocolo habitual del proyecto (rama → PR → Preview → validación → merge).
+
+### 40.1 — Hallazgo A1: catálogo comercial desalineado del estado técnico real
+
+`data/catalogo/templates.js` marcaba S3, P1, P2 y P3 como `"proximamente"`, pese a que las FASES 15–18, 25, 26, 29 y 30 dan esos templates por completos e implementados. Efecto concreto verificado en código: en el Generador (`AdminPage.jsx`), en su modo normal (`modoValidacion = false`, valor por defecto), el operador solo podía seleccionar S1, S2 y P1 (este último por un override manual hardcodeado, `LEGACY_VISIBLE`) — S3, P2 y P3 no aparecían como opciones seleccionables sin activar un toggle pensado para pruebas técnicas, no para uso comercial.
+
+**Corrección preparada, pendiente de merge**: los cuatro valores pasan a `"disponible"`. Cambio de una sola dimensión (visibilidad comercial), sin tocar `LEGACY_VISIBLE` ni ningún otro archivo. Build verificado localmente (`npm run build` exitoso).
+
+### 40.2 — Cliente de prueba controlado: `prueba-e2e-p1`
+
+Creado bajo una excepción operativa explícitamente autorizada para esta fase (distinta del fixture técnico `prueba` de FASE 27, que no fue tocado ni reutilizado): permite validar el producto end-to-end sin requerir un cliente comercial real. Slug `prueba-e2e-p1`, template P1, `_fixture: true`, datos 100% ficticios.
+
+**Backend aislado de producción**: Google Sheet y Apps Script Web App nuevos, creados específicamente para esta validación, sin relación alguna con el recurso compartido que usan `andres`/`caracas`/`prueba` (confirmado por comparación directa: `apps_script_url` y `sheet_id` completamente distintos).
+
+**Validación contra MAU-1**: ejecutada la lógica real de `validate()`/`REQUIRED_FIELDS.P1` (`src/hooks/useConfig.js`) contra el `config.json` propuesto — 0 campos faltantes sobre 17 requeridos.
+
+**Validación contra el validador de FASE 27**: `scripts/validar-registro-clientes.js` ejecutado sobre el estado con `prueba-e2e-p1` agregado — sin divergencias.
+
+**No modifica ningún cliente existente**: diff de `data/clientes/index.json` puramente aditivo, confirmado línea por línea; ninguna carpeta de `public/clientes/{sofia,valentina,andres,caracas,prueba}/` tocada.
+
+**Registro actual en `data/clientes/index.json`, sin modificar**:
+```
+"deploy_estado": "draft",
+"deployed_en": null
+```
+Estos valores reflejan fielmente el estado real del cliente conforme a `data/clientes/CONTRATO.md`: el cliente está operativo en un Preview de Vercel, pero no fue mergeado a `main`, por lo que no corresponde marcarlo `"deployed"`. Decisión explícita: no se fuerza este campo para habilitar validaciones adicionales — ver 40.5.
+
+### 40.3 — Validación E2E realizada en Preview, con evidencia empírica real
+
+| Etapa | Resultado | Evidencia |
+|---|---|---|
+| `action=rsvp` (backend aislado, prueba manual directa) | OK | `{"ok":true}`, fila confirmada en `RSVP_VELA` aislado |
+| `action=getConfirmados` (backend aislado, prueba manual directa) | OK | JSON array válido, con el registro creado |
+| Invitación pública de `prueba-e2e-p1` — carga y funcionamiento general | OK | Carga correctamente en Preview |
+| Invitación pública — sección `Regalos` | No aplica en esta prueba | No forma parte del fixture (deliberadamente omitida) |
+| RSVP público desde la invitación (primer intento) | FALLO detectado y diagnosticado | Ver 40.4 (hallazgo B1) |
+| RSVP público desde la invitación (tras corregir permiso de Apps Script) | OK | Persistencia confirmada, `getConfirmados` la refleja |
+| `/admin → RSVP` | PENDIENTE DE VALIDACIÓN POSTERIOR | Ver 40.5 |
+
+### 40.4 — Hallazgo B1: RSVP con éxito garantizado, sin verificación de persistencia real
+
+Diagnosticado con evidencia empírica de DevTools → Network durante un envío real desde el Preview. Se distinguen explícitamente dos cosas, que no deben confundirse entre sí ni tratarse como si una resolviera a la otra:
+
+- **Causa del fallo observado en esta fase**: el deployment de Apps Script aislado, en el momento de la primera prueba E2E, tenía su permiso de acceso configurado como `"Solo tú"`. Cualquier petición sin la sesión de Google de Andrés recibía `302 → ServiceLogin → 401` — enmascarado del lado del frontend por `mode: "no-cors"` en `src/templates/P1.jsx`, `ConfirmSection.handleSubmit` (líneas 981–1006).
+- **Corrección aplicada**: cambio del permiso del Web App a `"Cualquiera"`, del lado de Google. No requirió ningún cambio de código en VELA. Confirmado en vivo: tras el cambio, `action=rsvp` y `action=getConfirmados` funcionan sin `401`/`ServiceLogin`.
+- **Debilidad arquitectónica pendiente, NO resuelta por este fix**: el frontend sigue usando `mode: "no-cors"` en la escritura y marca `status: "success"` tanto en el `try` como en el `catch` (líneas 1002 y 1004) — no distingue petición enviada, respuesta recibida, respuesta exitosa, ni persistencia real. Cualquier fallo futuro, de cualquier causa distinta a la de esta fase, volvería a mostrar "¡Gracias!" al invitado sin ninguna señal de alarma. **El fix de permisos resolvió la causa puntual observada en esta fase — no resuelve la debilidad de fondo.** No corregido en FASE 31, por decisión explícita.
+
+### 40.5 — `/admin → RSVP`: pendiente de validación posterior (no es un error técnico)
+
+`prueba-e2e-p1` no aparece como candidato en `/admin → RSVP` en el Preview actual. Causa determinada por análisis estático de `RsvpPage.jsx` (líneas 154–157): el universo candidato de la Máquina A (FASE 30) se filtra primero por `deploy_estado === 'deployed'` sobre `data/clientes/index.json`, antes de evaluar template/elegibilidad. `prueba-e2e-p1` tiene `deploy_estado: "draft"` — comportamiento correcto del código según el contrato actual, no un bug de la Máquina A.
+
+Decisión explícita: no forzar `deploy_estado: "deployed"` para validar artificialmente esta etapa. `/admin → RSVP` queda pendiente de validación posterior, una vez que `prueba-e2e-p1` sea realmente desplegado en producción y su registro pase legítimamente a `deploy_estado: "deployed"` conforme al ciclo de vida del proyecto — no se afirma que el merge a `main` por sí solo produzca ese cambio de estado; el registro se actualiza como paso explícito y deliberado, no como efecto automático del merge.
+
+### 40.6 — Hallazgo nuevo: `ConfirmadosSection` expuesta en la invitación pública
+
+Confirmado por lectura directa de `src/templates/P1.jsx` (línea 1407): la lista de confirmados se renderiza sin ninguna condición para cualquier visitante de la invitación pública de un cliente P1 (mismo patrón esperable en P2/P3, sin confirmar empíricamente para esos dos). Decisión de producto fijada en esta fase: la vista de confirmados debe ser exclusiva del propietario/administrador vía `/admin`, no visible para los invitados. No corregido en FASE 31, por decisión explícita.
+
+### 40.7 — Hallazgo A2: Open Graph hardcodeado, confirmado empíricamente
+
+Confirmado en el Preview: al compartir la URL por WhatsApp no aparece imagen, título ni descripción diferenciada — `index.html` es estático y único para todo el sitio multi-tenant, hardcodeado con los metadatos de Sofía. No corregido en FASE 31, por decisión explícita.
+
+**Riesgos que permanecen abiertos, sin modificar en esta fase**: RIESGO-C, exposición sin autenticación de `config.json` por cliente, MAU-3 (continuación), MAU-4 — ninguno tocado ni convertido en trabajo de FASE 31.
+
+**Decisiones cerradas — NO REABRIR**: ver `docs/Fase 31.md`.
+
+**Fuera de alcance de FASE 31**: corrección de código de A1 (más allá de la preparación descrita), A2, B1 (debilidad de fondo), privacidad de `ConfirmadosSection`, Apps Script (más allá del cambio de permiso ya aplicado por Andrés), MAU-3, MAU-4, RIESGO-C, exports/filtros/estadísticas de RSVP, cualquier refactor general.
+
+**Changeset preparado, pendiente de subir manualmente (NO mergeado a `main`)**:
+
+```
+data/catalogo/templates.js             ← S3/P1/P2/P3 pasan a "disponible"
+data/clientes/index.json               ← entrada nueva de prueba-e2e-p1 (deploy_estado: "draft", deployed_en: null)
+public/clientes/prueba-e2e-p1/config.json  ← nuevo, cliente de prueba controlado, _fixture: true
+docs/Fase 31.md                        ← nuevo, documento de cierre oficial
+docs/ESTADO_OFICIAL_PROYECTO.md        ← v21, secciones 39–41 incorporadas; secciones 1–38 sin alterar
+Instrucciones maestras del proyecto    ← actualizadas a versión post FASE 31
+```
+
+## 41. PUNTO EXACTO DE CONTINUACIÓN
+
+**FASE 31 cerrada como análisis y validación E2E en Preview.** Ver `docs/Fase 31.md` para el historial completo. Ningún cambio de código de esta fase fue mergeado a `main` al momento de este documento — los tres archivos del changeset (catálogo, `config.json` de `prueba-e2e-p1`, entrada de `index.json`) están preparados y verificados (build local, MAU-1, validador de FASE 27), pendientes de que Andrés los suba manualmente.
+
+**Validado empíricamente en esta fase**: backend aislado de `prueba-e2e-p1` (escritura y lectura, tras corregir el permiso del deployment de Apps Script), causa raíz puntual de B1, e invitación pública funcionando en Preview.
+
+**Pendiente, explícito, sin pre-aprobación de implementación**:
+- Merge de los tres cambios preparados, vía protocolo habitual (rama → PR → Preview → merge).
+- Validación de `/admin → RSVP`, después del despliegue real de `prueba-e2e-p1` en producción y la actualización legítima de `deploy_estado` a `"deployed"` — no como efecto automático del merge, sino como paso explícito posterior.
+- A2 (Open Graph hardcodeado) — sin alcance de corrección definido todavía.
+- Debilidad arquitectónica de fondo de B1 (verificación real de persistencia en el frontend, más allá del fix puntual de permisos ya aplicado) — sin alcance de corrección definido todavía.
+- Privacidad de `ConfirmadosSection` (ocultar de la invitación pública, exclusivo de `/admin`) — aplica a P1/P2/P3, sin confirmar empíricamente para P2/P3.
+- Retiro posterior del fixture `prueba-e2e-p1`, una vez agotado su propósito de validación.
+- Backlog sin cambios en esta fase: MAU-3 (continuación), MAU-4, RIESGO-C, exposición de `config.json`.
+
+**Catálogo comercial VELA**: técnicamente completo desde antes de FASE 31; la corrección de su declaración comercial (`data/catalogo/templates.js`) está preparada pero no mergeada — ver 40.1.
+
+**`main`**: sin cambios de FASE 31 aplicados todavía; sigue en `60b2e0e` (PR #47 de FASE 30) hasta que Andrés suba y mergee el changeset de esta fase.
+
+**Próximo paso, no pre-aprobado por esta sección**: definir alcance de FASE 32 sobre los pendientes listados arriba — ninguno se convierte automáticamente en trabajo aprobado por estar mencionado en este documento.
 
 ---
 
