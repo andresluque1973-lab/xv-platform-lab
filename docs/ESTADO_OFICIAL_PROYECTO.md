@@ -1,8 +1,9 @@
+[ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31857832/ESTADO_OFICIAL_PROYECTO.md)
 [ESTADO_OFICIAL_PROYECTO.md](https://github.com/user-attachments/files/31767935/ESTADO_OFICIAL_PROYECTO.md)
 # VELA — ESTADO OFICIAL DE PROYECTO
 ## Documento de transferencia de contexto
 
-Versión: 21 · Fecha de corte: 2026-08
+Versión: 22 · Fecha de corte: 2026-09
 Propósito: continuidad exacta en nuevo chat. Registra decisiones, no las resume. Todo lo aquí contenido tiene estado **aprobado** salvo indicación contraria.
 
 ---
@@ -901,19 +902,19 @@ Instrucciones maestras del proyecto    ← actualizadas a versión post FASE 30
 
 La sección 39 de la versión anterior de este documento ("Punto exacto de continuación" al cierre de FASE 30) queda reemplazada por la sección 41, que incorpora el cierre de FASE 31. Contenido preservado en `docs/Fase 30.md`, sin alteración.
 
-## 40. FASE 31 — TRANSICIÓN DE ARQUITECTURA A PRODUCTO: VALIDACIÓN E2E DEL MVP — ANÁLISIS Y VALIDACIÓN COMPLETOS EN PREVIEW, CAMBIOS PENDIENTES DE MERGE
+## 40. FASE 31 — TRANSICIÓN DE ARQUITECTURA A PRODUCTO: VALIDACIÓN E2E DEL MVP — ANÁLISIS Y VALIDACIÓN COMPLETOS EN PREVIEW, CAMBIOS MERGEADOS A `main`
 
 **Cambio de criterio de fase**: a partir de FASE 31, la prioridad del proyecto pasó de consolidar arquitectura a validar producto — pregunta central: "¿qué necesita VELA para poder entregar su primera invitación digital a un cliente real?". No se convirtió automáticamente ningún riesgo histórico (MAU-3, MAU-4, RIESGO-C, exposición de `config.json`) en trabajo de esta fase — se mantienen en backlog, sin cambios.
 
 **Documento de referencia completo**: `docs/Fase 31.md`.
 
-**Estado de cierre**: ANÁLISIS Y VALIDACIÓN E2E COMPLETOS EN PREVIEW. Los tres cambios preparados en esta fase (ver más abajo) **no fueron mergeados a `main` al cierre de este documento** — siguen como contenido preparado, pendiente de que Andrés los suba manualmente vía GitHub UI, siguiendo el protocolo habitual del proyecto (rama → PR → Preview → validación → merge).
+**Estado de cierre**: ANÁLISIS Y VALIDACIÓN E2E COMPLETOS EN PREVIEW. Los tres cambios preparados en esta fase (ver más abajo) fueron mergeados a `main` mediante PR #48, commit `92ef6ad`. El merge incorpora el catálogo corregido y el fixture `prueba-e2e-p1` a `main`, pero **no equivale, por sí solo, a un despliegue formal del cliente de prueba** conforme al ciclo de vida documentado en `data/clientes/CONTRATO.md` — ver 40.2 y 40.5 para la distinción exacta entre "mergeado" y "`deploy_estado: deployed`".
 
 ### 40.1 — Hallazgo A1: catálogo comercial desalineado del estado técnico real
 
 `data/catalogo/templates.js` marcaba S3, P1, P2 y P3 como `"proximamente"`, pese a que las FASES 15–18, 25, 26, 29 y 30 dan esos templates por completos e implementados. Efecto concreto verificado en código: en el Generador (`AdminPage.jsx`), en su modo normal (`modoValidacion = false`, valor por defecto), el operador solo podía seleccionar S1, S2 y P1 (este último por un override manual hardcodeado, `LEGACY_VISIBLE`) — S3, P2 y P3 no aparecían como opciones seleccionables sin activar un toggle pensado para pruebas técnicas, no para uso comercial.
 
-**Corrección preparada, pendiente de merge**: los cuatro valores pasan a `"disponible"`. Cambio de una sola dimensión (visibilidad comercial), sin tocar `LEGACY_VISIBLE` ni ningún otro archivo. Build verificado localmente (`npm run build` exitoso).
+**Corrección mergeada a `main`** (PR #48): los cuatro valores pasan a `"disponible"`. Cambio de una sola dimensión (visibilidad comercial), sin tocar `LEGACY_VISIBLE` ni ningún otro archivo. Build verificado localmente antes del merge (`npm run build` exitoso). Verificado nuevamente contra `main` post-merge: contenido idéntico al preparado.
 
 ### 40.2 — Cliente de prueba controlado: `prueba-e2e-p1`
 
@@ -932,7 +933,7 @@ Creado bajo una excepción operativa explícitamente autorizada para esta fase (
 "deploy_estado": "draft",
 "deployed_en": null
 ```
-Estos valores reflejan fielmente el estado real del cliente conforme a `data/clientes/CONTRATO.md`: el cliente está operativo en un Preview de Vercel, pero no fue mergeado a `main`, por lo que no corresponde marcarlo `"deployed"`. Decisión explícita: no se fuerza este campo para habilitar validaciones adicionales — ver 40.5.
+Estos valores reflejan fielmente el estado real del cliente conforme a `data/clientes/CONTRATO.md`, incluso después del merge a `main` (PR #48): el registro de un cliente en `main` no equivale, por sí mismo, a un despliegue formal según el ciclo de vida documentado — ese campo se actualiza como paso explícito y deliberado, sujeto a verificación conforme al contrato vigente, no como consecuencia automática de que sus archivos existan en `main`. Decisión explícita: no se fuerza este campo para habilitar validaciones adicionales — ver 40.5.
 
 ### 40.3 — Validación E2E realizada en Preview, con evidencia empírica real
 
@@ -974,7 +975,7 @@ Confirmado en el Preview: al compartir la URL por WhatsApp no aparece imagen, t�
 
 **Fuera de alcance de FASE 31**: corrección de código de A1 (más allá de la preparación descrita), A2, B1 (debilidad de fondo), privacidad de `ConfirmadosSection`, Apps Script (más allá del cambio de permiso ya aplicado por Andrés), MAU-3, MAU-4, RIESGO-C, exports/filtros/estadísticas de RSVP, cualquier refactor general.
 
-**Changeset preparado, pendiente de subir manualmente (NO mergeado a `main`)**:
+**Changeset mergeado a `main`** (PR #48, commit `92ef6ad`):
 
 ```
 data/catalogo/templates.js             ← S3/P1/P2/P3 pasan a "disponible"
@@ -985,24 +986,25 @@ docs/ESTADO_OFICIAL_PROYECTO.md        ← v21, secciones 39–41 incorporadas; 
 Instrucciones maestras del proyecto    ← actualizadas a versión post FASE 31
 ```
 
+Verificado contra `main` post-merge, línea por línea: contenido idéntico al preparado. `deploy_estado: "draft"` y `deployed_en: null` de `prueba-e2e-p1` permanecen sin alterar por el merge.
+
 ## 41. PUNTO EXACTO DE CONTINUACIÓN
 
-**FASE 31 cerrada como análisis y validación E2E en Preview.** Ver `docs/Fase 31.md` para el historial completo. Ningún cambio de código de esta fase fue mergeado a `main` al momento de este documento — los tres archivos del changeset (catálogo, `config.json` de `prueba-e2e-p1`, entrada de `index.json`) están preparados y verificados (build local, MAU-1, validador de FASE 27), pendientes de que Andrés los suba manualmente.
+**FASE 31 cerrada como análisis y validación E2E en Preview, con su changeset ya mergeado a `main`.** Ver `docs/Fase 31.md` para el historial completo. Los tres archivos del changeset (catálogo, `config.json` de `prueba-e2e-p1`, entrada de `index.json`) fueron verificados (build local, MAU-1, validador de FASE 27) antes del merge, y reverificados contra `main` real después de este (PR #48, commit `92ef6ad`, sin drift respecto de lo aprobado).
 
 **Validado empíricamente en esta fase**: backend aislado de `prueba-e2e-p1` (escritura y lectura, tras corregir el permiso del deployment de Apps Script), causa raíz puntual de B1, e invitación pública funcionando en Preview.
 
 **Pendiente, explícito, sin pre-aprobación de implementación**:
-- Merge de los tres cambios preparados, vía protocolo habitual (rama → PR → Preview → merge).
-- Validación de `/admin → RSVP`, después del despliegue real de `prueba-e2e-p1` en producción y la actualización legítima de `deploy_estado` a `"deployed"` — no como efecto automático del merge, sino como paso explícito posterior.
+- Validación de `/admin → RSVP` en producción — condicionada a que `prueba-e2e-p1` sea desplegado formalmente conforme al ciclo de vida documentado en `data/clientes/CONTRATO.md`, y a que `deploy_estado` se actualice a `"deployed"` como paso explícito, sujeto a verificación y decisión conforme al contrato vigente. El haber sido mergeado a `main` no habilita ni obliga por sí solo ese cambio de estado.
 - A2 (Open Graph hardcodeado) — sin alcance de corrección definido todavía.
 - Debilidad arquitectónica de fondo de B1 (verificación real de persistencia en el frontend, más allá del fix puntual de permisos ya aplicado) — sin alcance de corrección definido todavía.
 - Privacidad de `ConfirmadosSection` (ocultar de la invitación pública, exclusivo de `/admin`) — aplica a P1/P2/P3, sin confirmar empíricamente para P2/P3.
 - Retiro posterior del fixture `prueba-e2e-p1`, una vez agotado su propósito de validación.
 - Backlog sin cambios en esta fase: MAU-3 (continuación), MAU-4, RIESGO-C, exposición de `config.json`.
 
-**Catálogo comercial VELA**: técnicamente completo desde antes de FASE 31; la corrección de su declaración comercial (`data/catalogo/templates.js`) está preparada pero no mergeada — ver 40.1.
+**Catálogo comercial VELA**: técnicamente completo desde antes de FASE 31; su declaración comercial (`data/catalogo/templates.js`) ya está corregida y mergeada — ver 40.1.
 
-**`main`**: sin cambios de FASE 31 aplicados todavía; sigue en `60b2e0e` (PR #47 de FASE 30) hasta que Andrés suba y mergee el changeset de esta fase.
+**`main`**: actualizado a `92ef6ad` (merge de PR #48). El changeset de FASE 31 ya está incorporado. `prueba-e2e-p1` permanece con `deploy_estado: "draft"` y `deployed_en: null`, sin alterar por el merge.
 
 **Próximo paso, no pre-aprobado por esta sección**: definir alcance de FASE 32 sobre los pendientes listados arriba — ninguno se convierte automáticamente en trabajo aprobado por estar mencionado en este documento.
 
