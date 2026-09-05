@@ -1,8 +1,9 @@
+[Fase 31.md](https://github.com/user-attachments/files/31857834/Fase.31.md)
 [Fase 31.md](https://github.com/user-attachments/files/31767956/Fase.31.md)
 # FASE 31 — Transición de arquitectura a producto: validación E2E del MVP
 
-Estado: ANÁLISIS Y VALIDACIÓN E2E COMPLETOS EN PREVIEW. CAMBIOS PREPARADOS,
-PENDIENTES DE MERGE A `main`. HALLAZGOS DE PRODUCTO DOCUMENTADOS Y
+Estado: ANÁLISIS Y VALIDACIÓN E2E COMPLETOS EN PREVIEW. CAMBIOS MERGEADOS A
+`main` (PR #48, commit `92ef6ad`). HALLAZGOS DE PRODUCTO DOCUMENTADOS Y
 DELIBERADAMENTE NO CORREGIDOS EN ESTA FASE.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -22,7 +23,7 @@ validación end-to-end con un cliente de prueba controlado, aislado de
 producción, siguiendo el flujo real del producto (alta → configuración →
 publicación → invitación pública → RSVP → getConfirmados → /admin).
 
-## 1. Hallazgo A1 — Catálogo comercial desalineado (corrección preparada, pendiente de merge)
+## 1. Hallazgo A1 — Catálogo comercial desalineado (corrección mergeada a `main`)
 
 `data/catalogo/templates.js` marcaba S3, P1, P2 y P3 como "proximamente",
 pese a que las FASES 15-18, 25, 26, 29 y 30 dan esos templates por
@@ -30,10 +31,11 @@ completos e implementados. Efecto concreto: en el Generador (modo normal,
 sin activar "Modo Validación"), el operador solo podía seleccionar S1, S2
 y P1 (este último por un override manual, `LEGACY_VISIBLE`).
 
-Corrección preparada: los cuatro valores pasan a `"disponible"`. Cambio de
-una sola dimensión (visibilidad comercial), sin tocar `LEGACY_VISIBLE` ni
-ningún otro archivo. Build verificado localmente. Pendiente de que Andrés
-lo suba manualmente vía GitHub UI.
+Corrección mergeada a `main` (PR #48): los cuatro valores pasan a
+`"disponible"`. Cambio de una sola dimensión (visibilidad comercial),
+sin tocar `LEGACY_VISIBLE` ni ningún otro archivo. Build verificado
+localmente antes del merge. Verificado nuevamente contra `main`
+post-merge: contenido idéntico al preparado.
 
 ## 2. Cliente de prueba controlado — `prueba-e2e-p1`
 
@@ -56,9 +58,11 @@ Registro actual en `data/clientes/index.json`, sin modificar:
 ```
 
 Estos valores reflejan el estado real del cliente respecto del ciclo de
-vida documentado en `data/clientes/CONTRATO.md`: el cliente está operativo
-en un Preview de Vercel, pero no fue mergeado a `main`, por lo que no
-corresponde marcarlo como `"deployed"`. No se fuerza este campo para
+vida documentado en `data/clientes/CONTRATO.md`, incluso después del
+merge a `main` (PR #48): estar mergeado a `main` no equivale, por sí
+solo, a un despliegue formal conforme a ese ciclo de vida — el campo se
+actualiza como paso explícito y deliberado, sujeto a verificación y
+decisión conforme al contrato vigente. No se fuerza este campo para
 habilitar validaciones — ver sección 6.
 
 ## 3. Validación E2E — resultados
@@ -142,13 +146,12 @@ decisión explícita — queda registrado para una fase futura.
 
 ## 8. Pendiente para la siguiente fase
 
-- Merge de los cambios preparados (catálogo, `config.json` de
-  `prueba-e2e-p1`, entrada de `index.json`) vía rama + PR, siguiendo el
-  protocolo habitual.
-- Validación de `/admin → RSVP`, después del despliegue real de
-  `prueba-e2e-p1` en producción y la actualización legítima de
-  `deploy_estado` a `"deployed"` conforme al ciclo de vida documentado —
-  no como consecuencia automática del merge.
+- Validación de `/admin → RSVP` en producción — condicionada a que
+  `prueba-e2e-p1` sea desplegado formalmente conforme al ciclo de vida
+  documentado en `data/clientes/CONTRATO.md`, y a que `deploy_estado` se
+  actualice a `"deployed"` como paso explícito, sujeto a verificación y
+  decisión conforme al contrato vigente. El merge a `main` (ya ocurrido,
+  PR #48) no habilita ni obliga por sí solo ese cambio de estado.
 - A2 (Open Graph hardcodeado) — definir y aprobar alcance de corrección.
 - Debilidad arquitectónica B1 (verificación real de persistencia en el
   frontend, más allá del fix puntual de permisos ya aplicado) — definir
